@@ -1,0 +1,6 @@
+{
+  "*.java": [
+    "npx prettier --write '**/*.java'",
+    "git add"
+  ]
+}
