@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.ArrayList;
 import java.util.List;
+import org.njuse17advancedse.apigateway.domains.entity.Affiliation;
 import org.njuse17advancedse.apigateway.interfaces.dto.researcher.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -83,20 +84,10 @@ public class ResearcherController {
   ) {
     List<IResearcher> res = new ArrayList<>();
     res.add(
-      new IResearcher(
-        "1",
-        "测试学者1",
-        new org.njuse17advancedse.apigateway.domains.entity.Affiliation(),
-        new ArrayList<>()
-      )
+      new IResearcher("1", "测试学者1", new Affiliation(), new ArrayList<>())
     );
     res.add(
-      new IResearcher(
-        "2",
-        "测试学者2",
-        new org.njuse17advancedse.apigateway.domains.entity.Affiliation(),
-        new ArrayList<>()
-      )
+      new IResearcher("2", "测试学者2", new Affiliation(), new ArrayList<>())
     );
     return ResponseEntity.ok(res);
   }
@@ -113,20 +104,10 @@ public class ResearcherController {
   ) {
     List<IResearcher> res = new ArrayList<>();
     res.add(
-      new IResearcher(
-        "3",
-        "测试学者3",
-        new org.njuse17advancedse.apigateway.domains.entity.Affiliation(),
-        new ArrayList<>()
-      )
+      new IResearcher("3", "测试学者3", new Affiliation(), new ArrayList<>())
     );
     res.add(
-      new IResearcher(
-        "4",
-        "测试学者4",
-        new org.njuse17advancedse.apigateway.domains.entity.Affiliation(),
-        new ArrayList<>()
-      )
+      new IResearcher("4", "测试学者4", new Affiliation(), new ArrayList<>())
     );
     return ResponseEntity.ok(res);
   }
