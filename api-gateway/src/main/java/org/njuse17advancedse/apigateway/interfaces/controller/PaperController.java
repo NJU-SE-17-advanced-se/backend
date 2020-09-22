@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaperController {
 
   @ApiOperation(
-    value = "查看某论文引用情况",
+    value = "接口 2.1：查看某论文引用情况",
     notes = "需求 7.1：论文引用其它论文"
   )
   @GetMapping("/{id}/references")
@@ -55,7 +55,7 @@ public class PaperController {
   }
 
   @ApiOperation(
-    value = "查看某论文被引情况",
+    value = "接口 2.2：查看某论文被引情况",
     notes = "需求 7.1：论文被其它论文引用情况"
   )
   @GetMapping("/{id}/citations")
@@ -89,7 +89,7 @@ public class PaperController {
   }
 
   @ApiOperation(
-    value = "查看某论文推荐的审稿人",
+    value = "接口 2.3：查看某论文推荐的审稿人",
     notes = "需求 6.1：提交审稿时，能够自动推荐相关审稿人"
   )
   @GetMapping("/{id}/recommendation/reviewers")
@@ -107,7 +107,7 @@ public class PaperController {
   }
 
   @ApiOperation(
-    value = "查看某论文不推荐的审稿人",
+    value = "接口 2.4：查看某论文不推荐的审稿人",
     notes = "需求 6.2：提交审稿时，能够自动屏蔽相关审稿人"
   )
   @GetMapping("/{id}/non-recommendation/reviewers")
@@ -125,7 +125,7 @@ public class PaperController {
   }
 
   @ApiOperation(
-    value = "查看某论文的影响力",
+    value = "接口 2.5：查看某论文的影响力",
     notes = "需求 7.3：评价研究影响力"
   )
   @GetMapping("/{id}/impact")
