@@ -84,10 +84,10 @@ public class ResearcherController {
   ) {
     List<IResearcher> res = new ArrayList<>();
     res.add(
-      new IResearcher("1", "测试学者1", new Affiliation(), new ArrayList<>())
+      new IResearcher("1", "测试学者1", new ArrayList<>(), new ArrayList<>())
     );
     res.add(
-      new IResearcher("2", "测试学者2", new Affiliation(), new ArrayList<>())
+      new IResearcher("2", "测试学者2", new ArrayList<>(), new ArrayList<>())
     );
     return ResponseEntity.ok(res);
   }
@@ -104,10 +104,10 @@ public class ResearcherController {
   ) {
     List<IResearcher> res = new ArrayList<>();
     res.add(
-      new IResearcher("3", "测试学者3", new Affiliation(), new ArrayList<>())
+      new IResearcher("3", "测试学者3", new ArrayList<>(), new ArrayList<>())
     );
     res.add(
-      new IResearcher("4", "测试学者4", new Affiliation(), new ArrayList<>())
+      new IResearcher("4", "测试学者4", new ArrayList<>(), new ArrayList<>())
     );
     return ResponseEntity.ok(res);
   }

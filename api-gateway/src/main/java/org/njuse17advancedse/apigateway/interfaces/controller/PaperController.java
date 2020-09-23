@@ -98,10 +98,10 @@ public class PaperController {
   ) {
     List<IResearcher> res = new ArrayList<>();
     res.add(
-      new IResearcher("5", "测试学者5", new Affiliation(), new ArrayList<>())
+      new IResearcher("5", "测试学者5", new ArrayList<>(), new ArrayList<>())
     );
     res.add(
-      new IResearcher("6", "测试学者6", new Affiliation(), new ArrayList<>())
+      new IResearcher("6", "测试学者6", new ArrayList<>(), new ArrayList<>())
     );
     return ResponseEntity.ok(res);
   }
@@ -116,10 +116,10 @@ public class PaperController {
   ) {
     List<IResearcher> res = new ArrayList<>();
     res.add(
-      new IResearcher("7", "测试学者8", new Affiliation(), new ArrayList<>())
+      new IResearcher("7", "测试学者8", new ArrayList<>(), new ArrayList<>())
     );
     res.add(
-      new IResearcher("8", "测试学者8", new Affiliation(), new ArrayList<>())
+      new IResearcher("8", "测试学者8", new ArrayList<>(), new ArrayList<>())
     );
     return ResponseEntity.ok(res);
   }
