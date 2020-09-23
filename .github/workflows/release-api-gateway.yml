@@ -3,7 +3,7 @@ name: Release API Gateway
 on:
   push:
     branches:
-      - feature/mono-repo
+      - master
     paths:
       - api-gateway/**
 
