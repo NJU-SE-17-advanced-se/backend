@@ -1,7 +1,5 @@
 package org.njuse17advancedse.apigateway.interfaces.dto.researcher;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
