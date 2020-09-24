@@ -18,27 +18,37 @@ public class TaskImpactAnalysisServiceTest {
   public void testGetHIndex1() {
     PaperVo vo1 = new PaperVo(
       0L,
+      "",
       Arrays.asList(1L, 2L, 3L, 4L),
       Arrays.asList(2L, 3L, 4L, 5L)
     );
     PaperVo vo2 = new PaperVo(
       1L,
+      "",
       Arrays.asList(1L, 2L, 3L, 4L, 5L),
       Arrays.asList(0L, 1L, 2L, 3L, 4L, 5L)
     );
     PaperVo vo3 = new PaperVo(
       2L,
+      "",
       Arrays.asList(1L, 2L, 3L, 4L, 5L),
       Arrays.asList(0L, 2L, 3L, 4L, 5L)
     );
     PaperVo vo4 = new PaperVo(
       3L,
+      "",
       Arrays.asList(1L, 2L),
       Arrays.asList(0L, 1L, 2L, 5L)
     );
-    PaperVo vo5 = new PaperVo(4L, Arrays.asList(1L), Arrays.asList(0L, 1L, 2L));
+    PaperVo vo5 = new PaperVo(
+      4L,
+      "",
+      Arrays.asList(1L),
+      Arrays.asList(0L, 1L, 2L)
+    );
     PaperVo vo6 = new PaperVo(
       5L,
+      "",
       Arrays.asList(2L, 3L, 4L),
       Arrays.asList(1L, 2L)
     );
@@ -54,38 +64,45 @@ public class TaskImpactAnalysisServiceTest {
   public void testGetHIndex2() {
     PaperVo vo1 = new PaperVo(
       0L,
+      "",
       Arrays.asList(1L, 2L, 3L, 4L, 7L, 8L),
       Arrays.asList(2L, 3L, 4L, 5L, 8L)
     );
     PaperVo vo2 = new PaperVo(
       1L,
+      "",
       Arrays.asList(1L, 2L, 3L, 4L, 5L),
       Arrays.asList(0L, 1L, 2L, 3L, 4L, 5L, 8L)
     );
     PaperVo vo3 = new PaperVo(
       2L,
+      "",
       Arrays.asList(1L, 2L, 3L, 4L, 5L),
       Arrays.asList(0L, 2L, 3L, 4L, 5L, 8L)
     );
     PaperVo vo4 = new PaperVo(
       3L,
+      "",
       Arrays.asList(1L, 2L, 6L, 8L),
       Arrays.asList(0L, 1L, 2L, 5L, 8L)
     );
     PaperVo vo5 = new PaperVo(
       4L,
+      "",
       Arrays.asList(1L),
       Arrays.asList(0L, 1L, 2L, 8L)
     );
     PaperVo vo6 = new PaperVo(
       5L,
+      "",
       Arrays.asList(2L, 3L, 4L),
       Arrays.asList(1L, 2L, 8L)
     );
-    PaperVo vo7 = new PaperVo(6L, Arrays.asList(), Arrays.asList(3L));
-    PaperVo vo8 = new PaperVo(7L, Arrays.asList(8L), Arrays.asList(0L));
+    PaperVo vo7 = new PaperVo(6L, "", Arrays.asList(), Arrays.asList(3L));
+    PaperVo vo8 = new PaperVo(7L, "", Arrays.asList(8L), Arrays.asList(0L));
     PaperVo vo9 = new PaperVo(
       8L,
+      "",
       Arrays.asList(0L, 1L, 2L, 3L, 4L, 5L),
       Arrays.asList(0L, 3L, 7L)
     );
@@ -101,38 +118,45 @@ public class TaskImpactAnalysisServiceTest {
   public void testGetPaperImpact() {
     PaperVo vo1 = new PaperVo(
       0L,
+      "",
       Arrays.asList(1L, 2L, 3L, 4L, 7L, 8L),
       Arrays.asList(2L, 3L, 4L, 5L, 8L)
     );
     PaperVo vo2 = new PaperVo(
       1L,
+      "",
       Arrays.asList(1L, 2L, 3L, 4L, 5L),
       Arrays.asList(0L, 1L, 2L, 3L, 4L, 5L, 8L)
     );
     PaperVo vo3 = new PaperVo(
       2L,
+      "",
       Arrays.asList(1L, 2L, 3L, 4L, 5L),
       Arrays.asList(0L, 2L, 3L, 4L, 5L, 8L)
     );
     PaperVo vo4 = new PaperVo(
       3L,
+      "",
       Arrays.asList(1L, 2L, 6L, 8L),
       Arrays.asList(0L, 1L, 2L, 5L, 8L)
     );
     PaperVo vo5 = new PaperVo(
       4L,
+      "",
       Arrays.asList(1L),
       Arrays.asList(0L, 1L, 2L, 8L)
     );
     PaperVo vo6 = new PaperVo(
       5L,
+      "",
       Arrays.asList(2L, 3L, 4L),
       Arrays.asList(1L, 2L, 8L)
     );
-    PaperVo vo7 = new PaperVo(6L, Arrays.asList(), Arrays.asList(3L));
-    PaperVo vo8 = new PaperVo(7L, Arrays.asList(8L), Arrays.asList(0L));
+    PaperVo vo7 = new PaperVo(6L, "", Arrays.asList(), Arrays.asList(3L));
+    PaperVo vo8 = new PaperVo(7L, "", Arrays.asList(8L), Arrays.asList(0L));
     PaperVo vo9 = new PaperVo(
       8L,
+      "",
       Arrays.asList(0L, 1L, 2L, 3L, 4L, 5L),
       Arrays.asList(0L, 3L, 7L)
     );

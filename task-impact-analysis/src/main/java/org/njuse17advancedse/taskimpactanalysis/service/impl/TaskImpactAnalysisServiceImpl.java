@@ -1,5 +1,6 @@
 package org.njuse17advancedse.taskimpactanalysis.service.impl;
 
+import java.text.NumberFormat;
 import java.util.*;
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
 import org.njuse17advancedse.taskimpactanalysis.vo.PaperVo;
@@ -9,6 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class TaskImpactAnalysisServiceImpl
   implements TaskImpactAnalysisService {
+
+  public TaskImpactAnalysisServiceImpl() {
+    impactFactors = new HashMap<>();
+    impactFactors.put("", 1d);
+  }
 
   /**
    * 计算学者影响力（H指数）
@@ -28,11 +34,19 @@ public class TaskImpactAnalysisServiceImpl
     return res;
   }
 
+  static HashMap<String, Double> impactFactors;
+
   /**
    * 计算论文影响力（被引次数）
    */
   @Override
-  public int getPaperImpact(PaperVo vo) {
-    return vo.getQuotingIds().size();
+  public double getPaperImpact(PaperVo vo) {
+    return Double.parseDouble(
+      String.format(
+        "%.2f",
+        vo.getQuotingIds().size() *
+        impactFactors.getOrDefault(vo.getPublisher(), 0d)
+      )
+    );
   }
 }

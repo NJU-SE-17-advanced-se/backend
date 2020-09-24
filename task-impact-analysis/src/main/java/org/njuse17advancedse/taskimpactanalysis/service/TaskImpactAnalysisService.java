@@ -10,7 +10,7 @@ public interface TaskImpactAnalysisService {
   int getHIndex(ScholarVo vo);
 
   /**
-   * 计算论文影响力（被引次数）
+   * 计算论文影响力（被引次数*影响因子）
    */
-  int getPaperImpact(PaperVo vo);
+  double getPaperImpact(PaperVo vo);
 }

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class PaperVo {
   Long id;
 
+  String publisher;
   //引用它的论文
   List<Long> quotingIds;
 

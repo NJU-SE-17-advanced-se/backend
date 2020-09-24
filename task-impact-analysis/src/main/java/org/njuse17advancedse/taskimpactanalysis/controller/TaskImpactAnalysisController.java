@@ -21,7 +21,7 @@ public class TaskImpactAnalysisController {
   }
 
   @GetMapping(value = "/paper/{paperId}")
-  public int getPaperImpact(
+  public double getPaperImpact(
     @PathVariable Long paperId,
     @RequestBody PaperVo vo
   ) {
