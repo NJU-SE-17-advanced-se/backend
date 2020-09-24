@@ -31,8 +31,8 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Maven Package
-        run: mvn -B clean package -DskipTests
+      - name: Maven Test
+        run: mvn -B clean test
 
       - name: Maven Verify
         run: mvn -B clean verify
