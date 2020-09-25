@@ -1,10 +1,12 @@
 package org.njuse17advancedse.taskimpactanalysis.service.impl;
 
-import java.text.NumberFormat;
+import java.rmi.server.RemoteServer;
 import java.util.*;
+import org.njuse17advancedse.taskimpactanalysis.entity.Paper;
+import org.njuse17advancedse.taskimpactanalysis.entity.Researcher;
+import org.njuse17advancedse.taskimpactanalysis.service.FakeService;
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
-import org.njuse17advancedse.taskimpactanalysis.vo.PaperVo;
-import org.njuse17advancedse.taskimpactanalysis.vo.ScholarVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,16 +18,20 @@ public class TaskImpactAnalysisServiceImpl
     impactFactors.put("", 1d);
   }
 
+  @Autowired
+  FakeService service;
+
   /**
    * 计算学者影响力（H指数）
    */
   @Override
-  public int getHIndex(ScholarVo vo) {
-    ArrayList<PaperVo> tmpPapers = new ArrayList<>(vo.getPapers());
-    tmpPapers.sort(Comparator.comparingInt(a -> -a.getQuotingIds().size()));
+  public int getHIndex(String id) {
+    Researcher r = service.getResearcherById(id);
+    ArrayList<Paper> tmpPapers = new ArrayList<>(r.getPapers());
+    tmpPapers.sort(Comparator.comparingInt(a -> -a.getQuotedIds().size()));
     int res = 0;
     for (int i = 0; i < tmpPapers.size(); i++) {
-      if (tmpPapers.get(i).getQuotingIds().size() > i) {
+      if (tmpPapers.get(i).getQuotedIds().size() > i) {
         res = i + 1;
       } else {
         break;
@@ -40,12 +46,13 @@ public class TaskImpactAnalysisServiceImpl
    * 计算论文影响力（被引次数）
    */
   @Override
-  public double getPaperImpact(PaperVo vo) {
+  public double getPaperImpact(String id) {
+    Paper p = service.getPaperById(id);
+    List<String> sss = p.getQuotedIds();
     return Double.parseDouble(
       String.format(
         "%.2f",
-        vo.getQuotingIds().size() *
-        impactFactors.getOrDefault(vo.getPublisher(), 0d)
+        p.getQuotedIds().size() * impactFactors.getOrDefault(p.getJournal(), 0d)
       )
     );
   }
