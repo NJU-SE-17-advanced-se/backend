@@ -1,6 +1,5 @@
 package org.njuse17advancedse.taskimpactanalysis.service.impl;
 
-import java.rmi.server.RemoteServer;
 import java.util.*;
 import org.njuse17advancedse.taskimpactanalysis.entity.Paper;
 import org.njuse17advancedse.taskimpactanalysis.entity.Researcher;
@@ -48,7 +47,6 @@ public class TaskImpactAnalysisServiceImpl
   @Override
   public double getPaperImpact(String id) {
     Paper p = service.getPaperById(id);
-    List<String> sss = p.getQuotedIds();
     return Double.parseDouble(
       String.format(
         "%.2f",

@@ -10,11 +10,11 @@ public class FakeServiceImpl implements FakeService {
 
   @Override
   public Paper getPaperById(String id) {
-    return null;
+    return new Paper();
   }
 
   @Override
   public Researcher getResearcherById(String id) {
-    return null;
+    return new Researcher();
   }
 }
