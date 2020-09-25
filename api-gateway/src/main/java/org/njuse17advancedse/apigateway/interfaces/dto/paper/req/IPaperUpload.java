@@ -1,4 +1,4 @@
-package org.njuse17advancedse.apigateway.interfaces.dto.researcher;
+package org.njuse17advancedse.apigateway.interfaces.dto.paper.req;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import org.njuse17advancedse.apigateway.domains.entity.Researcher;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class IPaper {
+public class IPaperUpload {
   private String id;
 
   private String title;
@@ -20,9 +20,9 @@ public class IPaper {
 
   private String link;
 
-  private List<Researcher> researchers;
+  private List<String> researcherIds;
 
-  private List<Domain> domains;
+  private List<String> domainIds;
 
-  private List<Paper> references;
+  private List<String> referenceIds;
 }
