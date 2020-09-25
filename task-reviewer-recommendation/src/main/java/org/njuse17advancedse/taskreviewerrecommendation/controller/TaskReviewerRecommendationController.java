@@ -13,8 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "paper")
 public class TaskReviewerRecommendationController {
-  @Autowired
-  private TaskReviewerRecommendationService recommendationService;
+  private final TaskReviewerRecommendationService recommendationService;
+
+  public TaskReviewerRecommendationController(
+    TaskReviewerRecommendationService recommendationService
+  ) {
+    this.recommendationService = recommendationService;
+  }
 
   @RequestMapping(value = "/{id}/recommend", method = RequestMethod.GET)
   private ResponseEntity<List<IResearcher>> getRecommendReviewer(
