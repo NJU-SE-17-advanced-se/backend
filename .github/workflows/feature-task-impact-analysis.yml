@@ -1,0 +1,38 @@
+name: Test Impact Analysis Task Service
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - task-impact-analysis/**
+
+jobs:
+  test:
+    name: Unit Tests & Integration Tests
+    runs-on: ubuntu-18.04
+    defaults:
+      run:
+        working-directory: task-impact-analysis
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache Maven Repo
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Maven Test
+        run: mvn -B clean test
+
+      - name: Maven Verify
+        run: mvn -B clean verify
