@@ -10,8 +10,8 @@ import org.njuse17advancedse.apigateway.interfaces.dto.researcher.*;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = { "学者" })
-@RestController
 @RequestMapping("/researcher")
+@RestController
 public class ResearcherController {
   private ResearcherService researcherService;
 
@@ -20,7 +20,7 @@ public class ResearcherController {
     notes = "需求 3.1：能够识别同一研究者在不同时间的单位情况"
   )
   @GetMapping("/{id}/affiliations")
-  public @ResponseBody List<IAffiliation> getAffiliationsByTimeRange(
+  public List<IAffiliation> getAffiliationsByTimeRange(
     @ApiParam(value = "学者id") @PathVariable String id,
     @ApiParam(value = "开始日期，形如 '2020-09-21'") @RequestParam String start,
     @ApiParam(value = "结束日期，形如 '2020-09-21'") @RequestParam String end
@@ -41,7 +41,7 @@ public class ResearcherController {
     "需求 4.2：能够识别研究者在不同阶段的研究兴趣"
   )
   @GetMapping("/{id}/domains")
-  public @ResponseBody List<IDomain> getDomainsByTimeRange(
+  public List<IDomain> getDomainsByTimeRange(
     @ApiParam(value = "学者id") @PathVariable String id,
     @ApiParam(value = "开始日期，形如 '2020-09-21'") @RequestParam String start,
     @ApiParam(value = "结束日期，形如 '2020-09-21'") @RequestParam String end
@@ -61,7 +61,7 @@ public class ResearcherController {
     notes = "需求 4.3：能够初步预测研究者的研究兴趣"
   )
   @GetMapping("/{id}/future/domains")
-  public @ResponseBody List<IDomain> getFutureDomains(
+  public List<IDomain> getFutureDomains(
     @ApiParam(value = "学者id") @PathVariable String id
   ) {
     List<IDomain> res = new ArrayList<>();
@@ -79,7 +79,7 @@ public class ResearcherController {
     notes = "需求 5.1：能够识别研究者存在的合作关系，形成社会网络"
   )
   @GetMapping("/{id}/partnership")
-  public @ResponseBody List<IResearcher> getPartnershipByTimeRange(
+  public List<IResearcher> getPartnershipByTimeRange(
     @ApiParam(value = "学者id") @PathVariable String id
   ) {
     List<IResearcher> res = new ArrayList<>();
@@ -97,7 +97,7 @@ public class ResearcherController {
     notes = "需求 5.2：能够初步预测研究者之间的合作走向"
   )
   @GetMapping("/{id}/future/partnership")
-  public @ResponseBody List<IResearcher> getFuturePartnership(
+  public List<IResearcher> getFuturePartnership(
     @ApiParam(value = "学者id") @PathVariable String id,
     @ApiParam(value = "开始日期，形如 '2020-09-21'") @RequestParam String start,
     @ApiParam(value = "结束日期，形如 '2020-09-21'") @RequestParam String end
@@ -117,7 +117,7 @@ public class ResearcherController {
     notes = "需求 7.2：研究者引用其他研究者（的论文）"
   )
   @GetMapping("/{id}/references")
-  public @ResponseBody List<IPaper> getReferences(
+  public List<IPaper> getReferences(
     @ApiParam(value = "学者id") @PathVariable String id
   ) {
     List<IPaper> res = new ArrayList<>();
@@ -151,7 +151,7 @@ public class ResearcherController {
     notes = "需求 7.2：研究者被其他研究者引用情况"
   )
   @GetMapping("/{id}/citations")
-  public @ResponseBody List<IPaper> getCitations(
+  public List<IPaper> getCitations(
     @ApiParam(value = "学者id") @PathVariable String id
   ) {
     List<IPaper> res = new ArrayList<>();
@@ -185,9 +185,7 @@ public class ResearcherController {
     notes = "需求 7.3：评价研究者影响力"
   )
   @GetMapping("/{id}/impact")
-  public @ResponseBody IImpact getImpact(
-    @ApiParam(value = "学者id") @PathVariable String id
-  )
+  public IImpact getImpact(@ApiParam(value = "学者id") @PathVariable String id)
     throws Exception {
     String criteria = "H-index";
     double impact = this.researcherService.getImpact(id, criteria);

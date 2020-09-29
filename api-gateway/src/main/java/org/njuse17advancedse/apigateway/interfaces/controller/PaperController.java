@@ -14,8 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = { "论文" })
-@RestController
 @RequestMapping("/paper")
+@RestController
 public class PaperController {
   private final PaperService paperService;
 
@@ -24,7 +24,7 @@ public class PaperController {
     notes = "需求 7.1：论文引用其它论文"
   )
   @GetMapping("/{id}/references")
-  public @ResponseBody List<IPaper> getReferences(
+  public List<IPaper> getReferences(
     @ApiParam(value = "论文id") @PathVariable String id
   ) {
     List<IPaper> res = new ArrayList<>();
@@ -58,7 +58,7 @@ public class PaperController {
     notes = "需求 7.1：论文被其它论文引用情况"
   )
   @GetMapping("/{id}/citations")
-  public @ResponseBody List<IPaper> getCitations(
+  public List<IPaper> getCitations(
     @ApiParam(value = "学者id") @PathVariable String id
   ) {
     List<IPaper> res = new ArrayList<>();
@@ -92,7 +92,7 @@ public class PaperController {
     notes = "需求 6.1：提交审稿时，能够自动推荐相关审稿人"
   )
   @GetMapping("/{id}/recommendation/reviewers")
-  public @ResponseBody List<IResearcher> getRecommendedReviewers(
+  public List<IResearcher> getRecommendedReviewers(
     @ApiParam(value = "论文id") @PathVariable String id
   ) {
     List<IResearcher> res = new ArrayList<>();
@@ -110,7 +110,7 @@ public class PaperController {
     notes = "需求 6.2：提交审稿时，能够自动屏蔽相关审稿人"
   )
   @GetMapping("/{id}/non-recommendation/reviewers")
-  public @ResponseBody List<IResearcher> getNotRecommendedReviewers(
+  public List<IResearcher> getNotRecommendedReviewers(
     @ApiParam(value = "论文id") @PathVariable String id
   ) {
     List<IResearcher> res = new ArrayList<>();
@@ -128,9 +128,7 @@ public class PaperController {
     notes = "需求 7.3：评价研究影响力"
   )
   @GetMapping("/{id}/impact")
-  public @ResponseBody IImpact getImpact(
-    @ApiParam(value = "论文id") @PathVariable String id
-  )
+  public IImpact getImpact(@ApiParam(value = "论文id") @PathVariable String id)
     throws Exception {
     String criteria = "custom";
     double impact = this.paperService.getImpact(id, criteria);

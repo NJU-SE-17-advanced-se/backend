@@ -11,8 +11,8 @@ import org.njuse17advancedse.apigateway.interfaces.dto.researcher.*;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = { "学者扩展" })
-@RestController
 @RequestMapping("/researchers")
+@RestController
 public class ResearchersController {
 
   @ApiOperation(
@@ -20,7 +20,7 @@ public class ResearchersController {
     notes = "接口 1.1 的附属版本"
   )
   @GetMapping("/{ids}/affiliations")
-  public @ResponseBody Map<String, IAffiliation> getAffiliationsByTimeRange(
+  public Map<String, IAffiliation> getAffiliationsByTimeRange(
     @ApiParam(value = "学者**们**的id") @PathVariable List<String> ids,
     @ApiParam(value = "开始日期，形如 '2020-09-21'") @RequestParam String start,
     @ApiParam(value = "结束日期，形如 '2020-09-21'") @RequestParam String end
@@ -42,7 +42,7 @@ public class ResearchersController {
     notes = "接口 1.2 的附属版本"
   )
   @GetMapping("/{ids}/domains")
-  public @ResponseBody Map<String, IDomain> getDomainsByTimeRange(
+  public Map<String, IDomain> getDomainsByTimeRange(
     @ApiParam(value = "学者**们**的id") @PathVariable List<String> ids,
     @ApiParam(value = "开始日期，形如 '2020-09-21'") @RequestParam String start,
     @ApiParam(value = "结束日期，形如 '2020-09-21'") @RequestParam String end
@@ -64,7 +64,7 @@ public class ResearchersController {
     notes = "接口 1.3 的附属版本"
   )
   @GetMapping("/{ids}/future/domains")
-  public @ResponseBody Map<String, IDomain> getFutureDomains(
+  public Map<String, IDomain> getFutureDomains(
     @ApiParam(value = "学者**们**的id") @PathVariable List<String> ids
   ) {
     Map<String, IDomain> res = new HashMap<>();
@@ -84,7 +84,7 @@ public class ResearchersController {
     notes = "接口 1.4 的附属版本"
   )
   @GetMapping("/{ids}/partnership")
-  public @ResponseBody Map<String, IResearcher> getPartnershipByTimeRange(
+  public Map<String, IResearcher> getPartnershipByTimeRange(
     @ApiParam(value = "学者**们**的id") @PathVariable List<String> ids
   ) {
     Map<String, IResearcher> res = new HashMap<>();
@@ -104,7 +104,7 @@ public class ResearchersController {
     notes = "接口 1.5 的附属版本"
   )
   @GetMapping("/{ids}/future/partnership")
-  public @ResponseBody Map<String, IResearcher> getFuturePartnership(
+  public Map<String, IResearcher> getFuturePartnership(
     @ApiParam(value = "学者**们**的id") @PathVariable List<String> ids,
     @ApiParam(value = "开始日期，形如 '2020-09-21'") @RequestParam String start,
     @ApiParam(value = "结束日期，形如 '2020-09-21'") @RequestParam String end
@@ -126,7 +126,7 @@ public class ResearchersController {
     notes = "接口 1.6 的附属版本"
   )
   @GetMapping("/{ids}/references")
-  public @ResponseBody Map<String, IPaper> getReferences(
+  public Map<String, IPaper> getReferences(
     @ApiParam(value = "学者**们**的id") @PathVariable List<String> ids
   ) {
     Map<String, IPaper> res = new HashMap<>();
@@ -162,7 +162,7 @@ public class ResearchersController {
     notes = "接口 1.7 的附属版本"
   )
   @GetMapping("/{ids}/citations")
-  public @ResponseBody Map<String, IPaper> getCitations(
+  public Map<String, IPaper> getCitations(
     @ApiParam(value = "学者**们**的id") @PathVariable List<String> ids
   ) {
     Map<String, IPaper> res = new HashMap<>();
@@ -198,7 +198,7 @@ public class ResearchersController {
     notes = "接口 1.8 的附属版本"
   )
   @GetMapping("/{ids}/impact")
-  public @ResponseBody Map<String, IImpact> getImpact(
+  public Map<String, IImpact> getImpact(
     @ApiParam(value = "学者**们**的id") @PathVariable List<String> ids
   ) {
     Map<String, IImpact> res = new HashMap<>();

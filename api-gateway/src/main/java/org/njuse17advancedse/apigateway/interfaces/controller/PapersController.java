@@ -13,8 +13,8 @@ import org.njuse17advancedse.apigateway.interfaces.dto.paper.IResearcher;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = { "论文扩展" })
-@RestController
 @RequestMapping("/papers")
+@RestController
 public class PapersController {
 
   @ApiOperation(
@@ -22,7 +22,7 @@ public class PapersController {
     notes = "接口 2.1 的附属版本"
   )
   @GetMapping("/{ids}/references")
-  public @ResponseBody Map<String, IPaper> getReferences(
+  public Map<String, IPaper> getReferences(
     @ApiParam(value = "论文id") @PathVariable List<String> ids
   ) {
     Map<String, IPaper> res = new HashMap<>();
@@ -58,7 +58,7 @@ public class PapersController {
     notes = "接口 2.2 的附属版本"
   )
   @GetMapping("/{ids}/citations")
-  public @ResponseBody Map<String, IPaper> getCitations(
+  public Map<String, IPaper> getCitations(
     @ApiParam(value = "学者id") @PathVariable List<String> ids
   ) {
     Map<String, IPaper> res = new HashMap<>();
@@ -94,7 +94,7 @@ public class PapersController {
     notes = "接口 2.3 的附属版本"
   )
   @GetMapping("/{ids}/recommendation/reviewers")
-  public @ResponseBody Map<String, IResearcher> getRecommendedReviewers(
+  public Map<String, IResearcher> getRecommendedReviewers(
     @ApiParam(value = "论文id") @PathVariable List<String> ids
   ) {
     Map<String, IResearcher> res = new HashMap<>();
@@ -114,7 +114,7 @@ public class PapersController {
     notes = "接口 2.4 的附属版本"
   )
   @GetMapping("/{ids}/non-recommendation/reviewers")
-  public @ResponseBody Map<String, IResearcher> getNotRecommendedReviewers(
+  public Map<String, IResearcher> getNotRecommendedReviewers(
     @ApiParam(value = "论文id") @PathVariable List<String> ids
   ) {
     Map<String, IResearcher> res = new HashMap<>();
@@ -134,7 +134,7 @@ public class PapersController {
     notes = "接口 2.5 的附属版本"
   )
   @GetMapping("/{ids}/impact")
-  public @ResponseBody Map<String, IImpact> getImpact(
+  public Map<String, IImpact> getImpact(
     @ApiParam(value = "论文id") @PathVariable List<String> ids
   ) {
     Map<String, IImpact> res = new HashMap<>();
