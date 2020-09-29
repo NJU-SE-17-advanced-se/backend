@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.ArrayList;
 import java.util.List;
+import org.njuse17advancedse.apigateway.apps.service.PaperService;
 import org.njuse17advancedse.apigateway.interfaces.dto.paper.IImpact;
 import org.njuse17advancedse.apigateway.interfaces.dto.paper.IPaper;
 import org.njuse17advancedse.apigateway.interfaces.dto.paper.IResearcher;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/paper")
 public class PaperController {
+  private final PaperService paperService;
 
   @ApiOperation(
     value = "接口 2.1：查看某论文引用情况",
@@ -128,8 +130,11 @@ public class PaperController {
   @GetMapping("/{id}/impact")
   public @ResponseBody IImpact getImpact(
     @ApiParam(value = "论文id") @PathVariable String id
-  ) {
-    return new IImpact(7.777, "H-index");
+  )
+    throws Exception {
+    String criteria = "custom";
+    double impact = this.paperService.getImpact(id, criteria);
+    return new IImpact(impact, criteria);
   }
 
   @ApiOperation(value = "上传新论文")
@@ -137,5 +142,9 @@ public class PaperController {
   @ResponseStatus(HttpStatus.CREATED)
   public void savePaper(@RequestBody IPaperUpload paper) {
     System.out.println(paper);
+  }
+
+  public PaperController(PaperService paperService) {
+    this.paperService = paperService;
   }
 }

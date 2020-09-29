@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.ArrayList;
 import java.util.List;
+import org.njuse17advancedse.apigateway.apps.service.ResearcherService;
 import org.njuse17advancedse.apigateway.interfaces.dto.researcher.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/researcher")
 public class ResearcherController {
+  private ResearcherService researcherService;
 
   @ApiOperation(
     value = "接口 1.1：查看某学者某一时间段所在机构",
@@ -185,7 +187,14 @@ public class ResearcherController {
   @GetMapping("/{id}/impact")
   public @ResponseBody IImpact getImpact(
     @ApiParam(value = "学者id") @PathVariable String id
-  ) {
-    return new IImpact(6.666, "我不道啊");
+  )
+    throws Exception {
+    String criteria = "H-index";
+    double impact = this.researcherService.getImpact(id, criteria);
+    return new IImpact(impact, criteria);
+  }
+
+  public ResearcherController(ResearcherService researcherService) {
+    this.researcherService = researcherService;
   }
 }
