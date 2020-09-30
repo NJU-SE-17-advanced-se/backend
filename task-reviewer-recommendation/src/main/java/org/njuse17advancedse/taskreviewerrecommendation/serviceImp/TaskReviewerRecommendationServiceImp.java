@@ -24,7 +24,7 @@ public class TaskReviewerRecommendationServiceImp
   private static String paperServiceAddress = ""; // 论文实体服务地址
   private static String researcherServiceAddress = ""; // 作者实体服务地址
   private static String taskImpactAnalysisServiceAddress = ""; // 影响力业务服务地址
-  private static String taskPartnerShipServiceAddress = ""; //合作关系业务服务地址
+  private static String taskPartnerShipServiceAddress = ""; // 合作关系业务服务地址
 
   private final RestTemplate restTemplate;
 
@@ -47,11 +47,11 @@ public class TaskReviewerRecommendationServiceImp
 
       /* 第二步，获得最近在投稿刊物发表过文章（不在引文中）的作者 */
       String paperJournal = paper.getJournal();
-      getReviewerFromSameJournal(paperJournal, paper.getDate(), researchers);
+      //getReviewerFromSameJournal(paperJournal, paper.getDate(), researchers);
 
       /* 第三步， 获得论文发表期间相同领域论文(不在引文和本刊物中)的作者列表*/
       List<Domain> paperDomains = paper.getDomains();
-      getReviewerFormSimilarDomain(paperDomains, researchers);
+      //getReviewerFormSimilarDomain(paperDomains, researchers);
 
       /* 第四步，获得这些作者的研究领域并与论文研究领域进行比照，删去无重叠领域的作者 */
       researchers = deduplicateAndSort(researchers); //去重并排序
@@ -111,7 +111,7 @@ public class TaskReviewerRecommendationServiceImp
           (o1, o2) -> (int) (map.get(o2.getId()) - map.get(o1.getId()))
         );
         if (researchers.size() > 5) {
-          researchers.subList(0, 5);
+          researchers = researchers.subList(0, 5);
         }
         for (Researcher researcher : researchers) {
           iResearchers.add(new IResearcher(researcher));
@@ -161,10 +161,12 @@ public class TaskReviewerRecommendationServiceImp
   ) {
     try {
       List<Paper> sameJournalPapers = (List<Paper>) restTemplate.getForObject(
-        paperServiceAddress + "/paper/getPapersByJournal/{journal}/{date}",
-        List.class,
-        paperJournal,
-        date
+        paperServiceAddress +
+        "/paper/getPapersByJournal/" +
+        paperJournal +
+        "/" +
+        date,
+        List.class
       );
       addRid(researchers, sameJournalPapers);
     } catch (Exception e) {
@@ -276,13 +278,14 @@ public class TaskReviewerRecommendationServiceImp
     Paper paper = getPaperById(id);
     if (paper != null) {
       List<Researcher> researchersOfPaper = paper.getResearchers();
-      for (String rid : researchersOfPaper
+      List<String> rids = researchersOfPaper
         .stream()
         .map(Researcher::getId)
-        .collect(Collectors.toList())) {
-        //第一步，根据id获得与论文作者合作过的作者列表
-        partners.addAll(getPartnersByRid(rid));
-      }
+        .collect(Collectors.toList());
+
+      //第一步，根据id获得与论文作者合作过的作者列表
+      partners.addAll(getPartnersByRid(rids));
+
       //第二步，获得合作者的研究领域并按照相关程度排序，取前五名作者
       iResearchers = sortPartnersByDomains(partners, paper.getDomains());
     }
@@ -319,18 +322,26 @@ public class TaskReviewerRecommendationServiceImp
       if (partnerDomains != null) {
         HashMap<String, Integer> map = new HashMap<>();
         for (int i = 0; i < rids.size(); i++) {
+          List<String> domainIds = domains
+            .stream()
+            .map(Domain::getId)
+            .collect(Collectors.toList());
           int sumOfDomain = 0;
           List<Domain> domainsOfPartners = partnerDomains.get(i);
-          domains.retainAll(domainsOfPartners);
-          sumOfDomain = domains.size();
+          List<String> domainOfPartnersIds = domainsOfPartners
+            .stream()
+            .map(Domain::getId)
+            .collect(Collectors.toList());
+          //          System.out.println("this:"+domainIds);
+          //          System.out.println("that:"+domainOfPartnersIds);
+          domainIds.retainAll(domainOfPartnersIds);
+          sumOfDomain = domainIds.size();
           map.put(rids.get(i), sumOfDomain);
         }
-
         rids.sort((o1, o2) -> map.get(o2) - map.get(o1));
         if (rids.size() > 5) {
-          rids.subList(0, 5);
+          rids = rids.subList(0, 5);
         }
-
         for (String rid : rids) {
           for (Researcher researcher : partners) {
             if (researcher.getId().equals(rid)) {
@@ -343,21 +354,21 @@ public class TaskReviewerRecommendationServiceImp
     } catch (Exception e) {
       e.printStackTrace();
     }
-
     return iResearchers;
   }
 
   /**
    * 根据作者id获得合作作者
-   * @param rid 作者id
+   * @param rids 作者id列表
    * @return 合作作者列表
    */
-  private List<Researcher> getPartnersByRid(String rid) {
+  private List<Researcher> getPartnersByRid(List<String> rids) {
     List<Researcher> researchers = new ArrayList<>();
     try {
       researchers =
-        (List<Researcher>) restTemplate.getForObject(
-          taskPartnerShipServiceAddress + "/getPartnersByRids/" + rid,
+        (List<Researcher>) restTemplate.postForObject(
+          taskPartnerShipServiceAddress + "/getPartnersByRids/",
+          rids,
           List.class
         );
     } catch (Exception e) {
