@@ -278,10 +278,14 @@ public class TaskReviewerRecommendationServiceImp
     Paper paper = getPaperById(id);
     if (paper != null) {
       List<Researcher> researchersOfPaper = paper.getResearchers();
-      List<String> rids = researchersOfPaper
-        .stream()
-        .map(Researcher::getId)
-        .collect(Collectors.toList());
+      List<String> rids = new ArrayList<>();
+      if (researchersOfPaper != null) {
+        rids =
+          researchersOfPaper
+            .stream()
+            .map(Researcher::getId)
+            .collect(Collectors.toList());
+      }
 
       //第一步，根据id获得与论文作者合作过的作者列表
       partners.addAll(getPartnersByRid(rids));
