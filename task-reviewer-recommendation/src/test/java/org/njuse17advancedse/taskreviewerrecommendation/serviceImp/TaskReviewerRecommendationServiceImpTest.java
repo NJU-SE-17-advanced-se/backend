@@ -53,10 +53,6 @@ class TaskReviewerRecommendationServiceImpTest {
 
     testPaper.setReferences(references);
 
-    Mockito
-      .when(restTemplate.getForObject("/paper/getNewPaper/test", Paper.class))
-      .thenReturn(testPaper);
-
     List<String> rids1 = Lists.newArrayList(
       "0",
       "4",
@@ -106,7 +102,9 @@ class TaskReviewerRecommendationServiceImpTest {
       iResearchers.add(iResearcher);
     }
     assertEquals(
-      taskReviewerRecommendationService.getRecommendReviewer("test").getBody(),
+      taskReviewerRecommendationService
+        .getRecommendReviewer(testPaper)
+        .getBody(),
       iResearchers
     );
   }
@@ -131,10 +129,6 @@ class TaskReviewerRecommendationServiceImpTest {
       testDomains.add(domain);
     }
     testPaper.setDomains(testDomains);
-
-    Mockito
-      .when(restTemplate.getForObject("/paper/getNewPaper/test", Paper.class))
-      .thenReturn(testPaper);
 
     List<String> rids = Lists.newArrayList("0", "1", "2");
     List<Researcher> partners = new ArrayList<>();
@@ -180,7 +174,7 @@ class TaskReviewerRecommendationServiceImpTest {
     }
     assertEquals(
       taskReviewerRecommendationService
-        .getNotRecommendReviewer("test")
+        .getNotRecommendReviewer(testPaper)
         .getBody(),
       iResearchers
     );

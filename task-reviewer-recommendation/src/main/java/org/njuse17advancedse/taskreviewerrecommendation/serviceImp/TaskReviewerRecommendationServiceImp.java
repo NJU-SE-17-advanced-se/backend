@@ -33,11 +33,9 @@ public class TaskReviewerRecommendationServiceImp
   }
 
   @Override
-  public ResponseEntity<List<IResearcher>> getRecommendReviewer(String id) {
+  public ResponseEntity<List<IResearcher>> getRecommendReviewer(Paper paper) {
     List<IResearcher> iResearchers = new ArrayList<>();
 
-    //通过论文实体服务获得解析完成的论文实体
-    Paper paper = getPaperById(id);
     if (paper != null) {
       /* 第一步，获得引用文献的作者 */
       List<Paper> references = paper.getReferences(); //默认获得的引用文献中所有的作者实体均已处理完成
@@ -47,11 +45,11 @@ public class TaskReviewerRecommendationServiceImp
 
       /* 第二步，获得最近在投稿刊物发表过文章（不在引文中）的作者 */
       String paperJournal = paper.getJournal();
-      //getReviewerFromSameJournal(paperJournal, paper.getDate(), researchers);
+      getReviewerFromSameJournal(paperJournal, paper.getDate(), researchers);
 
       /* 第三步， 获得论文发表期间相同领域论文(不在引文和本刊物中)的作者列表*/
       List<Domain> paperDomains = paper.getDomains();
-      //getReviewerFormSimilarDomain(paperDomains, researchers);
+      getReviewerFormSimilarDomain(paperDomains, researchers);
 
       /* 第四步，获得这些作者的研究领域并与论文研究领域进行比照，删去无重叠领域的作者 */
       researchers = deduplicateAndSort(researchers); //去重并排序
@@ -62,25 +60,6 @@ public class TaskReviewerRecommendationServiceImp
       iResearchers = sortResearchersByImpact(researchers);
     }
     return new ResponseEntity<>(iResearchers, HttpStatus.OK);
-  }
-
-  /**
-   * 根据id获取论文实体
-   * @param id 论文id
-   * @return 论文实体paper
-   */
-  private Paper getPaperById(String id) {
-    Paper paper = new Paper();
-    try {
-      paper =
-        restTemplate.getForObject(
-          paperServiceAddress + "/paper/getNewPaper/" + id,
-          Paper.class
-        );
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return paper;
   }
 
   /**
@@ -150,12 +129,12 @@ public class TaskReviewerRecommendationServiceImp
 
   /**
    * 获得在投稿刊物发表过相似领域文章（不在引文中）的作者
-   * @param paperJournal 刊物
+   * @param paperJournalId 刊物
    * @param date 论文发表时间
    * @param researchers 作者列表
    */
   private void getReviewerFromSameJournal(
-    String paperJournal,
+    String paperJournalId,
     String date,
     List<Researcher> researchers
   ) {
@@ -163,7 +142,7 @@ public class TaskReviewerRecommendationServiceImp
       List<Paper> sameJournalPapers = (List<Paper>) restTemplate.getForObject(
         paperServiceAddress +
         "/paper/getPapersByJournal/" +
-        paperJournal +
+        paperJournalId +
         "/" +
         date,
         List.class
@@ -270,12 +249,12 @@ public class TaskReviewerRecommendationServiceImp
   }
 
   @Override
-  public ResponseEntity<List<IResearcher>> getNotRecommendReviewer(String id) {
+  public ResponseEntity<List<IResearcher>> getNotRecommendReviewer(
+    Paper paper
+  ) {
     List<IResearcher> iResearchers = new ArrayList<>();
     List<Researcher> partners = new ArrayList<>(); //合作作者列表
 
-    //根据id获得论文实体
-    Paper paper = getPaperById(id);
     if (paper != null) {
       List<Researcher> researchersOfPaper = paper.getResearchers();
       List<String> rids = new ArrayList<>();
@@ -330,7 +309,7 @@ public class TaskReviewerRecommendationServiceImp
             .stream()
             .map(Domain::getId)
             .collect(Collectors.toList());
-          int sumOfDomain = 0;
+          int sumOfDomain;
           List<Domain> domainsOfPartners = partnerDomains.get(i);
           List<String> domainOfPartnersIds = domainsOfPartners
             .stream()
