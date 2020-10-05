@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.ArrayList;
 import java.util.List;
+import org.njuse17advancedse.apigateway.apps.service.PaperService;
 import org.njuse17advancedse.apigateway.interfaces.dto.paper.IImpact;
 import org.njuse17advancedse.apigateway.interfaces.dto.paper.IPaper;
 import org.njuse17advancedse.apigateway.interfaces.dto.paper.IResearcher;
@@ -13,16 +14,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = { "论文" })
-@RestController
 @RequestMapping("/paper")
+@RestController
 public class PaperController {
+  private final PaperService paperService;
 
   @ApiOperation(
     value = "接口 2.1：查看某论文引用情况",
     notes = "需求 7.1：论文引用其它论文"
   )
   @GetMapping("/{id}/references")
-  public @ResponseBody List<IPaper> getReferences(
+  public List<IPaper> getReferences(
     @ApiParam(value = "论文id") @PathVariable String id
   ) {
     List<IPaper> res = new ArrayList<>();
@@ -56,7 +58,7 @@ public class PaperController {
     notes = "需求 7.1：论文被其它论文引用情况"
   )
   @GetMapping("/{id}/citations")
-  public @ResponseBody List<IPaper> getCitations(
+  public List<IPaper> getCitations(
     @ApiParam(value = "学者id") @PathVariable String id
   ) {
     List<IPaper> res = new ArrayList<>();
@@ -90,7 +92,7 @@ public class PaperController {
     notes = "需求 6.1：提交审稿时，能够自动推荐相关审稿人"
   )
   @GetMapping("/{id}/recommendation/reviewers")
-  public @ResponseBody List<IResearcher> getRecommendedReviewers(
+  public List<IResearcher> getRecommendedReviewers(
     @ApiParam(value = "论文id") @PathVariable String id
   ) {
     List<IResearcher> res = new ArrayList<>();
@@ -108,7 +110,7 @@ public class PaperController {
     notes = "需求 6.2：提交审稿时，能够自动屏蔽相关审稿人"
   )
   @GetMapping("/{id}/non-recommendation/reviewers")
-  public @ResponseBody List<IResearcher> getNotRecommendedReviewers(
+  public List<IResearcher> getNotRecommendedReviewers(
     @ApiParam(value = "论文id") @PathVariable String id
   ) {
     List<IResearcher> res = new ArrayList<>();
@@ -126,10 +128,11 @@ public class PaperController {
     notes = "需求 7.3：评价研究影响力"
   )
   @GetMapping("/{id}/impact")
-  public @ResponseBody IImpact getImpact(
-    @ApiParam(value = "论文id") @PathVariable String id
-  ) {
-    return new IImpact(7.777, "H-index");
+  public IImpact getImpact(@ApiParam(value = "论文id") @PathVariable String id)
+    throws Exception {
+    String criteria = "custom";
+    double impact = this.paperService.getImpact(id, criteria);
+    return new IImpact(impact, criteria);
   }
 
   @ApiOperation(value = "上传新论文")
@@ -137,5 +140,9 @@ public class PaperController {
   @ResponseStatus(HttpStatus.CREATED)
   public void savePaper(@RequestBody IPaperUpload paper) {
     System.out.println(paper);
+  }
+
+  public PaperController(PaperService paperService) {
+    this.paperService = paperService;
   }
 }
