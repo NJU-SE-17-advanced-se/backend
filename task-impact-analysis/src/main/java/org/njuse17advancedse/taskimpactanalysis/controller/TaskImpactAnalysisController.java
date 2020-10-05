@@ -10,14 +10,16 @@ public class TaskImpactAnalysisController {
   @Autowired
   TaskImpactAnalysisService service;
 
-  @GetMapping(value = "/hindex/{scholarId}")
-  public int getHIndex(@PathVariable String scholarId) {
-    return service.getHIndex(scholarId);
-  }
-
-  @GetMapping(value = "/paper/{paperId}")
-  public double getPaperImpact(@PathVariable String paperId) {
-    return service.getPaperImpact(paperId);
+  /**
+   * type= "hindex" -> 计算H指数 type="paper" ->计算论文影响力
+   *
+   *
+   *
+   * */
+  @GetMapping(value = "/{type}/{id}")
+  public double getHIndex(@PathVariable String type, @PathVariable String id) {
+    if (type.equals("hindex")) return (double) service.getHIndex(id);
+    if (type.equals("paper")) return service.getPaperImpact(id); else return -1;
   }
   //  @GetMapping(value = "")
   //  public int test() {
