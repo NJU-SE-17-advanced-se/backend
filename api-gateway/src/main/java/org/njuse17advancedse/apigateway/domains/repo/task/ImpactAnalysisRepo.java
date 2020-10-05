@@ -1,4 +1,4 @@
-package org.njuse17advancedse.apigateway.domains.repo;
+package org.njuse17advancedse.apigateway.domains.repo.task;
 
 import org.njuse17advancedse.apigateway.infra.exception.TestException;
 import org.springframework.http.HttpStatus;
