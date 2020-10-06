@@ -3,9 +3,9 @@ package org.njuse17advancedse.taskreviewerrecommendation.serviceImp;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.IImpact;
+import org.njuse17advancedse.taskreviewerrecommendation.dto.IPaperUpload;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.IResearcher;
 import org.njuse17advancedse.taskreviewerrecommendation.entity.Domain;
-import org.njuse17advancedse.taskreviewerrecommendation.entity.Paper;
 import org.njuse17advancedse.taskreviewerrecommendation.entity.Researcher;
 import org.njuse17advancedse.taskreviewerrecommendation.service.TaskReviewerRecommendationService;
 import org.springframework.http.HttpStatus;
@@ -33,65 +33,63 @@ public class TaskReviewerRecommendationServiceImp
   }
 
   @Override
-  public ResponseEntity<List<IResearcher>> getRecommendReviewer(Paper paper) {
+  public ResponseEntity<List<IResearcher>> getRecommendReviewer(
+    IPaperUpload iPaperUpload
+  ) {
     List<IResearcher> iResearchers = new ArrayList<>();
 
-    if (paper != null) {
+    if (iPaperUpload != null) {
       /* 第一步，获得引用文献的作者 */
-      List<Paper> references = paper.getReferences(); //默认获得的引用文献中所有的作者实体均已处理完成
-      List<Researcher> researchers = new ArrayList<>(); // 作者id列表
+      List<String> references = iPaperUpload.getReferenceIds(); //默认获得的引用文献中所有的作者实体均已处理完成
 
-      addRid(researchers, references);
+      List<String> researcherIds = new ArrayList<>();
+
+      List<String> referenceResearcherIds = getResearcherIdsByPaperIds(
+        references
+      );
+
+      if (referenceResearcherIds != null) {
+        researcherIds = new ArrayList<>(referenceResearcherIds);
+      }
+      // 作者id列表
 
       /* 第二步，获得最近在投稿刊物发表过文章（不在引文中）的作者 */
-      String paperJournal = paper.getJournal();
-      getReviewerFromSameJournal(paperJournal, paper.getDate(), researchers);
+      String paperJournal = iPaperUpload.getJournal();
+      //getReviewerFromSameJournal(paperJournal, iPaperUpload.getDate(), researcherIds);
 
       /* 第三步， 获得论文发表期间相同领域论文(不在引文和本刊物中)的作者列表*/
-      List<Domain> paperDomains = paper.getDomains();
-      getReviewerFormSimilarDomain(paperDomains, researchers);
+      List<String> paperDomainIds = iPaperUpload.getDomainIds();
+      //getReviewerFormSimilarDomain(paperDomainIds, researcherIds);
 
       /* 第四步，获得这些作者的研究领域并与论文研究领域进行比照，删去无重叠领域的作者 */
-      researchers = deduplicateAndSort(researchers); //去重并排序
+      researcherIds = deduplicateAndSort(researcherIds); //去重并排序
 
-      removeNoSameDomains(researchers, paperDomains);
+      removeNoSameDomains(researcherIds, paperDomainIds);
 
       /* 第五步，将剩余作者按照影响力进行排序，取前5个作为推荐审稿人候选 */
-      iResearchers = sortResearchersByImpact(researchers);
+      researcherIds = sortResearchersByImpact(researcherIds);
+
+      iResearchers = getResearcherByIds(researcherIds);
     }
     return new ResponseEntity<>(iResearchers, HttpStatus.OK);
   }
 
   /**
-   * 作者按照影响力进行排序
-   * @param researchers 作者列表
-   * @return 结果列表
+   * 根据作者id列表获得作者实体列表
+   * @param researcherIds 作者id列表
+   * @return 作者实体列表
    */
-  private List<IResearcher> sortResearchersByImpact(
-    List<Researcher> researchers
-  ) {
+  private List<IResearcher> getResearcherByIds(List<String> researcherIds) {
+    List<Researcher> researchers;
     List<IResearcher> iResearchers = new ArrayList<>();
-    List<String> rids = new ArrayList<>();
-    for (Researcher researcher : researchers) {
-      rids.add(researcher.getId());
-    }
     try {
-      List<IImpact> impacts = (List<IImpact>) restTemplate.postForObject(
-        taskImpactAnalysisServiceAddress + "/impact/researchers",
-        rids,
-        List.class
-      );
-      if (impacts != null) {
-        HashMap<String, Double> map = new HashMap<>();
-        for (int i = 0; i < researchers.size(); i++) {
-          map.put(researchers.get(i).getId(), impacts.get(i).getImpact());
-        }
-        researchers.sort(
-          (o1, o2) -> (int) (map.get(o2.getId()) - map.get(o1.getId()))
+      researchers =
+        (List<Researcher>) restTemplate.postForObject(
+          researcherServiceAddress + "/getResearchers",
+          researcherIds,
+          List.class
         );
-        if (researchers.size() > 5) {
-          researchers = researchers.subList(0, 5);
-        }
+      if (researchers != null) {
         for (Researcher researcher : researchers) {
           iResearchers.add(new IResearcher(researcher));
         }
@@ -103,25 +101,70 @@ public class TaskReviewerRecommendationServiceImp
   }
 
   /**
+   * 根据引用论文id获得作者id
+   * @param references 引用论文id列表
+   * @return 作者id列表
+   */
+  private List<String> getResearcherIdsByPaperIds(List<String> references) {
+    List<String> researcherIds = new ArrayList<>();
+    try {
+      researcherIds =
+        (List<String>) restTemplate.postForObject(
+          paperServiceAddress + "/getResearchersByPaperIds",
+          references,
+          List.class
+        );
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return researcherIds;
+  }
+
+  /**
+   * 作者按照影响力进行排序
+   * @param researcherIds 作者列表
+   */
+  private List<String> sortResearchersByImpact(List<String> researcherIds) {
+    try {
+      List<IImpact> impacts = (List<IImpact>) restTemplate.postForObject(
+        taskImpactAnalysisServiceAddress + "/impact/researchers",
+        researcherIds,
+        List.class
+      );
+      if (impacts != null) {
+        HashMap<String, Double> map = new HashMap<>();
+        for (int i = 0; i < researcherIds.size(); i++) {
+          map.put(researcherIds.get(i), impacts.get(i).getImpact());
+        }
+        researcherIds.sort((o1, o2) -> (int) (map.get(o2) - map.get(o1)));
+        if (researcherIds.size() > 5) {
+          researcherIds = researcherIds.subList(0, 5);
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return researcherIds;
+  }
+
+  /**
    * 获得论文发表期间相同领域论文(不在引文和本刊物中)的作者列表
-   * @param paperDomains 论文领域
-   * @param researchers 作者列表
+   * @param domainIds 论文领域
+   * @param researcherIds 作者列表
    */
   private void getReviewerFormSimilarDomain(
-    List<Domain> paperDomains,
-    List<Researcher> researchers
+    List<String> domainIds,
+    List<String> researcherIds
   ) {
-    List<String> domainIds = new ArrayList<>();
-    for (Domain domain : paperDomains) {
-      domainIds.add(domain.getId());
-    }
     try {
-      List<Paper> similarDomainPapers = (List<Paper>) restTemplate.postForObject(
+      List<String> researcherOfSimilarDomainPapers = (List<String>) restTemplate.postForObject(
         paperServiceAddress + "/paper/getPapersByDomain",
         domainIds,
         List.class
       );
-      addRid(researchers, similarDomainPapers);
+      if (researcherOfSimilarDomainPapers != null) {
+        researcherIds.addAll(researcherOfSimilarDomainPapers);
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -131,15 +174,15 @@ public class TaskReviewerRecommendationServiceImp
    * 获得在投稿刊物发表过相似领域文章（不在引文中）的作者
    * @param paperJournalId 刊物
    * @param date 论文发表时间
-   * @param researchers 作者列表
+   * @param researcherIds 作者id列表
    */
   private void getReviewerFromSameJournal(
     String paperJournalId,
     String date,
-    List<Researcher> researchers
+    List<String> researcherIds
   ) {
     try {
-      List<Paper> sameJournalPapers = (List<Paper>) restTemplate.getForObject(
+      List<String> researchersOfSameJournalPapers = (List<String>) restTemplate.getForObject(
         paperServiceAddress +
         "/paper/getPapersByJournal/" +
         paperJournalId +
@@ -147,49 +190,35 @@ public class TaskReviewerRecommendationServiceImp
         date,
         List.class
       );
-      addRid(researchers, sameJournalPapers);
+      if (researchersOfSameJournalPapers != null) {
+        researcherIds.addAll(researchersOfSameJournalPapers);
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
   /**
-   * 添加作者id
-   * @param researchers 作者id列表
-   * @param paperList 论文列表
-   */
-  private void addRid(List<Researcher> researchers, List<Paper> paperList) {
-    if (paperList != null) {
-      for (Paper p : paperList) {
-        researchers.addAll(p.getResearchers());
-      }
-    }
-  }
-
-  /**
    * 作者去重按照出现次数降序排列
-   * @param researchers 作者id列表
+   * @param researcherIds 作者id列表
    */
-  private List<Researcher> deduplicateAndSort(List<Researcher> researchers) {
+  private List<String> deduplicateAndSort(List<String> researcherIds) {
     Map<String, Integer> map = new HashMap<>();
-    List<String> rids = new ArrayList<>();
-    for (Researcher researcher : researchers) {
-      rids.add(researcher.getId());
-    }
-    for (String rid : rids) {
+
+    for (String rid : researcherIds) {
       Integer count = map.get(rid);
       map.put(rid, (count == null) ? 1 : count + 1);
     }
 
-    HashSet<String> set = new HashSet<>(rids);
-    rids.clear();
-    rids.addAll(set);
-    rids.sort((o1, o2) -> map.get(o2) - map.get(o1)); //去重完成并按照出现次数降序排列
+    HashSet<String> set = new HashSet<>(researcherIds);
+    researcherIds.clear();
+    researcherIds.addAll(set);
+    researcherIds.sort((o1, o2) -> map.get(o2) - map.get(o1)); //去重完成并按照出现次数降序排列
 
-    List<Researcher> researcherList = new ArrayList<>();
-    for (String rid : rids) {
-      for (Researcher researcher : researchers) {
-        if (researcher.getId().equals(rid)) {
+    List<String> researcherList = new ArrayList<>();
+    for (String rid : researcherIds) {
+      for (String researcher : researcherIds) {
+        if (researcher.equals(rid)) {
           researcherList.add(researcher);
           break;
         }
@@ -200,33 +229,24 @@ public class TaskReviewerRecommendationServiceImp
 
   /**
    * 去除无重叠领域的作者
-   * @param researchers 作者id列表
-   * @param paperDomains 论文领域
+   * @param researcherIds 作者id列表
+   * @param paperDomainIds 论文领域
    **/
   private void removeNoSameDomains(
-    List<Researcher> researchers,
-    List<Domain> paperDomains
+    List<String> researcherIds,
+    List<String> paperDomainIds
   ) {
     try {
-      List<String> rids = new ArrayList<>();
-      for (Researcher researcher : researchers) {
-        rids.add(researcher.getId());
-      }
       List<List<Domain>> reviewersDomains = (List<List<Domain>>) restTemplate.postForObject(
         researcherServiceAddress + "/researcher/getDomains",
-        rids,
+        researcherIds,
         List.class
       );
 
       if (reviewersDomains != null) {
-        List<String> paperDomainIds = new ArrayList<>();
-        for (Domain domain : paperDomains) {
-          paperDomainIds.add(domain.getId());
-        }
-
         HashMap<String, List<Domain>> map = new HashMap<>();
-        for (int i = 0; i < researchers.size(); i++) {
-          map.put(researchers.get(i).getId(), reviewersDomains.get(i));
+        for (int i = 0; i < researcherIds.size(); i++) {
+          map.put(researcherIds.get(i), reviewersDomains.get(i));
         }
         for (String rid : map.keySet()) {
           List<Domain> domains = map.get(rid);
@@ -239,7 +259,7 @@ public class TaskReviewerRecommendationServiceImp
             domainIds
           );
           if (hasNoSameDomain) {
-            researchers.removeIf(s -> s.getId().equals(rid));
+            researcherIds.removeIf(s -> s.equals(rid));
           }
         }
       }
@@ -250,27 +270,20 @@ public class TaskReviewerRecommendationServiceImp
 
   @Override
   public ResponseEntity<List<IResearcher>> getNotRecommendReviewer(
-    Paper paper
+    IPaperUpload iPaperUpload
   ) {
     List<IResearcher> iResearchers = new ArrayList<>();
     List<Researcher> partners = new ArrayList<>(); //合作作者列表
 
-    if (paper != null) {
-      List<Researcher> researchersOfPaper = paper.getResearchers();
-      List<String> rids = new ArrayList<>();
-      if (researchersOfPaper != null) {
-        rids =
-          researchersOfPaper
-            .stream()
-            .map(Researcher::getId)
-            .collect(Collectors.toList());
-      }
+    if (iPaperUpload != null) {
+      List<String> researcherIdsOfPaper = iPaperUpload.getResearcherIds();
 
       //第一步，根据id获得与论文作者合作过的作者列表
-      partners.addAll(getPartnersByRid(rids));
+      partners.addAll(getPartnersByRid(researcherIdsOfPaper));
 
       //第二步，获得合作者的研究领域并按照相关程度排序，取前五名作者
-      iResearchers = sortPartnersByDomains(partners, paper.getDomains());
+      iResearchers =
+        sortPartnersByDomains(partners, iPaperUpload.getDomainIds());
     }
     return new ResponseEntity<>(iResearchers, HttpStatus.OK);
   }
@@ -278,12 +291,12 @@ public class TaskReviewerRecommendationServiceImp
   /**
    * 获得合作者的研究领域并按照相关程度排序，取前五名作者
    * @param partners 合作者列表
-   * @param domains 投稿文章领域
+   * @param domainIds 投稿文章领域
    * @return 结果列表
    */
   private List<IResearcher> sortPartnersByDomains(
     List<Researcher> partners,
-    List<Domain> domains
+    List<String> domainIds
   ) {
     List<IResearcher> iResearchers = new ArrayList<>();
 
@@ -305,20 +318,17 @@ public class TaskReviewerRecommendationServiceImp
       if (partnerDomains != null) {
         HashMap<String, Integer> map = new HashMap<>();
         for (int i = 0; i < rids.size(); i++) {
-          List<String> domainIds = domains
-            .stream()
-            .map(Domain::getId)
-            .collect(Collectors.toList());
+          List<String> tempDomainIds = new ArrayList<>(domainIds);
           int sumOfDomain;
           List<Domain> domainsOfPartners = partnerDomains.get(i);
           List<String> domainOfPartnersIds = domainsOfPartners
             .stream()
             .map(Domain::getId)
             .collect(Collectors.toList());
-          //          System.out.println("this:"+domainIds);
-          //          System.out.println("that:"+domainOfPartnersIds);
-          domainIds.retainAll(domainOfPartnersIds);
-          sumOfDomain = domainIds.size();
+          System.out.println("this:" + tempDomainIds);
+          System.out.println("that:" + domainOfPartnersIds);
+          tempDomainIds.retainAll(domainOfPartnersIds);
+          sumOfDomain = tempDomainIds.size();
           map.put(rids.get(i), sumOfDomain);
         }
         rids.sort((o1, o2) -> map.get(o2) - map.get(o1));

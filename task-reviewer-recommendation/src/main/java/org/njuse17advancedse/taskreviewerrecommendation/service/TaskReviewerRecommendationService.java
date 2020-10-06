@@ -1,8 +1,8 @@
 package org.njuse17advancedse.taskreviewerrecommendation.service;
 
 import java.util.List;
+import org.njuse17advancedse.taskreviewerrecommendation.dto.IPaperUpload;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.IResearcher;
-import org.njuse17advancedse.taskreviewerrecommendation.entity.Paper;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -12,15 +12,19 @@ import org.springframework.http.ResponseEntity;
 public interface TaskReviewerRecommendationService {
   /**
    * 获得推荐审稿人
-   * @param paper 论文实体
+   * @param iPaperUpload 上传论文实体
    * @return ResponseEntity
    */
-  ResponseEntity<List<IResearcher>> getRecommendReviewer(Paper paper);
+  ResponseEntity<List<IResearcher>> getRecommendReviewer(
+    IPaperUpload iPaperUpload
+  );
 
   /**
    * 获得不推荐审稿人
-   * @param paper 论文实体
+   * @param iPaperUpload 上传论文实体
    * @return ResponseEntity
    */
-  ResponseEntity<List<IResearcher>> getNotRecommendReviewer(Paper paper);
+  ResponseEntity<List<IResearcher>> getNotRecommendReviewer(
+    IPaperUpload iPaperUpload
+  );
 }
