@@ -1,4 +1,4 @@
-package org.njuse17advancedse.apigateway.domains.entity;
+package org.njuse17advancedse.apigateway.infra.entity;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Journal {
+public class Domain {
   private String id;
 
   private String name;
+
+  private List<Researcher> researchers;
 
   private List<Paper> papers;
 }

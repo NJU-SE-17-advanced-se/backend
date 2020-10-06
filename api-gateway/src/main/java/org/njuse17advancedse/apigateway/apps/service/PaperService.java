@@ -2,10 +2,10 @@ package org.njuse17advancedse.apigateway.apps.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.njuse17advancedse.apigateway.domains.entity.Paper;
 import org.njuse17advancedse.apigateway.domains.repo.entity.PaperRepo;
 import org.njuse17advancedse.apigateway.domains.repo.task.CitationAnalysisRepo;
 import org.njuse17advancedse.apigateway.domains.repo.task.ImpactAnalysisRepo;
+import org.njuse17advancedse.apigateway.infra.entity.Paper;
 import org.njuse17advancedse.apigateway.interfaces.dto.paper.IPaper;
 import org.njuse17advancedse.apigateway.interfaces.dto.paper.IResearcher;
 import org.springframework.stereotype.Service;

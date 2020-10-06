@@ -4,8 +4,8 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.njuse17advancedse.apigateway.domains.entity.Paper;
-import org.njuse17advancedse.apigateway.domains.entity.Researcher;
+import org.njuse17advancedse.apigateway.infra.entity.Paper;
+import org.njuse17advancedse.apigateway.infra.entity.Researcher;
 
 @Data
 @AllArgsConstructor
