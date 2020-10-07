@@ -1,14 +1,11 @@
 package org.njuse17advancedse.taskreviewerrecommendation.controller;
 
 import java.util.List;
+import org.njuse17advancedse.taskreviewerrecommendation.dto.IPaperUpload;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.IResearcher;
 import org.njuse17advancedse.taskreviewerrecommendation.service.TaskReviewerRecommendationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "paper")
@@ -21,17 +18,17 @@ public class TaskReviewerRecommendationController {
     this.recommendationService = recommendationService;
   }
 
-  @RequestMapping(value = "/{id}/recommend", method = RequestMethod.GET)
+  @RequestMapping(value = "/recommend", method = RequestMethod.POST)
   private ResponseEntity<List<IResearcher>> getRecommendReviewer(
-    @PathVariable String id
+    @RequestBody IPaperUpload iPaperUpload
   ) {
-    return recommendationService.getRecommendReviewer(id);
+    return recommendationService.getRecommendReviewer(iPaperUpload);
   }
 
-  @RequestMapping(value = "/{id}/not-recommend", method = RequestMethod.GET)
+  @RequestMapping(value = "/not-recommend", method = RequestMethod.POST)
   private ResponseEntity<List<IResearcher>> getNotRecommendReviewer(
-    @PathVariable String id
+    @RequestBody IPaperUpload iPaperUpload
   ) {
-    return recommendationService.getNotRecommendReviewer(id);
+    return recommendationService.getNotRecommendReviewer(iPaperUpload);
   }
 }
