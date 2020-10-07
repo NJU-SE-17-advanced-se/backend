@@ -1,6 +1,6 @@
 package org.njuse17advancedse.apigateway.apps.service;
 
-import org.njuse17advancedse.apigateway.domains.repo.ImpactAnalysisRepo;
+import org.njuse17advancedse.apigateway.domains.repo.task.ImpactAnalysisRepo;
 import org.springframework.stereotype.Service;
 
 @Service

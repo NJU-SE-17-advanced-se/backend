@@ -10,7 +10,6 @@ import org.njuse17advancedse.apigateway.interfaces.dto.paper.IImpact;
 import org.njuse17advancedse.apigateway.interfaces.dto.paper.IPaper;
 import org.njuse17advancedse.apigateway.interfaces.dto.paper.IResearcher;
 import org.njuse17advancedse.apigateway.interfaces.dto.paper.req.IPaperUpload;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = { "论文" })
@@ -26,31 +25,9 @@ public class PaperController {
   @GetMapping("/{id}/references")
   public List<IPaper> getReferences(
     @ApiParam(value = "论文id") @PathVariable String id
-  ) {
-    List<IPaper> res = new ArrayList<>();
-    res.add(
-      new IPaper(
-        "5",
-        "测试论文5",
-        "测试论文5的摘要",
-        "google.com",
-        new ArrayList<>(),
-        new ArrayList<>(),
-        new ArrayList<>()
-      )
-    );
-    res.add(
-      new IPaper(
-        "6",
-        "测试论文6",
-        "测试论文6的摘要",
-        "google.com",
-        new ArrayList<>(),
-        new ArrayList<>(),
-        new ArrayList<>()
-      )
-    );
-    return res;
+  )
+    throws Exception {
+    return paperService.getReferences(id);
   }
 
   @ApiOperation(
@@ -60,40 +37,18 @@ public class PaperController {
   @GetMapping("/{id}/citations")
   public List<IPaper> getCitations(
     @ApiParam(value = "学者id") @PathVariable String id
-  ) {
-    List<IPaper> res = new ArrayList<>();
-    res.add(
-      new IPaper(
-        "7",
-        "测试论文7",
-        "测试论文7的摘要",
-        "google.com",
-        new ArrayList<>(),
-        new ArrayList<>(),
-        new ArrayList<>()
-      )
-    );
-    res.add(
-      new IPaper(
-        "8",
-        "测试论文8",
-        "测试论文8的摘要",
-        "google.com",
-        new ArrayList<>(),
-        new ArrayList<>(),
-        new ArrayList<>()
-      )
-    );
-    return res;
+  )
+    throws Exception {
+    return paperService.getCitations(id);
   }
 
   @ApiOperation(
     value = "接口 2.3：查看某论文推荐的审稿人",
     notes = "需求 6.1：提交审稿时，能够自动推荐相关审稿人"
   )
-  @GetMapping("/{id}/recommendation/reviewers")
+  @PostMapping("/recommend-reviewers")
   public List<IResearcher> getRecommendedReviewers(
-    @ApiParam(value = "论文id") @PathVariable String id
+    @ApiParam(value = "论文内容") @RequestBody IPaperUpload paper
   ) {
     List<IResearcher> res = new ArrayList<>();
     res.add(
@@ -109,9 +64,9 @@ public class PaperController {
     value = "接口 2.4：查看某论文不推荐的审稿人",
     notes = "需求 6.2：提交审稿时，能够自动屏蔽相关审稿人"
   )
-  @GetMapping("/{id}/non-recommendation/reviewers")
+  @PostMapping("/not-recommend-reviewers")
   public List<IResearcher> getNotRecommendedReviewers(
-    @ApiParam(value = "论文id") @PathVariable String id
+    @ApiParam(value = "论文内容") @RequestBody IPaperUpload paper
   ) {
     List<IResearcher> res = new ArrayList<>();
     res.add(
@@ -133,13 +88,6 @@ public class PaperController {
     String criteria = "custom";
     double impact = this.paperService.getImpact(id, criteria);
     return new IImpact(impact, criteria);
-  }
-
-  @ApiOperation(value = "上传新论文")
-  @PostMapping("/")
-  @ResponseStatus(HttpStatus.CREATED)
-  public void savePaper(@RequestBody IPaperUpload paper) {
-    System.out.println(paper);
   }
 
   public PaperController(PaperService paperService) {
