@@ -1,7 +1,9 @@
 package org.njuse17advancedse.apigateway.domains.repo.task;
 
-import org.njuse17advancedse.apigateway.domains.po.task.reviewer.IResearcher;
+import java.util.List;
+import org.njuse17advancedse.apigateway.domains.po.task.reviewer.PResearcher;
 import org.njuse17advancedse.apigateway.infra.exception.TestException;
+import org.njuse17advancedse.apigateway.interfaces.dto.paper.req.IPaperUpload;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
@@ -11,38 +13,33 @@ import org.springframework.web.client.RestTemplate;
 public class ReviewerRecommendationRepo {
   private static final String serverLocation = "http://106.15.248.145:8080";
 
-  private RestTemplate restTemplate;
+  private final RestTemplate restTemplate;
 
   // 查看某论文推荐的审稿人
-  public IResearcher getPaperRecommendedReviewers(String id) throws Exception {
-    String url = serverLocation + "/paper/" + id + "/recommend";
-    ResponseEntity<IResearcher> res = restTemplate.getForEntity(
-      url,
-      IResearcher.class
-    );
-    HttpStatus status = res.getStatusCode();
-    if (status.is2xxSuccessful() && res.getBody() != null) {
-      return res.getBody();
-    } else {
-      throw new TestException();
-    }
+  public List<PResearcher> getPaperRecommendedReviewers(IPaperUpload paper)
+    throws Exception {
+    String url = serverLocation + "/paper/recommend";
+    return getPaperReviewers(url, paper);
   }
 
   // 查看某论文不推荐的审稿人
-  public IResearcher getPaperNotRecommendedReviewers(
-    String id,
-    String criteria
-  )
+  public List<PResearcher> getPaperNotRecommendedReviewers(IPaperUpload paper)
     throws Exception {
-    String url = serverLocation + "/paper/" + id + "/not-recommend";
-    // 进行请求
-    ResponseEntity<IResearcher> res = restTemplate.getForEntity(
+    String url = serverLocation + "/paper/not-recommend";
+    return getPaperReviewers(url, paper);
+  }
+
+  // 请求
+  private List<PResearcher> getPaperReviewers(String url, IPaperUpload paper)
+    throws TestException {
+    ResponseEntity<List> res = restTemplate.postForEntity(
       url,
-      IResearcher.class
+      paper,
+      List.class
     );
     HttpStatus status = res.getStatusCode();
     if (status.is2xxSuccessful() && res.getBody() != null) {
-      return res.getBody();
+      return (List<PResearcher>) res.getBody();
     } else {
       throw new TestException();
     }

@@ -15,7 +15,7 @@ public class IResearcher {
 
   private String name;
 
-  private List<Affiliation> affiliation; // 可能同时身在多个机构
+  private List<Affiliation> affiliations; // 可能同时身在多个机构
 
   private List<Paper> papers;
 }

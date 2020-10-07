@@ -18,19 +18,30 @@ public class CitationAnalysisRepo {
   public Map<Long, List<Long>> getResearcherReferences(String id)
     throws Exception {
     String url = serverLocation + "/citation/researcher/quoting/" + id;
-    ResponseEntity<Map> res = restTemplate.getForEntity(url, Map.class);
-    HttpStatus status = res.getStatusCode();
-    if (status.is2xxSuccessful() && res.getBody() != null) {
-      return (Map<Long, List<Long>>) res.getBody();
-    } else {
-      throw new TestException();
-    }
+    return getReferences(url);
   }
 
   // 查看某学者的论文引用情况
   public Map<Long, List<Long>> getResearcherCitations(String id)
     throws Exception {
     String url = serverLocation + "/citation/researcher/quoted/" + id;
+    return getReferences(url);
+  }
+
+  // 查看某论文引用情况
+  public List<Long> getPaperReferences(String id) throws Exception {
+    String url = serverLocation + "/citation/paper/quoting/" + id;
+    return getCitations(url);
+  }
+
+  // 查看某论文被引情况
+  public List<Long> getPaperCitations(String id) throws Exception {
+    String url = serverLocation + "/citation/paper/quoted/" + id;
+    return getCitations(url);
+  }
+
+  // 请求
+  private Map<Long, List<Long>> getReferences(String url) throws Exception {
     ResponseEntity<Map> res = restTemplate.getForEntity(url, Map.class);
     HttpStatus status = res.getStatusCode();
     if (status.is2xxSuccessful() && res.getBody() != null) {
@@ -40,21 +51,8 @@ public class CitationAnalysisRepo {
     }
   }
 
-  // 查看某论文引用情况
-  public List<Long> getPaperReferences(String id) throws Exception {
-    String url = serverLocation + "/citation/paper/quoting/" + id;
-    ResponseEntity<List> res = restTemplate.getForEntity(url, List.class);
-    HttpStatus status = res.getStatusCode();
-    if (status.is2xxSuccessful() && res.getBody() != null) {
-      return (List<Long>) res.getBody();
-    } else {
-      throw new TestException();
-    }
-  }
-
-  // 查看某论文被引情况
-  public List<Long> getPaperCitations(String id) throws Exception {
-    String url = serverLocation + "/citation/paper/quoted/" + id;
+  // 请求
+  private List<Long> getCitations(String url) throws Exception {
     ResponseEntity<List> res = restTemplate.getForEntity(url, List.class);
     HttpStatus status = res.getStatusCode();
     if (status.is2xxSuccessful() && res.getBody() != null) {

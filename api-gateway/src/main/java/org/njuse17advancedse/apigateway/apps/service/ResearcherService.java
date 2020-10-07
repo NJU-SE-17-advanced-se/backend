@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 public class ResearcherService {
   private ImpactAnalysisRepo impactAnalysisRepo;
 
-  public double getImpact(String id, String criteria) throws Exception {
-    return impactAnalysisRepo.getResearcherImpact(id, criteria);
+  public double getImpact(String id) throws Exception {
+    return impactAnalysisRepo.getResearcherImpact(id);
   }
 
   public ResearcherService(ImpactAnalysisRepo impactAnalysisRepo) {

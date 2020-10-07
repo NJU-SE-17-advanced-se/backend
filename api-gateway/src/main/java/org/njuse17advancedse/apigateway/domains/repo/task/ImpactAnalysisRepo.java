@@ -15,26 +15,17 @@ public class ImpactAnalysisRepo {
   // 查看某论文的影响力
   public double getPaperImpact(String id) throws Exception {
     String url = serverLocation + "/impact/paper/" + id;
-    ResponseEntity<Double> res = restTemplate.getForEntity(url, Double.class);
-    HttpStatus status = res.getStatusCode();
-    if (status.is2xxSuccessful() && res.getBody() != null) {
-      return res.getBody();
-    } else {
-      throw new TestException();
-    }
+    return getImpact(url);
   }
 
   // 查看某学者的影响力
-  public double getResearcherImpact(String id, String criteria)
-    throws Exception {
-    String url = serverLocation + "/impact";
-    // H-index
-    if (criteria.equals("H-index")) {
-      url += "/hindex";
-    }
-    // 其他
-    url += "/" + id;
-    // 进行请求
+  public double getResearcherImpact(String id) throws Exception {
+    String url = serverLocation + "/impact/researcher" + id;
+    return getImpact(url);
+  }
+
+  // 请求
+  private double getImpact(String url) throws Exception {
     ResponseEntity<Double> res = restTemplate.getForEntity(url, Double.class);
     HttpStatus status = res.getStatusCode();
     if (status.is2xxSuccessful() && res.getBody() != null) {

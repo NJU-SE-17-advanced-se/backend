@@ -10,7 +10,7 @@ import org.njuse17advancedse.apigateway.infra.entity.Paper;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class IResearcher {
+public class PResearcher {
   private String id;
 
   private String name;

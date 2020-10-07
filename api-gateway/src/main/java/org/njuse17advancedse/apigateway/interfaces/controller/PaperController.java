@@ -3,7 +3,6 @@ package org.njuse17advancedse.apigateway.interfaces.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.apigateway.apps.service.PaperService;
 import org.njuse17advancedse.apigateway.interfaces.dto.paper.IImpact;
@@ -49,15 +48,9 @@ public class PaperController {
   @PostMapping("/recommend-reviewers")
   public List<IResearcher> getRecommendedReviewers(
     @ApiParam(value = "论文内容") @RequestBody IPaperUpload paper
-  ) {
-    List<IResearcher> res = new ArrayList<>();
-    res.add(
-      new IResearcher("5", "测试学者5", new ArrayList<>(), new ArrayList<>())
-    );
-    res.add(
-      new IResearcher("6", "测试学者6", new ArrayList<>(), new ArrayList<>())
-    );
-    return res;
+  )
+    throws Exception {
+    return paperService.getRecommendedReviewers(paper);
   }
 
   @ApiOperation(
@@ -67,15 +60,9 @@ public class PaperController {
   @PostMapping("/not-recommend-reviewers")
   public List<IResearcher> getNotRecommendedReviewers(
     @ApiParam(value = "论文内容") @RequestBody IPaperUpload paper
-  ) {
-    List<IResearcher> res = new ArrayList<>();
-    res.add(
-      new IResearcher("7", "测试学者8", new ArrayList<>(), new ArrayList<>())
-    );
-    res.add(
-      new IResearcher("8", "测试学者8", new ArrayList<>(), new ArrayList<>())
-    );
-    return res;
+  )
+    throws Exception {
+    return paperService.getRecommendedReviewers(paper);
   }
 
   @ApiOperation(
@@ -86,7 +73,7 @@ public class PaperController {
   public IImpact getImpact(@ApiParam(value = "论文id") @PathVariable String id)
     throws Exception {
     String criteria = "custom";
-    double impact = this.paperService.getImpact(id, criteria);
+    double impact = this.paperService.getImpact(id);
     return new IImpact(impact, criteria);
   }
 

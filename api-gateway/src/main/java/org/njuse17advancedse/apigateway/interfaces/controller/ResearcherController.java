@@ -188,7 +188,7 @@ public class ResearcherController {
   public IImpact getImpact(@ApiParam(value = "学者id") @PathVariable String id)
     throws Exception {
     String criteria = "H-index";
-    double impact = this.researcherService.getImpact(id, criteria);
+    double impact = this.researcherService.getImpact(id);
     return new IImpact(impact, criteria);
   }
 
