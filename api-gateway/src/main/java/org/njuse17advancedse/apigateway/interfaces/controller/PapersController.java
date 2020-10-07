@@ -15,15 +15,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/papers")
 @RestController
 public class PapersController {
-  private PaperService paperService;
+  private final PaperService paperService;
 
   @ApiOperation(
-    value = "接口 2.1.2：查看某论文引用情况",
+    value = "接口 2.1.2：查看某些论文引用情况",
     notes = "接口 2.1 的附属版本"
   )
   @GetMapping("/{ids}/references")
   public Map<String, List<IPaper>> getReferences(
-    @ApiParam(value = "论文id") @PathVariable List<String> ids
+    @ApiParam(value = "论文id的列表") @PathVariable List<String> ids
   )
     throws Exception {
     Map<String, List<IPaper>> res = new HashMap<>();
@@ -34,12 +34,12 @@ public class PapersController {
   }
 
   @ApiOperation(
-    value = "接口 2.2.2：查看某论文被引情况",
+    value = "接口 2.2.2：查看某些论文被引情况",
     notes = "接口 2.2 的附属版本"
   )
   @GetMapping("/{ids}/citations")
   public Map<String, List<IPaper>> getCitations(
-    @ApiParam(value = "学者id") @PathVariable List<String> ids
+    @ApiParam(value = "论文id的列表") @PathVariable List<String> ids
   )
     throws Exception {
     Map<String, List<IPaper>> res = new HashMap<>();
@@ -55,7 +55,7 @@ public class PapersController {
   )
   @GetMapping("/{ids}/impact")
   public Map<String, IImpact> getImpact(
-    @ApiParam(value = "论文id") @PathVariable List<String> ids
+    @ApiParam(value = "论文id的列表") @PathVariable List<String> ids
   )
     throws Exception {
     Map<String, IImpact> res = new HashMap<>();

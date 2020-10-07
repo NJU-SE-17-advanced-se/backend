@@ -35,7 +35,7 @@ public class PaperController {
   )
   @GetMapping("/{id}/citations")
   public List<IPaper> getCitations(
-    @ApiParam(value = "学者id") @PathVariable String id
+    @ApiParam(value = "论文id") @PathVariable String id
   )
     throws Exception {
     return paperService.getCitations(id);
