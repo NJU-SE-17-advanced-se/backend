@@ -187,6 +187,7 @@ class ResearcherControllerTest {
   @Test
   void testGetImpact_success() throws Exception {
     String researcherId = "1";
+    System.out.println(BASE_URL + "/" + researcherId + "/impact");
     MvcResult impactRes = mockMvc
       .perform(
         MockMvcRequestBuilders.get(BASE_URL + "/" + researcherId + "/impact")

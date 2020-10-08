@@ -16,15 +16,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PaperService {
-  private CitationAnalysisRepo citationAnalysisRepo;
+  private final CitationAnalysisRepo citationAnalysisRepo;
 
-  private ImpactAnalysisRepo impactAnalysisRepo;
+  private final ImpactAnalysisRepo impactAnalysisRepo;
 
-  private ModelMapper modelMapper;
+  private final ModelMapper modelMapper;
 
-  private PaperRepo paperRepo;
+  private final PaperRepo paperRepo;
 
-  private ReviewerRecommendationRepo reviewerRecommendationRepo;
+  private final ReviewerRecommendationRepo reviewerRecommendationRepo;
 
   // 查看某论文引用情况
   public List<IPaper> getReferences(String id) throws Exception {

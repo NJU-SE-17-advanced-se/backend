@@ -3,8 +3,8 @@ package org.njuse17advancedse.apigateway.interfaces.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.njuse17advancedse.apigateway.apps.service.ResearcherService;
 import org.njuse17advancedse.apigateway.interfaces.dto.researcher.*;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/researcher")
 @RestController
 public class ResearcherController {
-  private ResearcherService researcherService;
+  private final ResearcherService researcherService;
 
   @ApiOperation(
     value = "接口 1.1：查看某学者某一时间段所在机构",
@@ -25,14 +25,7 @@ public class ResearcherController {
     @ApiParam(value = "开始日期，形如 '2020-09-21'") @RequestParam String start,
     @ApiParam(value = "结束日期，形如 '2020-09-21'") @RequestParam String end
   ) {
-    List<IAffiliation> res = new ArrayList<>();
-    res.add(
-      new IAffiliation("1", "测试机构1", new ArrayList<>(), new ArrayList<>())
-    );
-    res.add(
-      new IAffiliation("2", "测试机构2", new ArrayList<>(), new ArrayList<>())
-    );
-    return res;
+    return researcherService.getAffiliationsByTimeRange(id, start, end);
   }
 
   @ApiOperation(
@@ -46,14 +39,7 @@ public class ResearcherController {
     @ApiParam(value = "开始日期，形如 '2020-09-21'") @RequestParam String start,
     @ApiParam(value = "结束日期，形如 '2020-09-21'") @RequestParam String end
   ) {
-    List<IDomain> res = new ArrayList<>();
-    res.add(
-      new IDomain("1", "测试领域1", new ArrayList<>(), new ArrayList<>())
-    );
-    res.add(
-      new IDomain("2", "测试领域2", new ArrayList<>(), new ArrayList<>())
-    );
-    return res;
+    return researcherService.getDomainsByTimeRange(id, start, end);
   }
 
   @ApiOperation(
@@ -64,14 +50,7 @@ public class ResearcherController {
   public List<IDomain> getFutureDomains(
     @ApiParam(value = "学者id") @PathVariable String id
   ) {
-    List<IDomain> res = new ArrayList<>();
-    res.add(
-      new IDomain("3", "测试领域3", new ArrayList<>(), new ArrayList<>())
-    );
-    res.add(
-      new IDomain("4", "测试领域4", new ArrayList<>(), new ArrayList<>())
-    );
-    return res;
+    return researcherService.getFutureDomains(id);
   }
 
   @ApiOperation(
@@ -80,16 +59,11 @@ public class ResearcherController {
   )
   @GetMapping("/{id}/partnership")
   public List<IResearcher> getPartnershipByTimeRange(
-    @ApiParam(value = "学者id") @PathVariable String id
+    @ApiParam(value = "学者id") @PathVariable String id,
+    @ApiParam(value = "开始日期，形如 '2020-09-21'") @RequestParam String start,
+    @ApiParam(value = "结束日期，形如 '2020-09-21'") @RequestParam String end
   ) {
-    List<IResearcher> res = new ArrayList<>();
-    res.add(
-      new IResearcher("1", "测试学者1", new ArrayList<>(), new ArrayList<>())
-    );
-    res.add(
-      new IResearcher("2", "测试学者2", new ArrayList<>(), new ArrayList<>())
-    );
-    return res;
+    return researcherService.getPartnershipByTimeRange(id, start, end);
   }
 
   @ApiOperation(
@@ -98,18 +72,9 @@ public class ResearcherController {
   )
   @GetMapping("/{id}/future/partnership")
   public List<IResearcher> getFuturePartnership(
-    @ApiParam(value = "学者id") @PathVariable String id,
-    @ApiParam(value = "开始日期，形如 '2020-09-21'") @RequestParam String start,
-    @ApiParam(value = "结束日期，形如 '2020-09-21'") @RequestParam String end
+    @ApiParam(value = "学者id") @PathVariable String id
   ) {
-    List<IResearcher> res = new ArrayList<>();
-    res.add(
-      new IResearcher("3", "测试学者3", new ArrayList<>(), new ArrayList<>())
-    );
-    res.add(
-      new IResearcher("4", "测试学者4", new ArrayList<>(), new ArrayList<>())
-    );
-    return res;
+    return researcherService.getFuturePartnership(id);
   }
 
   @ApiOperation(
@@ -117,33 +82,11 @@ public class ResearcherController {
     notes = "需求 7.2：研究者引用其他研究者（的论文）"
   )
   @GetMapping("/{id}/references")
-  public List<IPaper> getReferences(
+  public Map<String, List<IPaper>> getReferences(
     @ApiParam(value = "学者id") @PathVariable String id
-  ) {
-    List<IPaper> res = new ArrayList<>();
-    res.add(
-      new IPaper(
-        "1",
-        "测试论文1",
-        "测试论文1的摘要",
-        "google.com",
-        new ArrayList<>(),
-        new ArrayList<>(),
-        new ArrayList<>()
-      )
-    );
-    res.add(
-      new IPaper(
-        "2",
-        "测试论文2",
-        "测试论文2的摘要",
-        "google.com",
-        new ArrayList<>(),
-        new ArrayList<>(),
-        new ArrayList<>()
-      )
-    );
-    return res;
+  )
+    throws Exception {
+    return researcherService.getReferences(id);
   }
 
   @ApiOperation(
@@ -151,33 +94,11 @@ public class ResearcherController {
     notes = "需求 7.2：研究者被其他研究者引用情况"
   )
   @GetMapping("/{id}/citations")
-  public List<IPaper> getCitations(
+  public Map<String, List<IPaper>> getCitations(
     @ApiParam(value = "学者id") @PathVariable String id
-  ) {
-    List<IPaper> res = new ArrayList<>();
-    res.add(
-      new IPaper(
-        "3",
-        "测试论文3",
-        "测试论文3的摘要",
-        "google.com",
-        new ArrayList<>(),
-        new ArrayList<>(),
-        new ArrayList<>()
-      )
-    );
-    res.add(
-      new IPaper(
-        "4",
-        "测试论文4",
-        "测试论文4的摘要",
-        "google.com",
-        new ArrayList<>(),
-        new ArrayList<>(),
-        new ArrayList<>()
-      )
-    );
-    return res;
+  )
+    throws Exception {
+    return researcherService.getCitations(id);
   }
 
   @ApiOperation(
@@ -188,7 +109,7 @@ public class ResearcherController {
   public IImpact getImpact(@ApiParam(value = "学者id") @PathVariable String id)
     throws Exception {
     String criteria = "H-index";
-    double impact = this.researcherService.getImpact(id);
+    double impact = researcherService.getImpact(id);
     return new IImpact(impact, criteria);
   }
 

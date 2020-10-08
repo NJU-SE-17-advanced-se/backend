@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 public class CitationAnalysisRepo {
   private static final String serverLocation = "http://101.37.152.235:6324";
 
-  private RestTemplate restTemplate;
+  private final RestTemplate restTemplate;
 
   // 查看某学者的论文引用情况
   public Map<Long, List<Long>> getResearcherReferences(String id)

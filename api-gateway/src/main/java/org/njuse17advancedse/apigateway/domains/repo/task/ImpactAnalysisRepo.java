@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 public class ImpactAnalysisRepo {
   private static final String serverLocation = "http://101.37.152.235:8080";
 
-  private RestTemplate restTemplate;
+  private final RestTemplate restTemplate;
 
   // 查看某论文的影响力
   public double getPaperImpact(String id) throws Exception {
@@ -20,7 +20,7 @@ public class ImpactAnalysisRepo {
 
   // 查看某学者的影响力
   public double getResearcherImpact(String id) throws Exception {
-    String url = serverLocation + "/impact/researcher" + id;
+    String url = serverLocation + "/impact/researcher/" + id;
     return getImpact(url);
   }
 
