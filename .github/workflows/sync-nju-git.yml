@@ -1,0 +1,21 @@
+name: Sync to NJU Git
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+jobs:
+  sync:
+    name: Sync to NJU Git
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Do Sync
+        run: |
+          git config --global user.name "Wen Sun"
+          git config --global user.email "syl1887415157@126.com"
+          git push https://${NJU_GIT_USER}:${NJU_GIT_PASS}@git.nju.edu.cn/NJU-SE-17-advanced-se/backend.git
