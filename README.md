@@ -1,4 +1,4 @@
-# backend
+# backend [![API Gateway](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20API%20Gateway/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)
 
 南京大学软件学院 2017 级软件工程高级技术方向实践。
 
