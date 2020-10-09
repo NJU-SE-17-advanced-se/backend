@@ -1,15 +1,15 @@
-package org.njuse17advancedse.apigateway.domains.repo.task;
+package org.njuse17advancedse.apigateway.apps.task;
 
 import java.util.List;
 import java.util.Map;
 import org.njuse17advancedse.apigateway.infra.exception.TestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-@Repository
-public class CitationAnalysisRepo {
+@Service
+public class CitationAnalysisService {
   private static final String serverLocation = "http://101.37.152.235:6324";
 
   private final RestTemplate restTemplate;
@@ -62,7 +62,7 @@ public class CitationAnalysisRepo {
     }
   }
 
-  public CitationAnalysisRepo(RestTemplate restTemplate) {
+  public CitationAnalysisService(RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
   }
 }

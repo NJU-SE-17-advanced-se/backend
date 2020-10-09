@@ -1,12 +1,12 @@
-package org.njuse17advancedse.apigateway.interfaces.dto.paper;
+package org.njuse17advancedse.apigateway.interfaces.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.njuse17advancedse.apigateway.infra.entity.Domain;
-import org.njuse17advancedse.apigateway.infra.entity.Paper;
-import org.njuse17advancedse.apigateway.infra.entity.Researcher;
+import org.njuse17advancedse.apigateway.domains.entity.Domain;
+import org.njuse17advancedse.apigateway.domains.entity.Paper;
+import org.njuse17advancedse.apigateway.domains.entity.Researcher;
 
 @Data
 @AllArgsConstructor

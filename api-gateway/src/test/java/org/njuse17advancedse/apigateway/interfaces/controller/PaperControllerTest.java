@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.njuse17advancedse.apigateway.interfaces.dto.paper.IPaper;
+import org.njuse17advancedse.apigateway.interfaces.dto.IPaper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -158,4 +158,19 @@ class PaperControllerTest {
 
   @Test
   void testGetImpact_failure() {}
+
+  @Test
+  void testGetPaperById_success() throws Exception {
+    String paperId = "1";
+    MvcResult paperRes = mockMvc
+      .perform(MockMvcRequestBuilders.get(BASE_URL + "/" + paperId))
+      .andExpect(MockMvcResultMatchers.status().isOk())
+      .andReturn();
+    String paperJsonStr = paperRes.getResponse().getContentAsString();
+    System.out.println(paperJsonStr);
+    assertThat(paperJsonStr, is(not(emptyOrNullString())));
+  }
+
+  @Test
+  void testGetPaperById_failure() {}
 }
