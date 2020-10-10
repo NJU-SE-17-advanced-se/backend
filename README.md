@@ -42,3 +42,11 @@ https://wensun.top/
 - Java 8
 - Node.js 12.18.3
 - Yarn (包管理工具) 1.22.5
+
+然后在项目根目录运行命令，安装项目规范相关工具（依赖于 node.js 和 yarn）：
+
+```shell script
+yarn install
+```
+
+**一定**要运行此条命令，否则项目规范相关工具无法工作。
