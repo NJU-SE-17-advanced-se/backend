@@ -1,8 +1,6 @@
 package org.njuse17advancedse.taskimpactanalysis.controller;
 
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
-import org.njuse17advancedse.taskimpactanalysis.vo.PaperVo;
-import org.njuse17advancedse.taskimpactanalysis.vo.ScholarVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,24 +10,23 @@ public class TaskImpactAnalysisController {
   @Autowired
   TaskImpactAnalysisService service;
 
-  @GetMapping(value = "/hindex/{scholarId}")
-  public int getHIndex(
-    @PathVariable Long scholarId,
-    @RequestBody ScholarVo vo
-  ) {
-    return service.getHIndex(vo);
+  /**
+   *  根据学者ID获取H指数
+   * */
+  @GetMapping(value = "/researcher/{id}")
+  public int getHIndex(@PathVariable String id) {
+    return service.getHIndex(id);
   }
 
-  @GetMapping(value = "/paper/{paperId}")
-  public double getPaperImpact(
-    @PathVariable Long paperId,
-    @RequestBody PaperVo vo
-  ) {
-    return service.getPaperImpact(vo);
+  /**
+   * 根据论文ID获取影响力
+   */
+  @GetMapping(value = "/paper/{id}")
+  public double getPaperImpact(@PathVariable String id) {
+    return service.getPaperImpact(id);
   }
-
-  @GetMapping(value = "")
-  public int test() {
-    return 4396;
-  }
+  //  @GetMapping(value = "")
+  //  public int test() {
+  //    return 4396;
+  //  }
 }

@@ -1,0 +1,4 @@
+server:
+  port: 6324
+  error:
+    include-message: always # 启用错误信息

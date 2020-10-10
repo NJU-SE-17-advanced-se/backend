@@ -1,0 +1,10 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${REGISTRY_IP:localhost}:${server.port}/eureka
+
+  instance:
+    ip-address: ${REGISTRY_IP}
+
+server:
+  port: 8080

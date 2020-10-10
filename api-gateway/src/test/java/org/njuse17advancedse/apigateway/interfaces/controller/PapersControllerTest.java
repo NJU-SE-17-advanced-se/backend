@@ -38,13 +38,17 @@ class PapersControllerTest {
         .build();
   }
 
-  // 接口 2.1.2：查看某论文引用情况
+  // 接口 2.1.2：查看某些论文引用情况
   @Test
   void testGetReferences_success() throws Exception {
     List<String> paperIds = new ArrayList<>(Arrays.asList("1", "2"));
+    String paperIdsStr = paperIds.toString();
+    String paperIdsReqStr = paperIdsStr.substring(1, paperIdsStr.length() - 1);
     MvcResult referencesRes = mockMvc
       .perform(
-        MockMvcRequestBuilders.get(BASE_URL + "/" + paperIds + "/references")
+        MockMvcRequestBuilders.get(
+          BASE_URL + "/" + paperIdsReqStr + "/references"
+        )
       )
       .andExpect(MockMvcResultMatchers.status().isOk())
       .andReturn();
@@ -56,13 +60,17 @@ class PapersControllerTest {
   @Test
   void testGetReferences_failure() {}
 
-  // 接口 2.2.2：查看某论文被引情况
+  // 接口 2.2.2：查看某些论文被引情况
   @Test
   void testGetCitations_success() throws Exception {
     List<String> paperIds = new ArrayList<>(Arrays.asList("1", "2"));
+    String paperIdsStr = paperIds.toString();
+    String paperIdsReqStr = paperIdsStr.substring(1, paperIdsStr.length() - 1);
     MvcResult citationsRes = mockMvc
       .perform(
-        MockMvcRequestBuilders.get(BASE_URL + "/" + paperIds + "/citations")
+        MockMvcRequestBuilders.get(
+          BASE_URL + "/" + paperIdsReqStr + "/citations"
+        )
       )
       .andExpect(MockMvcResultMatchers.status().isOk())
       .andReturn();
@@ -74,51 +82,7 @@ class PapersControllerTest {
   @Test
   void testGetCitations_failure() {}
 
-  // 接口 2.3.2：查看某论文推荐的审稿人
-  @Test
-  void testGetRecommendedReviewers_success() throws Exception {
-    List<String> paperIds = new ArrayList<>(Arrays.asList("1", "2"));
-    MvcResult recommendationRes = mockMvc
-      .perform(
-        MockMvcRequestBuilders.get(
-          BASE_URL + "/" + paperIds + "/recommendation/reviewers"
-        )
-      )
-      .andExpect(MockMvcResultMatchers.status().isOk())
-      .andReturn();
-    String recommendationJsonStr = recommendationRes
-      .getResponse()
-      .getContentAsString();
-    System.out.println(recommendationJsonStr);
-    assertThat(recommendationJsonStr, is(not(emptyOrNullString())));
-  }
-
-  @Test
-  void testGetRecommendedReviewers_failure() {}
-
-  // 接口 2.4.2：查看某论文不推荐的审稿人
-  @Test
-  void testGetNotRecommendedReviewers_success() throws Exception {
-    List<String> paperIds = new ArrayList<>(Arrays.asList("1", "2"));
-    MvcResult nonRecommendationRes = mockMvc
-      .perform(
-        MockMvcRequestBuilders.get(
-          BASE_URL + "/" + paperIds + "/non-recommendation/reviewers"
-        )
-      )
-      .andExpect(MockMvcResultMatchers.status().isOk())
-      .andReturn();
-    String nonRecommendationJsonStr = nonRecommendationRes
-      .getResponse()
-      .getContentAsString();
-    System.out.println(nonRecommendationJsonStr);
-    assertThat(nonRecommendationJsonStr, is(not(emptyOrNullString())));
-  }
-
-  @Test
-  void testGetNotRecommendedReviewers_failure() {}
-
-  // 接口 2.5.2：查看某论文的影响力
+  // 接口 2.5.2：查看某些论文的影响力
   @Test
   void testGetImpact_success() throws Exception {
     List<String> paperIds = new ArrayList<>(Arrays.asList("1", "2"));

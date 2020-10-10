@@ -153,10 +153,15 @@ class ResearchersControllerTest {
   @Test
   void testGetReferences_success() throws Exception {
     List<String> researcherIds = new ArrayList<>(Arrays.asList("1", "2"));
+    String researcherIdsStr = researcherIds.toString();
+    String researcherIdsReqStr = researcherIdsStr.substring(
+      1,
+      researcherIdsStr.length() - 1
+    );
     MvcResult referencesRes = mockMvc
       .perform(
         MockMvcRequestBuilders.get(
-          BASE_URL + "/" + researcherIds + "/references"
+          BASE_URL + "/" + researcherIdsReqStr + "/references"
         )
       )
       .andExpect(MockMvcResultMatchers.status().isOk())
@@ -173,10 +178,15 @@ class ResearchersControllerTest {
   @Test
   void testGetCitations_success() throws Exception {
     List<String> researcherIds = new ArrayList<>(Arrays.asList("1", "2"));
+    String researcherIdsStr = researcherIds.toString();
+    String researcherIdsReqStr = researcherIdsStr.substring(
+      1,
+      researcherIdsStr.length() - 1
+    );
     MvcResult citationsRes = mockMvc
       .perform(
         MockMvcRequestBuilders.get(
-          BASE_URL + "/" + researcherIds + "/citations"
+          BASE_URL + "/" + researcherIdsReqStr + "/citations"
         )
       )
       .andExpect(MockMvcResultMatchers.status().isOk())

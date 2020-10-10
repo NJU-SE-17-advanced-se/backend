@@ -78,13 +78,25 @@ class PaperControllerTest {
   // 接口 2.3：查看某论文推荐的审稿人
   @Test
   void testGetRecommendedReviewers_success() throws Exception {
-    String paperId = "1";
+    IPaper paper = new IPaper(
+      "9",
+      "测试论文9",
+      "测试论文9的摘要",
+      "google.com",
+      new ArrayList<>(),
+      new ArrayList<>(),
+      new ArrayList<>()
+    );
+    // convert java obj to JSON by jackson
+    ObjectMapper objectMapper = new ObjectMapper();
+    String paperReqData = objectMapper.writeValueAsString(paper);
+    // construct a POST req
+    RequestBuilder paperReq = MockMvcRequestBuilders
+      .post(BASE_URL + "/recommend-reviewers")
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(paperReqData);
     MvcResult recommendationRes = mockMvc
-      .perform(
-        MockMvcRequestBuilders.get(
-          BASE_URL + "/" + paperId + "/recommendation/reviewers"
-        )
-      )
+      .perform(paperReq)
       .andExpect(MockMvcResultMatchers.status().isOk())
       .andReturn();
     String recommendationJsonStr = recommendationRes
@@ -100,13 +112,25 @@ class PaperControllerTest {
   // 接口 2.4：查看某论文不推荐的审稿人
   @Test
   void testGetNotRecommendedReviewers_success() throws Exception {
-    String paperId = "1";
+    IPaper paper = new IPaper(
+      "9",
+      "测试论文9",
+      "测试论文9的摘要",
+      "google.com",
+      new ArrayList<>(),
+      new ArrayList<>(),
+      new ArrayList<>()
+    );
+    // convert java obj to JSON by jackson
+    ObjectMapper objectMapper = new ObjectMapper();
+    String paperReqData = objectMapper.writeValueAsString(paper);
+    // construct a POST req
+    RequestBuilder paperReq = MockMvcRequestBuilders
+      .post(BASE_URL + "/not-recommend-reviewers")
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(paperReqData);
     MvcResult nonRecommendationRes = mockMvc
-      .perform(
-        MockMvcRequestBuilders.get(
-          BASE_URL + "/" + paperId + "/non-recommendation/reviewers"
-        )
-      )
+      .perform(paperReq)
       .andExpect(MockMvcResultMatchers.status().isOk())
       .andReturn();
     String nonRecommendationJsonStr = nonRecommendationRes
@@ -134,32 +158,4 @@ class PaperControllerTest {
 
   @Test
   void testGetImpact_failure() {}
-
-  // 上传新论文
-  @Test
-  void testSavePaper_success() throws Exception {
-    IPaper paper = new IPaper(
-      "9",
-      "测试论文9",
-      "测试论文9的摘要",
-      "google.com",
-      new ArrayList<>(),
-      new ArrayList<>(),
-      new ArrayList<>()
-    );
-    // convert java obj to JSON by jackson
-    ObjectMapper objectMapper = new ObjectMapper();
-    String savePaperReqData = objectMapper.writeValueAsString(paper);
-    // construct a POST req
-    RequestBuilder savePaperReq = MockMvcRequestBuilders
-      .post(BASE_URL + "/")
-      .contentType(MediaType.APPLICATION_JSON)
-      .content(savePaperReqData);
-    mockMvc
-      .perform(savePaperReq)
-      .andExpect(MockMvcResultMatchers.status().isCreated());
-  }
-
-  @Test
-  void testSavePaper_failure() {}
 }

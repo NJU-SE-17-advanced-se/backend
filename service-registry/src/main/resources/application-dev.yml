@@ -1,0 +1,10 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.ip-address}:${server.port}/eureka
+
+  instance:
+    ip-address: localhost
+
+server:
+  port: 8000
