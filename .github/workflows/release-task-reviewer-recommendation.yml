@@ -7,6 +7,8 @@ on:
     paths:
       - task-reviewer-recommendation/**
 
+  workflow_dispatch:
+
 jobs:
   test:
     name: Unit Tests & Integration Tests
