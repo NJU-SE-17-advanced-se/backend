@@ -1,13 +1,13 @@
-package org.njuse17advancedse.apigateway.domains.repo.task;
+package org.njuse17advancedse.apigateway.apps.task;
 
 import org.njuse17advancedse.apigateway.infra.exception.TestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-@Repository
-public class ImpactAnalysisRepo {
+@Service
+public class ImpactAnalysisService {
   private static final String serverLocation = "http://101.37.152.235:8080";
 
   private final RestTemplate restTemplate;
@@ -35,7 +35,7 @@ public class ImpactAnalysisRepo {
     }
   }
 
-  public ImpactAnalysisRepo(RestTemplate restTemplate) {
+  public ImpactAnalysisService(RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
   }
 }

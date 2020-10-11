@@ -1,4 +1,4 @@
-package org.njuse17advancedse.apigateway.interfaces.dto.paper.req;
+package org.njuse17advancedse.apigateway.interfaces.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

@@ -1,11 +1,11 @@
-package org.njuse17advancedse.apigateway.domains.repo.entity;
+package org.njuse17advancedse.apigateway.apps.entity;
 
 import java.util.ArrayList;
-import org.njuse17advancedse.apigateway.infra.entity.Paper;
-import org.springframework.stereotype.Repository;
+import org.njuse17advancedse.apigateway.domains.entity.Paper;
+import org.springframework.stereotype.Service;
 
-@Repository
-public class PaperRepo {
+@Service
+public class PaperService {
 
   public Paper getPaperById(String id) {
     return new Paper(

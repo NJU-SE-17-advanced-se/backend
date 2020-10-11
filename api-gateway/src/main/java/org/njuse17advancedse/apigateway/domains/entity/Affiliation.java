@@ -1,14 +1,12 @@
-package org.njuse17advancedse.apigateway.infra.entity;
+package org.njuse17advancedse.apigateway.domains.entity;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class Domain {
+public class Affiliation {
   private String id;
 
   private String name;

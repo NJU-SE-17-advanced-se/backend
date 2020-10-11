@@ -1,19 +1,17 @@
-package org.njuse17advancedse.apigateway.infra.entity;
+package org.njuse17advancedse.apigateway.domains.entity;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class Affiliation {
+public class Researcher {
   private String id;
 
   private String name;
 
-  private List<Researcher> researchers;
+  private Affiliation affiliation;
 
   private List<Paper> papers;
 }
