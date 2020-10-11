@@ -1,0 +1,7 @@
+server:
+  error:
+    include-message: always # 启用错误信息
+
+spring:
+  profiles:
+    active: dev
