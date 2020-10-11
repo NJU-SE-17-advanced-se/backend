@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.IImpact;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.IPaperUpload;
-import org.njuse17advancedse.taskreviewerrecommendation.dto.IResearcher;
 import org.njuse17advancedse.taskreviewerrecommendation.entity.Domain;
 import org.njuse17advancedse.taskreviewerrecommendation.entity.Researcher;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +29,8 @@ class TaskReviewerRecommendationServiceImpTest {
     IPaperUpload testPaper = new IPaperUpload();
     testPaper.setTitle("testPaper");
     testPaper.setId("test");
+    testPaper.setJournal("EMSE");
+    testPaper.setDate("2020/10/09");
     List<String> testDomains = Lists.newArrayList("0", "1", "2");
     testPaper.setDomainIds(testDomains);
     List<String> referenceIds = new ArrayList<>();
@@ -44,20 +45,22 @@ class TaskReviewerRecommendationServiceImpTest {
 
     testPaper.setReferenceIds(referenceIds);
 
-    List<String> rids1 = Lists.newArrayList(
+    List<String> rids = Lists.newArrayList("0", "1", "2", "3");
+
+    List<String> researcherIds = Lists.newArrayList(
       "0",
-      "4",
-      "12",
-      "16",
       "1",
       "2",
       "3",
-      "6",
-      "8",
-      "9"
+      "4",
+      "2",
+      "2",
+      "1",
+      "5"
     );
+
     List<List<Domain>> reviewersDomains = new ArrayList<>();
-    for (String s : rids1) {
+    for (String s : researcherIds) {
       List<Domain> domains = new ArrayList<>();
       for (int j = 0; j < 2; j++) {
         Domain domain = new Domain();
@@ -75,20 +78,49 @@ class TaskReviewerRecommendationServiceImpTest {
           List.class
         )
       )
-      .thenReturn(referenceIds);
+      .thenReturn(rids);
+
+    List<String> researchersOfSameJournalPapers = Lists.newArrayList(
+      "1",
+      "2",
+      "5"
+    );
+    Mockito
+      .when(
+        restTemplate.getForObject(
+          "/paper/getPapersByJournal/EMSE/2020/10/09",
+          List.class
+        )
+      )
+      .thenReturn(researchersOfSameJournalPapers);
+
+    List<String> domains = Lists.newArrayList("0", "1", "2");
+
+    List<String> researcherOfSimilarDomainPapers = Lists.newArrayList("4", "2");
+    Mockito
+      .when(
+        restTemplate.postForObject(
+          "/paper/getPapersByDomain",
+          domains,
+          List.class
+        )
+      )
+      .thenReturn(researcherOfSimilarDomainPapers);
 
     Mockito
       .when(
-        restTemplate.postForObject("/researcher/getDomains", rids1, List.class)
+        restTemplate.postForObject(
+          "/researcher/getDomains",
+          researcherIds,
+          List.class
+        )
       )
       .thenReturn(reviewersDomains);
 
-    List<String> rids2 = Lists.newArrayList("0", "1", "2");
-    List<IImpact> impacts = new ArrayList<>();
-    for (int i = 0; i < rids2.size(); i++) {
-      IImpact impact = new IImpact();
-      impact.setImpact(3 - i);
-      impacts.add(impact);
+    List<String> rids2 = Lists.newArrayList("2", "1", "0", "3", "4", "5");
+    List<Double> impacts = new ArrayList<>();
+    for (String s : rids2) {
+      impacts.add(Double.parseDouble(s));
     }
 
     Mockito
@@ -97,28 +129,12 @@ class TaskReviewerRecommendationServiceImpTest {
       )
       .thenReturn(impacts);
 
-    List<Researcher> researchers = new ArrayList<>();
-    for (int i = 0; i < 3; i++) {
-      Researcher researcher = new Researcher();
-      researcher.setId(i + "");
-      researchers.add(researcher);
-    }
-
-    Mockito
-      .when(restTemplate.postForObject("/getResearchers", rids2, List.class))
-      .thenReturn(researchers);
-
-    List<IResearcher> iResearchers = new ArrayList<>();
-    for (int i = 0; i < 3; i++) {
-      IResearcher iResearcher = new IResearcher();
-      iResearcher.setId(i + "");
-      iResearchers.add(iResearcher);
-    }
+    List<String> result = Lists.newArrayList("5", "4", "3", "2", "1");
     assertEquals(
       taskReviewerRecommendationService
         .getRecommendReviewer(testPaper)
         .getBody(),
-      iResearchers
+      result
     );
   }
 
@@ -137,11 +153,9 @@ class TaskReviewerRecommendationServiceImpTest {
     testPaper.setDomainIds(testDomains);
     List<String> rids = Lists.newArrayList("0", "1", "2");
 
-    List<Researcher> partners = new ArrayList<>();
+    List<String> partners = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
-      Researcher researcher = new Researcher();
-      researcher.setId(i + "" + i);
-      partners.add(researcher);
+      partners.add(i + "" + i);
     }
     Mockito
       .when(restTemplate.postForObject("/getPartnersByRids/", rids, List.class))
@@ -157,32 +171,26 @@ class TaskReviewerRecommendationServiceImpTest {
       }
       domainsList.add(domains);
     }
-    List<String> pids = partners
-      .stream()
-      .map(Researcher::getId)
-      .collect(Collectors.toList());
-    HashSet<String> set = new HashSet<>(pids);
-    pids.clear();
-    pids.addAll(set);
+    HashSet<String> set = new HashSet<>(partners);
+    partners.clear();
+    partners.addAll(set);
     Mockito
       .when(
-        restTemplate.postForObject("/researcher/getDomains", pids, List.class)
+        restTemplate.postForObject(
+          "/researcher/getDomains",
+          partners,
+          List.class
+        )
       )
       .thenReturn(domainsList);
 
-    List<IResearcher> iResearchers = new ArrayList<>();
-
     List<String> result = Lists.newArrayList("44", "22", "66", "00", "88");
-    for (int i = 0; i < 5; i++) {
-      IResearcher iResearcher = new IResearcher();
-      iResearcher.setId(result.get(i));
-      iResearchers.add(iResearcher);
-    }
+
     assertEquals(
       taskReviewerRecommendationService
         .getNotRecommendReviewer(testPaper)
         .getBody(),
-      iResearchers
+      result
     );
   }
 }
