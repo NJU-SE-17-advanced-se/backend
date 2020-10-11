@@ -1,4 +1,4 @@
-name: Reviewer Recommendation Task Service
+name: Release Reviewer Recommendation Task Service
 
 on:
   push:

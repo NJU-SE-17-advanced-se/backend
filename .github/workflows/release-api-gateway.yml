@@ -7,6 +7,8 @@ on:
     paths:
       - api-gateway/**
 
+  workflow_dispatch:
+
 jobs:
   test:
     name: Unit Tests & Integration Tests
@@ -59,7 +61,7 @@ jobs:
           name: prod
 
       - name: Login to Docker Registry
-        run: echo '${{ secrets.DOCKER_PASS }}' | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin registry.cn-hangzhou.aliyuncs.com
+        run: echo '${{ secrets.DOCKERHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
 
       - name: Build Docker Image
         run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
@@ -82,7 +84,7 @@ jobs:
           username: ${{ secrets.WENSUN_SSH_USER }}
           password: ${{ secrets.WENSUN_SSH_PASS }}
           script: |
-            echo '${{ secrets.DOCKER_PASS }}' | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin registry.cn-hangzhou.aliyuncs.com
+            echo '${{ secrets.DOCKERHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
 
             docker pull ${{ secrets.API_GATEWAY_REPO }}:latest
 
