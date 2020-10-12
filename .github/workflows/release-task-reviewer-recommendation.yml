@@ -1,4 +1,4 @@
-name: Reviewer Recommendation Task Service
+name: Release Reviewer Recommendation Task Service
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
       - master
     paths:
       - task-reviewer-recommendation/**
+
+  workflow_dispatch:
 
 jobs:
   test:
@@ -59,7 +61,7 @@ jobs:
           name: prod
 
       - name: Login to Docker Registry
-        run: echo '${{ secrets.DOCKEHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
+        run: echo '${{ secrets.DOCKERHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
 
       - name: Build Docker Image
         run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .

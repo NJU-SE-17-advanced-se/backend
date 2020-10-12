@@ -1,4 +1,4 @@
-name: Citation Analysis Task Service
+name: Release Citation Analysis Task Service
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
       - master
     paths:
       - task-citation-analysis/**
+
+  workflow_dispatch:
 
 jobs:
   test:
@@ -59,7 +61,7 @@ jobs:
           name: prod
 
       - name: Login to Docker Registry
-        run: echo '${{ secrets.DOCKER_PASS }}' | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin registry.cn-hangzhou.aliyuncs.com
+        run: echo '${{ secrets.DOCKERHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
 
       - name: Build Docker Image
         run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
@@ -82,7 +84,7 @@ jobs:
           username: ${{ secrets.YZG_ALI_SSH_USER }}
           password: ${{ secrets.YZG_ALI_SSH_PASS }}
           script: |
-            echo '${{ secrets.DOCKER_PASS }}' | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin registry.cn-hangzhou.aliyuncs.com
+            echo '${{ secrets.DOCKERHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
 
             docker pull ${{ secrets.TASK_CITATION_ANALYSIS_REPO }}:latest
 
