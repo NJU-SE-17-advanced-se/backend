@@ -1,0 +1,11 @@
+eureka:
+  client:
+    service-url:
+      # 未指定分区的情况下注册到默认的服务注册中心
+      defaultZone: http://${REGISTRY_IP:106.15.248.145}:${REGISTRY_PORT:6324}/eureka
+
+  instance:
+    ip-address: ${CONFIG_SERVER_IP:101.201.150.49}
+
+server:
+  port: 8080
