@@ -7,26 +7,33 @@ public interface TaskCitationAnalysisService {
   /**
    *  获取学者的论文引用情况
    */
-  Map<Long, List<Long>> getQuotingPapersByResearcherId(Long researcherId);
+  Map<String, List<String>> getQuotingPapersByResearcherId(String researcherId);
 
   /**
    * 获取学者论文被引情况
    */
 
-  Map<Long, List<Long>> getQuotedPapersByResearcherId(Long researcherId);
+  Map<String, List<String>> getQuotedPapersByResearcherId(String researcherId);
 
   /**
    * 查看某论文引用情况
    */
 
-  List<Long> getQuotingPapersByPaperId(Long paperId);
+  List<String> getQuotingPapersByPaperId(String paperId);
 
   /**
    * 查看某论文被引情况
    */
 
-  List<Long> getQuotedPapersByPaperId(Long paperId);
+  List<String> getQuotedPapersByPaperId(String paperId);
 
+  /**
+   *
+   */
+  Map<String, Integer> getResearcherQuoteNums(
+    String researcherId1,
+    String researcherId2
+  );
   //计算一遍数据
   void init();
 }

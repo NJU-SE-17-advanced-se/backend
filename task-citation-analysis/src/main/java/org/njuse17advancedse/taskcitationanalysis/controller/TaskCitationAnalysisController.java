@@ -21,9 +21,9 @@ public class TaskCitationAnalysisController {
    *
    * */
   @GetMapping(value = "/researcher/{type}/{id}")
-  public Map<Long, List<Long>> getResearcher(
+  public Map<String, List<String>> getResearcher(
     @PathVariable String type,
-    @PathVariable Long id
+    @PathVariable String id
   ) {
     if (type.equals("quoting")) {
       return service.getQuotingPapersByResearcherId(id);
@@ -42,7 +42,10 @@ public class TaskCitationAnalysisController {
    * @return
    */
   @GetMapping(value = "/paper/{type}/{id}")
-  public List<Long> getPaper(@PathVariable String type, @PathVariable Long id) {
+  public List<String> getPaper(
+    @PathVariable String type,
+    @PathVariable String id
+  ) {
     if (type.equals("quoting")) {
       return service.getQuotingPapersByPaperId(id);
     }
@@ -50,5 +53,20 @@ public class TaskCitationAnalysisController {
       return service.getQuotedPapersByPaperId(id);
     }
     return null;
+  }
+
+  /**
+   *
+   * @param researcherId1
+   * @param researcherId2
+   * @return 第一个学者每篇论文引用的第二个学者的论文数量
+   */
+
+  @GetMapping(value = "/researchers")
+  public Map<String, Integer> getResearcherQuoteNums(
+    @RequestParam String researcherId1,
+    @RequestParam String researcherId2
+  ) {
+    return service.getResearcherQuoteNums(researcherId1, researcherId2);
   }
 }

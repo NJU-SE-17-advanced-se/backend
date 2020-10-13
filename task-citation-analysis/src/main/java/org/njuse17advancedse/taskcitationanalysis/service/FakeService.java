@@ -7,5 +7,5 @@ import org.njuse17advancedse.taskcitationanalysis.entity.Researcher;
 public interface FakeService {
   List<Paper> getAllPapers();
 
-  Researcher getResearcherById(Long id);
+  Researcher getResearcherById(String id);
 }

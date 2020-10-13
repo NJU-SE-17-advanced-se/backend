@@ -17,7 +17,7 @@ public class FakeServiceImpl implements FakeService {
   }
 
   @Override
-  public Researcher getResearcherById(Long id) {
+  public Researcher getResearcherById(String id) {
     Researcher r = new Researcher();
     r.setPapers(Collections.emptyList());
     return r;
