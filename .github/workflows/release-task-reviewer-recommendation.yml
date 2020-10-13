@@ -1,4 +1,4 @@
-name: Reviewer Recommendation Task Service
+name: Release Reviewer Recommendation Task Service
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
       - master
     paths:
       - task-reviewer-recommendation/**
+
+  workflow_dispatch:
 
 jobs:
   test:
@@ -59,7 +61,7 @@ jobs:
           name: prod
 
       - name: Login to Docker Registry
-        run: echo '${{ secrets.DOCKER_PASS }}' | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin registry.cn-hangzhou.aliyuncs.com
+        run: echo '${{ secrets.DOCKERHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
 
       - name: Build Docker Image
         run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
@@ -82,7 +84,7 @@ jobs:
           username: ${{ secrets.ZZH_SSH_USER }}
           password: ${{ secrets.ZZH_SSH_PASS }}
           script: |
-            echo '${{ secrets.DOCKER_PASS }}' | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin registry.cn-hangzhou.aliyuncs.com
+            echo '${{ secrets.DOCKERHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
 
             docker pull ${{ secrets.TASK_REVIEWER_RECOMMENDATION_REPO }}:latest
 
@@ -96,4 +98,6 @@ jobs:
             docker run -d \
               --name task-reviewer-recommendation \
               -p 8080:8080 \
+              -e REGISTRY_IP=${{ secrets.REGISTRY_IP }} \
+              -e REGISTRY_PORT=${{ secrets.REGISTRY_PORT }} \
               ${{ secrets.TASK_REVIEWER_RECOMMENDATION_REPO }}:latest

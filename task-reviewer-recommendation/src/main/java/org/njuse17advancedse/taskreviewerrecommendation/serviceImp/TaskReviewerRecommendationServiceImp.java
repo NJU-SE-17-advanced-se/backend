@@ -4,9 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.IImpact;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.IPaperUpload;
-import org.njuse17advancedse.taskreviewerrecommendation.dto.IResearcher;
 import org.njuse17advancedse.taskreviewerrecommendation.entity.Domain;
-import org.njuse17advancedse.taskreviewerrecommendation.entity.Researcher;
 import org.njuse17advancedse.taskreviewerrecommendation.service.TaskReviewerRecommendationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,16 +31,14 @@ public class TaskReviewerRecommendationServiceImp
   }
 
   @Override
-  public ResponseEntity<List<IResearcher>> getRecommendReviewer(
+  public ResponseEntity<List<String>> getRecommendReviewer(
     IPaperUpload iPaperUpload
   ) {
-    List<IResearcher> iResearchers = new ArrayList<>();
+    List<String> researcherIds = new ArrayList<>();
 
     if (iPaperUpload != null) {
       /* 第一步，获得引用文献的作者 */
       List<String> references = iPaperUpload.getReferenceIds(); //默认获得的引用文献中所有的作者实体均已处理完成
-
-      List<String> researcherIds = new ArrayList<>();
 
       List<String> referenceResearcherIds = getResearcherIdsByPaperIds(
         references
@@ -55,11 +51,15 @@ public class TaskReviewerRecommendationServiceImp
 
       /* 第二步，获得最近在投稿刊物发表过文章（不在引文中）的作者 */
       String paperJournal = iPaperUpload.getJournal();
-      //getReviewerFromSameJournal(paperJournal, iPaperUpload.getDate(), researcherIds);
+      getReviewerFromSameJournal(
+        paperJournal,
+        iPaperUpload.getDate(),
+        researcherIds
+      );
 
       /* 第三步， 获得论文发表期间相同领域论文(不在引文和本刊物中)的作者列表*/
       List<String> paperDomainIds = iPaperUpload.getDomainIds();
-      //getReviewerFormSimilarDomain(paperDomainIds, researcherIds);
+      getReviewerFormSimilarDomain(paperDomainIds, researcherIds);
 
       /* 第四步，获得这些作者的研究领域并与论文研究领域进行比照，删去无重叠领域的作者 */
       researcherIds = deduplicateAndSort(researcherIds); //去重并排序
@@ -68,36 +68,8 @@ public class TaskReviewerRecommendationServiceImp
 
       /* 第五步，将剩余作者按照影响力进行排序，取前5个作为推荐审稿人候选 */
       researcherIds = sortResearchersByImpact(researcherIds);
-
-      iResearchers = getResearcherByIds(researcherIds);
     }
-    return new ResponseEntity<>(iResearchers, HttpStatus.OK);
-  }
-
-  /**
-   * 根据作者id列表获得作者实体列表
-   * @param researcherIds 作者id列表
-   * @return 作者实体列表
-   */
-  private List<IResearcher> getResearcherByIds(List<String> researcherIds) {
-    List<Researcher> researchers;
-    List<IResearcher> iResearchers = new ArrayList<>();
-    try {
-      researchers =
-        (List<Researcher>) restTemplate.postForObject(
-          researcherServiceAddress + "/getResearchers",
-          researcherIds,
-          List.class
-        );
-      if (researchers != null) {
-        for (Researcher researcher : researchers) {
-          iResearchers.add(new IResearcher(researcher));
-        }
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return iResearchers;
+    return new ResponseEntity<>(researcherIds, HttpStatus.OK);
   }
 
   /**
@@ -126,7 +98,7 @@ public class TaskReviewerRecommendationServiceImp
    */
   private List<String> sortResearchersByImpact(List<String> researcherIds) {
     try {
-      List<IImpact> impacts = (List<IImpact>) restTemplate.postForObject(
+      List<Double> impacts = (List<Double>) restTemplate.postForObject(
         taskImpactAnalysisServiceAddress + "/impact/researchers",
         researcherIds,
         List.class
@@ -134,7 +106,7 @@ public class TaskReviewerRecommendationServiceImp
       if (impacts != null) {
         HashMap<String, Double> map = new HashMap<>();
         for (int i = 0; i < researcherIds.size(); i++) {
-          map.put(researcherIds.get(i), impacts.get(i).getImpact());
+          map.put(researcherIds.get(i), impacts.get(i));
         }
         researcherIds.sort((o1, o2) -> (int) (map.get(o2) - map.get(o1)));
         if (researcherIds.size() > 5) {
@@ -237,23 +209,19 @@ public class TaskReviewerRecommendationServiceImp
     List<String> paperDomainIds
   ) {
     try {
-      List<List<Domain>> reviewersDomains = (List<List<Domain>>) restTemplate.postForObject(
+      List<List<String>> reviewersDomainIds = (List<List<String>>) restTemplate.postForObject(
         researcherServiceAddress + "/researcher/getDomains",
         researcherIds,
         List.class
       );
 
-      if (reviewersDomains != null) {
-        HashMap<String, List<Domain>> map = new HashMap<>();
+      if (reviewersDomainIds != null) {
+        HashMap<String, List<String>> map = new HashMap<>();
         for (int i = 0; i < researcherIds.size(); i++) {
-          map.put(researcherIds.get(i), reviewersDomains.get(i));
+          map.put(researcherIds.get(i), reviewersDomainIds.get(i));
         }
         for (String rid : map.keySet()) {
-          List<Domain> domains = map.get(rid);
-          List<String> domainIds = new ArrayList<>();
-          for (Domain domain : domains) {
-            domainIds.add(domain.getId());
-          }
+          List<String> domainIds = map.get(rid);
           boolean hasNoSameDomain = Collections.disjoint(
             paperDomainIds,
             domainIds
@@ -269,11 +237,11 @@ public class TaskReviewerRecommendationServiceImp
   }
 
   @Override
-  public ResponseEntity<List<IResearcher>> getNotRecommendReviewer(
+  public ResponseEntity<List<String>> getNotRecommendReviewer(
     IPaperUpload iPaperUpload
   ) {
-    List<IResearcher> iResearchers = new ArrayList<>();
-    List<Researcher> partners = new ArrayList<>(); //合作作者列表
+    List<String> researcherIds = new ArrayList<>();
+    List<String> partners = new ArrayList<>(); //合作作者列表
 
     if (iPaperUpload != null) {
       List<String> researcherIdsOfPaper = iPaperUpload.getResearcherIds();
@@ -282,29 +250,25 @@ public class TaskReviewerRecommendationServiceImp
       partners.addAll(getPartnersByRid(researcherIdsOfPaper));
 
       //第二步，获得合作者的研究领域并按照相关程度排序，取前五名作者
-      iResearchers =
+      researcherIds =
         sortPartnersByDomains(partners, iPaperUpload.getDomainIds());
     }
-    return new ResponseEntity<>(iResearchers, HttpStatus.OK);
+    return new ResponseEntity<>(researcherIds, HttpStatus.OK);
   }
 
   /**
    * 获得合作者的研究领域并按照相关程度排序，取前五名作者
-   * @param partners 合作者列表
+   * @param rids 合作者列表
    * @param domainIds 投稿文章领域
    * @return 结果列表
    */
-  private List<IResearcher> sortPartnersByDomains(
-    List<Researcher> partners,
+  private List<String> sortPartnersByDomains(
+    List<String> rids,
     List<String> domainIds
   ) {
-    List<IResearcher> iResearchers = new ArrayList<>();
+    List<String> researcherIds = new ArrayList<>();
 
     //合作者id列表去重
-    List<String> rids = partners
-      .stream()
-      .map(Researcher::getId)
-      .collect(Collectors.toList());
     HashSet<String> set = new HashSet<>(rids);
     rids.clear();
     rids.addAll(set);
@@ -325,8 +289,8 @@ public class TaskReviewerRecommendationServiceImp
             .stream()
             .map(Domain::getId)
             .collect(Collectors.toList());
-          System.out.println("this:" + tempDomainIds);
-          System.out.println("that:" + domainOfPartnersIds);
+          //          System.out.println("this:" + tempDomainIds);
+          //          System.out.println("that:" + domainOfPartnersIds);
           tempDomainIds.retainAll(domainOfPartnersIds);
           sumOfDomain = tempDomainIds.size();
           map.put(rids.get(i), sumOfDomain);
@@ -335,19 +299,12 @@ public class TaskReviewerRecommendationServiceImp
         if (rids.size() > 5) {
           rids = rids.subList(0, 5);
         }
-        for (String rid : rids) {
-          for (Researcher researcher : partners) {
-            if (researcher.getId().equals(rid)) {
-              iResearchers.add(new IResearcher(researcher));
-              break;
-            }
-          }
-        }
+        researcherIds = new ArrayList<>(rids);
       }
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return iResearchers;
+    return researcherIds;
   }
 
   /**
@@ -355,11 +312,11 @@ public class TaskReviewerRecommendationServiceImp
    * @param rids 作者id列表
    * @return 合作作者列表
    */
-  private List<Researcher> getPartnersByRid(List<String> rids) {
-    List<Researcher> researchers = new ArrayList<>();
+  private List<String> getPartnersByRid(List<String> rids) {
+    List<String> researchers = new ArrayList<>();
     try {
       researchers =
-        (List<Researcher>) restTemplate.postForObject(
+        (List<String>) restTemplate.postForObject(
           taskPartnerShipServiceAddress + "/getPartnersByRids/",
           rids,
           List.class

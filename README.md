@@ -1,4 +1,4 @@
-# backend
+# backend [![API Gateway](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20API%20Gateway/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)
 
 南京大学软件学院 2017 级软件工程高级技术方向实践。
 
@@ -12,11 +12,13 @@
 
 组员：殷承鉴，学号：171250661
 
-## 项目地址
+## 项目地址 (WIP)
 
 https://wensun.top/
 
-## 接口说明
+## 接口说明 (WIP)
+
+文档地址：https://wensun.top/api/swagger-ui/index.html
 
 1. 查看某学者不同时间所在机构（需求 3.1）
 2. 查看某学者不同时间研究方向（需求 4.1，需求 4.2）
@@ -40,3 +42,11 @@ https://wensun.top/
 - Java 8
 - Node.js 12.18.3
 - Yarn (包管理工具) 1.22.5
+
+然后在项目根目录运行命令，安装项目规范相关工具（依赖于 node.js 和 yarn）：
+
+```shell script
+yarn install
+```
+
+**一定**要运行此条命令，否则项目规范相关工具无法工作。

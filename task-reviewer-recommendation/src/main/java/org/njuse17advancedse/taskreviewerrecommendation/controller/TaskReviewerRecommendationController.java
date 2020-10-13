@@ -2,7 +2,6 @@ package org.njuse17advancedse.taskreviewerrecommendation.controller;
 
 import java.util.List;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.IPaperUpload;
-import org.njuse17advancedse.taskreviewerrecommendation.dto.IResearcher;
 import org.njuse17advancedse.taskreviewerrecommendation.service.TaskReviewerRecommendationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +18,14 @@ public class TaskReviewerRecommendationController {
   }
 
   @RequestMapping(value = "/recommend", method = RequestMethod.POST)
-  private ResponseEntity<List<IResearcher>> getRecommendReviewer(
+  private ResponseEntity<List<String>> getRecommendReviewer(
     @RequestBody IPaperUpload iPaperUpload
   ) {
     return recommendationService.getRecommendReviewer(iPaperUpload);
   }
 
   @RequestMapping(value = "/not-recommend", method = RequestMethod.POST)
-  private ResponseEntity<List<IResearcher>> getNotRecommendReviewer(
+  private ResponseEntity<List<String>> getNotRecommendReviewer(
     @RequestBody IPaperUpload iPaperUpload
   ) {
     return recommendationService.getNotRecommendReviewer(iPaperUpload);

@@ -1,11 +1,11 @@
-name: Release API Gateway
+name: Release Service Registry
 
 on:
   push:
     branches:
       - master
     paths:
-      - api-gateway/**
+      - service-registry/**
 
   workflow_dispatch:
 
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-18.04
     defaults:
       run:
-        working-directory: api-gateway
+        working-directory: service-registry
 
     steps:
       - uses: actions/checkout@v2
@@ -44,14 +44,14 @@ jobs:
         with:
           name: prod
           path: |
-            api-gateway/target
-            api-gateway/Dockerfile
+            service-registry/target
+            service-registry/Dockerfile
 
   docker:
     name: Publish Docker Image
     runs-on: ubuntu-18.04
     env:
-      REPO: ${{ secrets.API_GATEWAY_REPO }}
+      REPO: ${{ secrets.SERVICE_REGISTRY_REPO }}
     needs: [test]
 
     steps:
@@ -80,15 +80,15 @@ jobs:
         # 这其实稍微有点冗余，但是好在整个脚本的体量并不大
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.WENSUN_SSH_HOST }}
-          username: ${{ secrets.WENSUN_SSH_USER }}
-          password: ${{ secrets.WENSUN_SSH_PASS }}
+          host: ${{ secrets.ZZH_SSH_HOST }}
+          username: ${{ secrets.ZZH_SSH_USER }}
+          password: ${{ secrets.ZZH_SSH_PASS }}
           script: |
             echo '${{ secrets.DOCKERHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
 
-            docker pull ${{ secrets.API_GATEWAY_REPO }}:latest
+            docker pull ${{ secrets.SERVICE_REGISTRY_REPO }}:latest
 
-            service_id=$(sudo docker container ls -aqf name="api-gateway")
+            service_id=$(sudo docker container ls -aqf name="service-registry")
             if [ "$service_id" ]; then
               sudo docker container rm -v -f "$service_id"
             else
@@ -96,6 +96,8 @@ jobs:
             fi
 
             docker run -d \
-              --name api-gateway \
-              -p 8080:6324 \
-              ${{ secrets.API_GATEWAY_REPO }}:latest
+              --name service-registry \
+              -p ${{ secrets.REGISTRY_PORT }}:8080 \
+              -e REGISTRY_IP=${{ secrets.REGISTRY_IP }} \
+              -e REGISTRY_PORT=${{ secrets.REGISTRY_PORT }} \
+              ${{ secrets.SERVICE_REGISTRY_REPO }}:latest

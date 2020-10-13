@@ -187,6 +187,7 @@ class ResearcherControllerTest {
   @Test
   void testGetImpact_success() throws Exception {
     String researcherId = "1";
+    System.out.println(BASE_URL + "/" + researcherId + "/impact");
     MvcResult impactRes = mockMvc
       .perform(
         MockMvcRequestBuilders.get(BASE_URL + "/" + researcherId + "/impact")
@@ -200,4 +201,19 @@ class ResearcherControllerTest {
 
   @Test
   void testGetImpact_failure() {}
+
+  @Test
+  void testGetResearcherById_success() throws Exception {
+    String researcherId = "1";
+    MvcResult researcherRes = mockMvc
+      .perform(MockMvcRequestBuilders.get(BASE_URL + "/" + researcherId))
+      .andExpect(MockMvcResultMatchers.status().isOk())
+      .andReturn();
+    String researcherJsonStr = researcherRes.getResponse().getContentAsString();
+    System.out.println(researcherJsonStr);
+    assertThat(researcherJsonStr, is(not(emptyOrNullString())));
+  }
+
+  @Test
+  void testGetResearcherById_failure() {}
 }

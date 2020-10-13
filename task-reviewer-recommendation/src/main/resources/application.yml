@@ -1,10 +1,10 @@
 eureka:
-  client:
-    fetch-registry: false
-    register-with-eureka: false
-
   instance:
     prefer-ip-address: true
+
+server:
+  error:
+    include-message: always # 启用错误信息
 
 spring:
   profiles:
