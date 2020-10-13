@@ -1,0 +1,21 @@
+eureka:
+  instance:
+    prefer-ip-address: true
+
+server:
+  error:
+    include-message: always # 启用错误信息
+
+spring:
+  profiles:
+    active: dev
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/HermitSun/advanced-se-config
+          username: ${CONFIG_SERVER_GIT_USER}
+          password: ${CONFIG_SERVER_GIT_PASS}
+          default-label: master
+          search-paths: '*'

@@ -4,7 +4,7 @@ eureka:
       defaultZone: http://${REGISTRY_IP}:${REGISTRY_PORT}/eureka
 
   instance:
-    ip-address: ${REGISTRY_IP}
+    ip-address: 106.15.248.145
 
 server:
   port: 8080
