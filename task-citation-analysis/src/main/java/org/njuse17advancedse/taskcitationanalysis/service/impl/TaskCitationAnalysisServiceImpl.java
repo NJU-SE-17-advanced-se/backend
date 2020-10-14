@@ -74,6 +74,40 @@ public class TaskCitationAnalysisServiceImpl
   }
 
   @Override
+  public Map<String, Integer> getResearcherQuotedResearcherNums(
+    String researcherId
+  ) {
+    Map<String, Integer> res = new HashMap<>();
+    List<Paper> pList = fakeService.getResearcherById(researcherId).getPapers();
+    for (Paper p : pList) {
+      List<String> quotedPapers = getQuotedPapersByPaperId(p.getId());
+      for (String tp : quotedPapers) {
+        for (Researcher r : fakeService.getPaperById(tp).getResearchers()) {
+          res.put(r.getId(), res.getOrDefault(r.getId(), 0) + 1);
+        }
+      }
+    }
+    return res;
+  }
+
+  @Override
+  public Map<String, Integer> getResearcherQuotingResearcherNums(
+    String researcherId
+  ) {
+    Map<String, Integer> res = new HashMap<>();
+    List<Paper> pList = fakeService.getResearcherById(researcherId).getPapers();
+    for (Paper p : pList) {
+      List<String> quotedPapers = getQuotingPapersByPaperId(p.getId());
+      for (String tp : quotedPapers) {
+        for (Researcher r : fakeService.getPaperById(tp).getResearchers()) {
+          res.put(r.getId(), res.getOrDefault(r.getId(), 0) + 1);
+        }
+      }
+    }
+    return res;
+  }
+
+  @Override
   public Map<String, Integer> getResearcherQuoteNums(
     String researcherId1,
     String researcherId2
@@ -107,6 +141,8 @@ public class TaskCitationAnalysisServiceImpl
   public void init() {
     List<Paper> papers = fakeService.getAllPapers();
     //String cnt=0;
+    quoted = new HashMap<>();
+    quoting = new HashMap<>();
     for (Paper paper : papers) {
       String id = paper.getId();
       //            string2String.put(id,cnt);

@@ -22,4 +22,11 @@ public class FakeServiceImpl implements FakeService {
     r.setPapers(Collections.emptyList());
     return r;
   }
+
+  @Override
+  public Paper getPaperById(String id) {
+    Paper p = new Paper();
+    p.setResearchers(Collections.emptyList());
+    return p;
+  }
 }

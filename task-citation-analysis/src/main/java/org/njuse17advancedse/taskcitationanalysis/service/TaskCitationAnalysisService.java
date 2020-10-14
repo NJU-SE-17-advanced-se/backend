@@ -34,6 +34,10 @@ public interface TaskCitationAnalysisService {
     String researcherId1,
     String researcherId2
   );
+
+  Map<String, Integer> getResearcherQuotedResearcherNums(String researcherId);
+
+  Map<String, Integer> getResearcherQuotingResearcherNums(String researcherId);
   //计算一遍数据
   void init();
 }
