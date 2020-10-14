@@ -67,7 +67,7 @@ public class TaskCitationAnalysisController {
   }
 
   /**
-   * 返回一个学者对其他学者的引用次数或被其他学者引用的次数
+   * 返回一个学者论文分别引用了哪些学者或被哪些学者引用
    */
   @GetMapping(value = "/researcher/all/{id}")
   public Map<String, List<String>> getResearcherQuoteResearcherNums(
