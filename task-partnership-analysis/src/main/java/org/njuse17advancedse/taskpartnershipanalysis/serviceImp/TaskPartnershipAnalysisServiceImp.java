@@ -94,24 +94,26 @@ public class TaskPartnershipAnalysisServiceImp
     IResearcherNet iResearcherNet = new IResearcherNet();
     List<Integer> authorValues = new ArrayList<>(coAuthorMap.values());
     List<Integer> citationValues = new ArrayList<>(coCitationMap.values());
-    int max_a = Collections.max(authorValues);
-    int min_a = Collections.min(authorValues);
-    int max_c = Collections.max(citationValues);
-    int min_c = Collections.min(citationValues);
-    List<String> partners = new ArrayList<>(coAuthorMap.keySet());
-    List<Double[]> weights = new ArrayList<>();
-    for (String partner : partners) {
-      Double a = (double) (coAuthorMap.get(partner) - min_a + 1) /
-      (max_a - min_a + 1);
-      Double c = (double) (coCitationMap.get(partner) - min_c + 1) /
-      (max_c - min_c + 1);
-      Double[] doubles = new Double[2];
-      doubles[0] = Double.parseDouble(String.format("%.2f", a));
-      doubles[1] = Double.parseDouble(String.format("%.2f", c));
-      weights.add(doubles);
+    if (authorValues.size() >= 1 && citationValues.size() >= 1) {
+      int max_a = Collections.max(authorValues);
+      int min_a = Collections.min(authorValues);
+      int max_c = Collections.max(citationValues);
+      int min_c = Collections.min(citationValues);
+      List<String> partners = new ArrayList<>(coAuthorMap.keySet());
+      List<Double[]> weights = new ArrayList<>();
+      for (String partner : partners) {
+        Double a = (double) (coAuthorMap.get(partner) - min_a + 1) /
+        (max_a - min_a + 1);
+        Double c = (double) (coCitationMap.get(partner) - min_c + 1) /
+        (max_c - min_c + 1);
+        Double[] doubles = new Double[2];
+        doubles[0] = Double.parseDouble(String.format("%.2f", a));
+        doubles[1] = Double.parseDouble(String.format("%.2f", c));
+        weights.add(doubles);
+      }
+      iResearcherNet.setPartners(partners);
+      iResearcherNet.setWeight(weights);
     }
-    iResearcherNet.setPartners(partners);
-    iResearcherNet.setWeight(weights);
     return iResearcherNet;
   }
 
