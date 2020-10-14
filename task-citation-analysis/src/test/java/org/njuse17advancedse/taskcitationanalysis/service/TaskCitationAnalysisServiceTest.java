@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import java.util.*;
+import lombok.var;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -319,17 +320,25 @@ public class TaskCitationAnalysisServiceTest {
     Mockito.when(r1.getPapers()).thenReturn(Arrays.asList(p1, p2));
     Mockito.when(r2.getPapers()).thenReturn(Collections.singletonList(p3));
     Mockito.when(r3.getPapers()).thenReturn(Collections.singletonList(p6));
-    Map<String, Integer> map1 = new HashMap<>();
-    map1.put("R1", 4);
-    map1.put("R2", 2);
-    Map<String, Integer> map2 = new HashMap<>();
-    map2.put("R1", 1);
-    Map<String, Integer> map3 = new HashMap<>();
-    map3.put("R1", 2);
-    map3.put("R2", 1);
-    assertEquals(map1, service.getResearcherQuotedResearcherNums("R1"));
-    assertEquals(map2, service.getResearcherQuotedResearcherNums("R2"));
-    assertEquals(map3, service.getResearcherQuotedResearcherNums("R3"));
+    Map<String, List<String>> map1 = new HashMap<>();
+    map1.put("1", Arrays.asList("R1", "R2"));
+    map1.put("2", Arrays.asList("R1", "R2"));
+    Map<String, List<String>> map2 = new HashMap<>();
+    map2.put("3", Arrays.asList("R1"));
+    Map<String, List<String>> map3 = new HashMap<>();
+    map3.put("6", Arrays.asList("R1", "R2"));
+    assertEquals(
+      true,
+      sameMap(map1, service.getResearcherQuotedResearcherNums("R1"))
+    );
+    assertEquals(
+      true,
+      sameMap(map2, service.getResearcherQuotedResearcherNums("R2"))
+    );
+    assertEquals(
+      true,
+      sameMap(map3, service.getResearcherQuotedResearcherNums("R3"))
+    );
   }
 
   @Test
@@ -402,16 +411,44 @@ public class TaskCitationAnalysisServiceTest {
     Mockito.when(r1.getPapers()).thenReturn(Arrays.asList(p1, p2));
     Mockito.when(r2.getPapers()).thenReturn(Collections.singletonList(p3));
     Mockito.when(r3.getPapers()).thenReturn(Collections.singletonList(p6));
-    Map<String, Integer> map1 = new HashMap<>();
-    map1.put("R1", 4);
-    map1.put("R2", 1);
-    map1.put("R3", 2);
-    Map<String, Integer> map2 = new HashMap<>();
-    map2.put("R1", 2);
-    map2.put("R3", 1);
-    Map<String, Integer> map3 = new HashMap<>();
-    assertEquals(map1, service.getResearcherQuotingResearcherNums("R1"));
-    assertEquals(map2, service.getResearcherQuotingResearcherNums("R2"));
-    assertEquals(map3, service.getResearcherQuotingResearcherNums("R3"));
+    Map<String, List<String>> map1 = new HashMap<>();
+    map1.put("1", Arrays.asList("R1", "R2", "R3"));
+    map1.put("2", Arrays.asList("R1", "R3"));
+    Map<String, List<String>> map2 = new HashMap<>();
+    map2.put("3", Arrays.asList("R1", "R3"));
+    Map<String, List<String>> map3 = new HashMap<>();
+    map3.put("6", Collections.emptyList());
+    assertEquals(
+      true,
+      sameMap(map1, service.getResearcherQuotingResearcherNums("R1"))
+    );
+    assertEquals(
+      true,
+      sameMap(map2, service.getResearcherQuotingResearcherNums("R2"))
+    );
+    assertEquals(
+      true,
+      sameMap(map3, service.getResearcherQuotingResearcherNums("R3"))
+    );
+  }
+
+  boolean sameMap(
+    Map<String, List<String>> map1,
+    Map<String, List<String>> map2
+  ) {
+    if (map1.size() != map2.size()) {
+      return false;
+    }
+    for (String s : map1.keySet()) {
+      var l1 = map1.get(s);
+      var l2 = map2.get(s);
+      if (l1 == null || l2 == null) return false;
+      Collections.sort(l1);
+      Collections.sort(l2);
+      if (!l1.equals(l2)) {
+        return false;
+      }
+    }
+    return true;
   }
 }
