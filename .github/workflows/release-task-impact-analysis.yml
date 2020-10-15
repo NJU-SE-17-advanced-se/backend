@@ -96,6 +96,7 @@ jobs:
             fi
 
             docker run -d \
+              --restart=always \
               --name task-impact-analysis \
               -p 8080:8080 \
               ${{ secrets.TASK_IMPACT_ANALYSIS_REPO }}:latest

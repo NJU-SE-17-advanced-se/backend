@@ -96,6 +96,7 @@ jobs:
             fi
 
             docker run -d \
+              --restart=always \
               --name api-gateway \
               -p 8080:6324 \
               ${{ secrets.API_GATEWAY_REPO }}:latest
