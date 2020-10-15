@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: task-partnership-analysis
+
+  profiles:
+    active: dev
