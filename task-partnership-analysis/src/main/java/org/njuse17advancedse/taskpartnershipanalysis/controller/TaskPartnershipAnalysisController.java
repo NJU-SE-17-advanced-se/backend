@@ -17,7 +17,7 @@ public class TaskPartnershipAnalysisController {
     this.taskPartnershipAnalysisService = taskPartnershipAnalysisService;
   }
 
-  // 分析
+  // 合作关系分析
   @RequestMapping(value = "/partners-net/{id}", method = RequestMethod.GET)
   private ResponseEntity<IResearcherNet> getPartnership(
     @PathVariable String id,
@@ -27,7 +27,7 @@ public class TaskPartnershipAnalysisController {
     return taskPartnershipAnalysisService.getPartnership(id, start, end);
   }
 
-  // 预测
+  // 合作关系分析预测
   @RequestMapping(value = "/potential-partners/{id}")
   private ResponseEntity<Map<String, Double>> getPotentialPartners(
     @PathVariable String id
