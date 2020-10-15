@@ -1,7 +1,6 @@
 package org.njuse17advancedse.taskpartnershipanalysis.service;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IResearcherNet;
 import org.springframework.http.ResponseEntity;
 
@@ -28,7 +27,5 @@ public interface TaskPartnershipAnalysisService {
    * @param researchId 作者id
    * @return 预测合作学者列表
    */
-  ResponseEntity<HashMap<String, Double>> getPotentialPartners(
-    String researchId
-  );
+  ResponseEntity<Map<String, Double>> getPotentialPartners(String researchId);
 }

@@ -99,10 +99,10 @@ public class TaskPartnershipAnalysisServiceImp
     List<Integer> authorValues = new ArrayList<>(coAuthorMap.values());
     List<Integer> citationValues = new ArrayList<>(coCitationMap.values());
     if (authorValues.size() >= 1 && citationValues.size() >= 1) {
-      int max_a = Collections.max(authorValues);
-      int min_a = Collections.min(authorValues);
-      int max_c = Collections.max(citationValues);
-      int min_c = Collections.min(citationValues);
+      int max_a = Collections.max(authorValues); //合著次数最大值
+      int min_a = Collections.min(authorValues); //合著次数最小值
+      int max_c = Collections.max(citationValues); //共引论文数最大值
+      int min_c = Collections.min(citationValues); //共引论文数最小值
       List<String> partners = new ArrayList<>(coAuthorMap.keySet());
       List<Double[]> weights = new ArrayList<>();
       for (String partner : partners) {
@@ -195,10 +195,10 @@ public class TaskPartnershipAnalysisServiceImp
   }
 
   @Override
-  public ResponseEntity<HashMap<String, Double>> getPotentialPartners(
+  public ResponseEntity<Map<String, Double>> getPotentialPartners(
     String researchId
   ) {
-    HashMap<String, Double> potentialPartnerNet = new HashMap<>();
+    Map<String, Double> potentialPartnerNet = new HashMap<>();
 
     //通过相似的研究领域获得推荐合作者候选
     List<String> candidate_domain = getResearchersOfSimilarDomainById(
@@ -216,10 +216,11 @@ public class TaskPartnershipAnalysisServiceImp
         .collect(Collectors.toList());
       for (String partner : candidate) {
         //计算三个评估方向的得分加权和
+        //TODO 权值待确定
         Double score =
-          countByImpact(partner) +
-          countByDomain(researchId, partner) +
-          countByCooperation(researchId, partner);
+          countByImpact(partner) + //影响力数值评分
+          countByDomain(researchId, partner) + //领域契合度数值评分
+          countByCooperation(researchId, partner); //合作程度量化数值评分
         potentialPartnerNet.put(partner, score);
       }
 
@@ -253,6 +254,7 @@ public class TaskPartnershipAnalysisServiceImp
     Calendar cal = Calendar.getInstance();
     int nowYear = cal.get(Calendar.YEAR) + 1;
     try {
+      //通过R_ScoreData中的数据来计算两作者之间的合作程度量化数值
       R_ScoreData r_scoreData = restTemplate.getForObject(
         researcherServiceAddress + "/R-score/" + researchId + "/" + partnerId,
         R_ScoreData.class
@@ -262,6 +264,7 @@ public class TaskPartnershipAnalysisServiceImp
           double co_num = r_scoreData.getMapOfYearAndCoNumber().get(year);
           double sum1 = r_scoreData.getMapOfYearAndSum1().get(year);
           double sum2 = r_scoreData.getMapOfYearAndSum2().get(year);
+          //计算公式为e的（当前年份-合作发生年份）分之一次方*(当前年份合作发表论文数/（当前年份两者发表论文总数）)
           score +=
             Math.pow(Math.E, (double) 1 / (nowYear - year)) *
             (co_num / (sum1 + sum2));

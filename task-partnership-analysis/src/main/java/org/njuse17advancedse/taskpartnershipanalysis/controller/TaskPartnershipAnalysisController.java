@@ -1,6 +1,6 @@
 package org.njuse17advancedse.taskpartnershipanalysis.controller;
 
-import java.util.HashMap;
+import java.util.Map;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IResearcherNet;
 import org.njuse17advancedse.taskpartnershipanalysis.service.TaskPartnershipAnalysisService;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ public class TaskPartnershipAnalysisController {
   }
 
   @RequestMapping(value = "/potential-partners/{id}")
-  private ResponseEntity<HashMap<String, Double>> getPotentialPartners(
+  private ResponseEntity<Map<String, Double>> getPotentialPartners(
     @PathVariable String id
   ) {
     return taskPartnershipAnalysisService.getPotentialPartners(id);
