@@ -1,0 +1,101 @@
+name: Release Partnership Analysis Task Service
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - task-partnership-analysis/**
+
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Unit Tests & Integration Tests
+    runs-on: ubuntu-18.04
+    defaults:
+      run:
+        working-directory: task-partnership-analysis
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache Maven Repo
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Maven Package
+        run: mvn -B clean package -DskipTests
+
+      - name: Maven Verify
+        run: mvn -B clean verify
+
+      - name: Save Production
+        uses: actions/upload-artifact@v2
+        with:
+          name: prod
+          path: |
+            task-partnership-analysis/target
+            task-partnership-analysis/Dockerfile
+
+  docker:
+    name: Publish Docker Image
+    runs-on: ubuntu-18.04
+    env:
+      REPO: ${{ secrets.TASK_PARTNERSHIP_ANALYSIS_REPO }}
+    needs: [test]
+
+    steps:
+      - name: Restore Production
+        uses: actions/download-artifact@v2
+        with:
+          name: prod
+
+      - name: Login to Docker Registry
+        run: echo '${{ secrets.DOCKERHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
+
+      - name: Build Docker Image
+        run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
+
+      - name: Publish Docker Image
+        run: docker push $REPO
+
+  deploy:
+    name: Restart Service
+    runs-on: ubuntu-18.04
+    needs: [ docker ]
+
+    steps:
+      - name: Deploy in Remote Server
+        # 主要是这个插件用env里的变量会无法识别，还是得用action本身的语法
+        # 这其实稍微有点冗余，但是好在整个脚本的体量并不大
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ZZ_SSH_HOST }}
+          username: ${{ secrets.ZZ_SSH_USER }}
+          password: ${{ secrets.ZZ_SSH_PASS }}
+          script: |
+            echo '${{ secrets.DOCKERHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
+
+            docker pull ${{ secrets.TASK_PARTNERSHIP_ANALYSIS_REPO }}:latest
+
+            service_id=$(sudo docker container ls -aqf name="task-partnership-analysis")
+            if [ "$service_id" ]; then
+              sudo docker container rm -v -f "$service_id"
+            else
+              echo 'no service'
+            fi
+
+            docker run -d \
+              --name task-partnership-analysis \
+              -p 8080:8080 \
+              ${{ secrets.TASK_PARTNERSHIP_ANALYSIS_REPO }}:latest
