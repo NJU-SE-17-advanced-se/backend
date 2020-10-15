@@ -3,6 +3,7 @@ package org.njuse17advancedse.taskpartnershipanalysis.serviceImp;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IResearcherNet;
+import org.njuse17advancedse.taskpartnershipanalysis.dto.R_ScoreData;
 import org.njuse17advancedse.taskpartnershipanalysis.entity.Paper;
 import org.njuse17advancedse.taskpartnershipanalysis.entity.Researcher;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -134,5 +136,92 @@ class TaskPartnershipAnalysisServiceImpTest {
   }
 
   @Test
-  void getPotentialPartners() {}
+  void getPotentialPartners() {
+    String testRid = "171250661";
+    List<String> candidate_domain = Lists.newArrayList(
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7"
+    );
+    List<String> candidate_cooperation = Lists.newArrayList(
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12"
+    );
+    Mockito
+      .when(
+        restTemplate.getForObject(
+          "/researchers-similar-domain/171250661",
+          List.class
+        )
+      )
+      .thenReturn(candidate_domain);
+    Mockito
+      .when(restTemplate.getForObject("/past-partners/171250661", List.class))
+      .thenReturn(candidate_cooperation);
+
+    for (int i = 0; i < 13; i++) {
+      Mockito
+        .when(restTemplate.getForObject("/impact/" + i, Double.class))
+        .thenReturn((double) i);
+      Mockito
+        .when(
+          restTemplate.getForObject(
+            "/domain-coverage/171250661/" + i,
+            Double.class
+          )
+        )
+        .thenReturn((double) i);
+      R_ScoreData r_scoreData = new R_ScoreData();
+      HashMap<Integer, Integer> coNumber = new HashMap<>();
+      HashMap<Integer, Integer> sum1 = new HashMap<>();
+      HashMap<Integer, Integer> sum2 = new HashMap<>();
+      for (int j = 2018; j < 2021; j++) {
+        coNumber.put(j, i + 1);
+        sum1.put(j, i + 5);
+        sum2.put(j, i + 4);
+      }
+      r_scoreData.setMapOfYearAndCoNumber(coNumber);
+      r_scoreData.setMapOfYearAndSum1(sum1);
+      r_scoreData.setMapOfYearAndSum2(sum2);
+      Mockito
+        .when(
+          restTemplate.getForObject(
+            "/R-score/171250661/" + i,
+            R_ScoreData.class
+          )
+        )
+        .thenReturn(r_scoreData);
+    }
+
+    HashMap<String, Double> result = new HashMap<>();
+    List<Double> values = Lists.newArrayList(
+      26.27,
+      24.23,
+      22.19,
+      20.13,
+      18.07,
+      16.0,
+      13.92,
+      11.82,
+      9.69,
+      7.54
+    );
+    for (int i = 0; i < 10; i++) {
+      result.put((12 - i) + "", values.get(i));
+    }
+    assertEquals(
+      taskPartnershipAnalysisService.getPotentialPartners(testRid).getBody(),
+      result
+    );
+  }
 }

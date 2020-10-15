@@ -1,15 +1,13 @@
 package org.njuse17advancedse.taskpartnershipanalysis.controller;
 
-import java.util.List;
+import java.util.HashMap;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IResearcherNet;
 import org.njuse17advancedse.taskpartnershipanalysis.service.TaskPartnershipAnalysisService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping(value = "/partnership")
 public class TaskPartnershipAnalysisController {
   private final TaskPartnershipAnalysisService taskPartnershipAnalysisService;
 
@@ -19,24 +17,17 @@ public class TaskPartnershipAnalysisController {
     this.taskPartnershipAnalysisService = taskPartnershipAnalysisService;
   }
 
-  @RequestMapping(
-    value = "/partnership/{id}/{startDate}/{endDate}",
-    method = RequestMethod.GET
-  )
+  @RequestMapping(value = "/partners-net/{id}", method = RequestMethod.GET)
   private ResponseEntity<IResearcherNet> getPartnership(
     @PathVariable String id,
-    @PathVariable String startDate,
-    @PathVariable String endDate
+    @RequestParam String start,
+    @RequestParam String end
   ) {
-    return taskPartnershipAnalysisService.getPartnership(
-      id,
-      startDate,
-      endDate
-    );
+    return taskPartnershipAnalysisService.getPartnership(id, start, end);
   }
 
-  @RequestMapping(value = "potential-partners/{id}")
-  private ResponseEntity<List<String>> getPotentialPartners(
+  @RequestMapping(value = "/potential-partners/{id}")
+  private ResponseEntity<HashMap<String, Double>> getPotentialPartners(
     @PathVariable String id
   ) {
     return taskPartnershipAnalysisService.getPotentialPartners(id);

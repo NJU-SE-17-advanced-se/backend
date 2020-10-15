@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.assertj.core.util.Lists;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IResearcherNet;
+import org.njuse17advancedse.taskpartnershipanalysis.dto.R_ScoreData;
 import org.njuse17advancedse.taskpartnershipanalysis.entity.Paper;
 import org.njuse17advancedse.taskpartnershipanalysis.entity.Researcher;
 import org.njuse17advancedse.taskpartnershipanalysis.service.TaskPartnershipAnalysisService;
@@ -16,6 +17,9 @@ import org.springframework.web.client.RestTemplate;
 public class TaskPartnershipAnalysisServiceImp
   implements TaskPartnershipAnalysisService {
   private final String paperServiceAddress = "";
+  private final String researcherServiceAddress = "";
+  private final String taskImpactAnalysisServiceAddress = "";
+  private final String taskDomainAnalysisServiceAddress = "";
 
   private final RestTemplate restTemplate;
 
@@ -29,7 +33,7 @@ public class TaskPartnershipAnalysisServiceImp
     String startDate,
     String endDate
   ) {
-    IResearcherNet iResearcherNet = new IResearcherNet();
+    IResearcherNet iResearcherNet;
     //根据作者，时间获得该作者发表的论文
     List<Paper> papers = getPapersByResearcherId(
       researcherId,
@@ -191,7 +195,165 @@ public class TaskPartnershipAnalysisServiceImp
   }
 
   @Override
-  public ResponseEntity<List<String>> getPotentialPartners(String researchId) {
-    return null;
+  public ResponseEntity<HashMap<String, Double>> getPotentialPartners(
+    String researchId
+  ) {
+    HashMap<String, Double> potentialPartnerNet = new HashMap<>();
+
+    //通过相似的研究领域获得推荐合作者候选
+    List<String> candidate_domain = getResearchersOfSimilarDomainById(
+      researchId
+    );
+    //通过合作关系网络获得推荐合作者候选
+    List<String> candidate_cooperation = getResearchersOfPartners(researchId);
+
+    if (candidate_domain != null) {
+      candidate_domain.addAll(candidate_cooperation);
+      //取并集
+      List<String> candidate = candidate_domain
+        .stream()
+        .distinct()
+        .collect(Collectors.toList());
+      for (String partner : candidate) {
+        //计算三个评估方向的得分加权和
+        Double score =
+          countByImpact(partner) +
+          countByDomain(researchId, partner) +
+          countByCooperation(researchId, partner);
+        potentialPartnerNet.put(partner, score);
+      }
+
+      //保留得分最高的前十个数据
+      if (potentialPartnerNet.size() > 10) {
+        List<Double> scores = new ArrayList<>(potentialPartnerNet.values());
+        scores.sort((o1, o2) -> (int) (o2 - o1));
+        Iterator<Map.Entry<String, Double>> iterator = potentialPartnerNet
+          .entrySet()
+          .iterator();
+        while (iterator.hasNext()) {
+          Map.Entry<String, Double> entry = iterator.next();
+          Double value = entry.getValue();
+          if (value <= scores.get(10)) {
+            iterator.remove();
+          }
+        }
+      }
+    }
+    return new ResponseEntity<>(potentialPartnerNet, HttpStatus.OK);
+  }
+
+  /**
+   * 计算作者之间的关联程度
+   * @param researchId 作者id
+   * @param partnerId 合作者id
+   * @return 量化数值
+   */
+  private Double countByCooperation(String researchId, String partnerId) {
+    double score = 0.0;
+    Calendar cal = Calendar.getInstance();
+    int nowYear = cal.get(Calendar.YEAR) + 1;
+    try {
+      R_ScoreData r_scoreData = restTemplate.getForObject(
+        researcherServiceAddress + "/R-score/" + researchId + "/" + partnerId,
+        R_ScoreData.class
+      );
+      if (r_scoreData != null) {
+        for (Integer year : r_scoreData.getMapOfYearAndCoNumber().keySet()) {
+          double co_num = r_scoreData.getMapOfYearAndCoNumber().get(year);
+          double sum1 = r_scoreData.getMapOfYearAndSum1().get(year);
+          double sum2 = r_scoreData.getMapOfYearAndSum2().get(year);
+          score +=
+            Math.pow(Math.E, (double) 1 / (nowYear - year)) *
+            (co_num / (sum1 + sum2));
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    score = Double.parseDouble(String.format("%.2f", score));
+    return score;
+  }
+
+  /**
+   * 计算研究者领域覆盖程度
+   * @param researchId 作者id
+   * @param partner 合作者id
+   * @return 量化数值
+   */
+  private Double countByDomain(String researchId, String partner) {
+    Double score = 0.0;
+    try {
+      score =
+        restTemplate.getForObject(
+          taskDomainAnalysisServiceAddress +
+          "/domain-coverage/" +
+          researchId +
+          "/" +
+          partner,
+          Double.class
+        );
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return score;
+  }
+
+  /**
+   * 根据作者id获得影响力
+   * @param partnerId 作者id
+   * @return 影响力数值
+   */
+  private Double countByImpact(String partnerId) {
+    Double impact = 0.0;
+    try {
+      impact =
+        restTemplate.getForObject(
+          taskImpactAnalysisServiceAddress + "/impact/" + partnerId,
+          Double.class
+        );
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return impact;
+  }
+
+  /**
+   * 获得与当前作者有过关联的作者列表
+   * @param researchId 作者id
+   * @return 作者id列表
+   */
+  private List<String> getResearchersOfPartners(String researchId) {
+    List<String> partners = new ArrayList<>();
+    try {
+      partners =
+        (List<String>) restTemplate.getForObject(
+          researcherServiceAddress + "/past-partners/" + researchId,
+          List.class
+        );
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return partners;
+  }
+
+  /**
+   * 根据作者id获得具有相同研究方向的作者id列表
+   * @param researchId 作者id
+   * @return 作者id列表
+   */
+  private List<String> getResearchersOfSimilarDomainById(String researchId) {
+    List<String> researcherOfSimilarDomain = new ArrayList<>();
+    try {
+      researcherOfSimilarDomain =
+        (List<String>) restTemplate.getForObject(
+          researcherServiceAddress +
+          "/researchers-similar-domain/" +
+          researchId,
+          List.class
+        );
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return researcherOfSimilarDomain;
   }
 }
