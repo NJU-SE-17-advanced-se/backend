@@ -329,15 +329,15 @@ public class TaskCitationAnalysisServiceTest {
     map3.put("6", Arrays.asList("R1", "R2"));
     assertEquals(
       true,
-      sameMap(map1, service.getResearcherQuotedResearcherNums("R1"))
+      sameMap(map1, service.getResearcherPaperQuotedResearcher("R1"))
     );
     assertEquals(
       true,
-      sameMap(map2, service.getResearcherQuotedResearcherNums("R2"))
+      sameMap(map2, service.getResearcherPaperQuotedResearcher("R2"))
     );
     assertEquals(
       true,
-      sameMap(map3, service.getResearcherQuotedResearcherNums("R3"))
+      sameMap(map3, service.getResearcherPaperQuotedResearcher("R3"))
     );
   }
 
@@ -420,15 +420,15 @@ public class TaskCitationAnalysisServiceTest {
     map3.put("6", Collections.emptyList());
     assertEquals(
       true,
-      sameMap(map1, service.getResearcherQuotingResearcherNums("R1"))
+      sameMap(map1, service.getResearcherPaperQuotingResearcher("R1"))
     );
     assertEquals(
       true,
-      sameMap(map2, service.getResearcherQuotingResearcherNums("R2"))
+      sameMap(map2, service.getResearcherPaperQuotingResearcher("R2"))
     );
     assertEquals(
       true,
-      sameMap(map3, service.getResearcherQuotingResearcherNums("R3"))
+      sameMap(map3, service.getResearcherPaperQuotingResearcher("R3"))
     );
   }
 

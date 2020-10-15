@@ -34,14 +34,27 @@ public interface TaskCitationAnalysisService {
     String researcherId1,
     String researcherId2
   );
-
-  Map<String, List<String>> getResearcherQuotedResearcherNums(
+  // 某学者每篇论文引用的学者
+  //
+  Map<String, List<String>> getResearcherPaperQuotedResearcher(
     String researcherId
   );
 
-  Map<String, List<String>> getResearcherQuotingResearcherNums(
+  //某学者每篇论文被那些学者引用
+  Map<String, List<String>> getResearcherPaperQuotingResearcher(
     String researcherId
   );
+
+  //某学者引用了哪些学者
+  List<String> getResearcherQuotedResearcher(String researcherId);
+  //某学者被哪些学者引用
+  List<String> getResearcherQuotingResearcher(String researcherId);
+
+  //某论文引用了哪些学者
+  List<String> getPaperQuotedResearcher(String researcherId);
+  //某论文被哪些学者引用
+  List<String> getPaperQuotingResearcher(String researcherId);
+
   //计算一遍数据
   void init();
 }
