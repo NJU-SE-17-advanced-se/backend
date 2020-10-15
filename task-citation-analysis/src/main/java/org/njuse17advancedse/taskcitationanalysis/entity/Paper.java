@@ -24,15 +24,11 @@ public class Paper {
 
   private List<Paper> references;
 
-  public List<Long> getQuotedIds() {
+  public List<String> getQuotedIds() {
     return new ArrayList<>();
   }
 
   public String getJournal() {
     return "";
-  }
-
-  public Long getLongId() {
-    return 0L;
   }
 }
