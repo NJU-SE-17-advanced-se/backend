@@ -98,6 +98,4 @@ jobs:
             docker run -d \
               --name task-reviewer-recommendation \
               -p 8080:8080 \
-              -e REGISTRY_IP=${{ secrets.REGISTRY_IP }} \
-              -e REGISTRY_PORT=${{ secrets.REGISTRY_PORT }} \
               ${{ secrets.TASK_REVIEWER_RECOMMENDATION_REPO }}:latest
