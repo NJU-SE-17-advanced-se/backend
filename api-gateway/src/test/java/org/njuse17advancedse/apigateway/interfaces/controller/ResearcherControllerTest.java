@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+@ActiveProfiles({ "test" })
 @SpringBootTest
 @WebAppConfiguration
 class ResearcherControllerTest {
@@ -128,7 +130,7 @@ class ResearcherControllerTest {
     String researcherId = "1";
     // construct a GET req
     RequestBuilder getFuturePartnershipReq = MockMvcRequestBuilders
-      .get(BASE_URL + "/" + researcherId + "/future/partnership")
+      .get(BASE_URL + "/" + researcherId + "/partnership/prediction")
       .param("start", "2020-09-24")
       .param("end", "2020-09-24");
     MvcResult partnershipRes = mockMvc
@@ -145,16 +147,24 @@ class ResearcherControllerTest {
   @Test
   void testGetFuturePartnership_failure() {}
 
-  // 接口 1.6：查看某学者的论文引用情况
+  // 接口 1.6：查看某学者的引用和被引情况
   @Test
-  void testGetReferences_success() throws Exception {
+  void testGetResearcherCitations_success_quoting() throws Exception {
+    testGetResearcherCitations_success("quoting");
+  }
+
+  @Test
+  void testGetResearcherCitations_success_quoted() throws Exception {
+    testGetResearcherCitations_success("quoted");
+  }
+
+  void testGetResearcherCitations_success(String type) throws Exception {
     String researcherId = "1";
+    RequestBuilder getResearcherCitationsReq = MockMvcRequestBuilders
+      .get(BASE_URL + "/citations/" + researcherId)
+      .param("type", type);
     MvcResult referencesRes = mockMvc
-      .perform(
-        MockMvcRequestBuilders.get(
-          BASE_URL + "/" + researcherId + "/references"
-        )
-      )
+      .perform(getResearcherCitationsReq)
       .andExpect(MockMvcResultMatchers.status().isOk())
       .andReturn();
     String referencesJsonStr = referencesRes.getResponse().getContentAsString();
@@ -163,16 +173,26 @@ class ResearcherControllerTest {
   }
 
   @Test
-  void testGetReferences_failure() {}
+  void testGetResearcherCitations_failure() {}
 
-  // 接口 1.7：查看某学者的论文被引情况
+  // 接口 1.7：查看某学者的论文引用和被引情况
   @Test
-  void testGetCitations_success() throws Exception {
+  void testGetResearcherPapersCitations_success_quoting() throws Exception {
+    testGetResearcherPapersCitations_success("quoting");
+  }
+
+  @Test
+  void testGetResearcherPapersCitations_success_quoted() throws Exception {
+    testGetResearcherPapersCitations_success("quoted");
+  }
+
+  void testGetResearcherPapersCitations_success(String type) throws Exception {
     String researcherId = "1";
+    RequestBuilder getResearcherPapersCitationsReq = MockMvcRequestBuilders
+      .get(BASE_URL + "/citations/" + researcherId + "/papers")
+      .param("type", type);
     MvcResult citationsRes = mockMvc
-      .perform(
-        MockMvcRequestBuilders.get(BASE_URL + "/" + researcherId + "/citations")
-      )
+      .perform(getResearcherPapersCitationsReq)
       .andExpect(MockMvcResultMatchers.status().isOk())
       .andReturn();
     String citationsJsonStr = citationsRes.getResponse().getContentAsString();
@@ -181,17 +201,52 @@ class ResearcherControllerTest {
   }
 
   @Test
-  void testGetCitations_failure() {}
+  void testGetResearcherPapersCitations_failure() {}
 
-  // 接口 1.8：查看某学者的影响力
+  // 接口 1.8：查看某学者的论文引用其他学者和被其他学者引用情况
   @Test
-  void testGetImpact_success() throws Exception {
+  void testGetResearcherPapersCitedResearchers_success_quoting()
+    throws Exception {
+    testGetResearcherPapersCitedResearchers_success("quoting");
+  }
+
+  @Test
+  void testGetResearcherPapersCitedResearchers_success_quoted()
+    throws Exception {
+    testGetResearcherPapersCitedResearchers_success("quoted");
+  }
+
+  void testGetResearcherPapersCitedResearchers_success(String type)
+    throws Exception {
     String researcherId = "1";
-    System.out.println(BASE_URL + "/" + researcherId + "/impact");
+    RequestBuilder getResearcherPapersCitedResearchersReq = MockMvcRequestBuilders
+      .get(BASE_URL + "/citations/" + researcherId + "/papers/researchers")
+      .param("type", type);
+    MvcResult citationsRes = mockMvc
+      .perform(getResearcherPapersCitedResearchersReq)
+      .andExpect(MockMvcResultMatchers.status().isOk())
+      .andReturn();
+    String citationsJsonStr = citationsRes.getResponse().getContentAsString();
+    System.out.println(citationsJsonStr);
+    assertThat(citationsJsonStr, is(not(emptyOrNullString())));
+  }
+
+  @Test
+  void testGetResearcherPapersCitedResearchers_failure() {}
+
+  // 接口 1.9：查看某学者的影响力
+  @Test
+  void testGetImpact_success_custom() throws Exception {
+    testGetImpact_success("custom");
+  }
+
+  void testGetImpact_success(String criteria) throws Exception {
+    String researcherId = "1";
+    RequestBuilder getImpactReq = MockMvcRequestBuilders
+      .get(BASE_URL + "/" + researcherId + "/impact")
+      .param("type", criteria);
     MvcResult impactRes = mockMvc
-      .perform(
-        MockMvcRequestBuilders.get(BASE_URL + "/" + researcherId + "/impact")
-      )
+      .perform(getImpactReq)
       .andExpect(MockMvcResultMatchers.status().isOk())
       .andReturn();
     String impactJsonStr = impactRes.getResponse().getContentAsString();
@@ -202,6 +257,7 @@ class ResearcherControllerTest {
   @Test
   void testGetImpact_failure() {}
 
+  // 根据学者的id获取学者详细信息
   @Test
   void testGetResearcherById_success() throws Exception {
     String researcherId = "1";
