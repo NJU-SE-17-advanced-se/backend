@@ -98,5 +98,5 @@ jobs:
             docker run -d \
               --restart=always \
               --name task-partnership-analysis \
-              -p 8081:8080 \
+              -p 8081:8081 \
               ${{ secrets.TASK_PARTNERSHIP_ANALYSIS_REPO }}:latest
