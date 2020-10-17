@@ -24,7 +24,7 @@ public class DomainController {
     );
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/{id}/basic-info")
   // 根据ID获取某领域简略信息
   public IDomainBasic getDomainBasicInfoById(@PathVariable String id) {
     return new IDomainBasic(id, "测试领域" + id);

@@ -23,16 +23,11 @@ public class PublicationController {
   }
 
   @GetMapping("/{id}/papers")
-  // 根据ID获取出版物包含的论文
-  public List<String> getPublicationPapersById(@PathVariable String id) {
-    return new ArrayList<>();
-  }
-
-  @GetMapping("/{id}/papers")
-  // 根据ID和时间范围获取出版物包含的论文
-  public List<String> getPublicationPapersByIdAndTimeRange(
-    @RequestParam String start,
-    @RequestParam String end
+  // 根据ID（和时间范围）获取出版物包含的论文
+  public List<String> getPublicationPapersById(
+    @PathVariable String id,
+    @RequestParam(required = false) String start,
+    @RequestParam(required = false) String end
   ) {
     return new ArrayList<>();
   }
