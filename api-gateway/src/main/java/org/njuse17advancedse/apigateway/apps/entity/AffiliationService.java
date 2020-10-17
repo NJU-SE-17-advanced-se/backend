@@ -1,18 +1,16 @@
 package org.njuse17advancedse.apigateway.apps.entity;
 
-import java.util.ArrayList;
-import org.njuse17advancedse.apigateway.domains.entity.Affiliation;
-import org.springframework.stereotype.Service;
+import org.njuse17advancedse.apigateway.domains.dto.DAffiliation;
+import org.njuse17advancedse.apigateway.domains.dto.DAffiliationBasic;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
-@Service
-public class AffiliationService {
+@FeignClient(name = "entity-affiliation")
+public interface AffiliationService {
+  @GetMapping("/affiliation/{id}")
+  DAffiliation getAffiliationById(@PathVariable String id);
 
-  public Affiliation getAffiliationById(String id) {
-    return new Affiliation(
-      id,
-      "测试机构" + id,
-      new ArrayList<>(),
-      new ArrayList<>()
-    );
-  }
+  @GetMapping("/affiliation/{id}/basic-info")
+  DAffiliationBasic getAffiliationBasicInfoById(@PathVariable String id);
 }
