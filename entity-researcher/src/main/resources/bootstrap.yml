@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: entity-researcher
+
+  profiles:
+    active: dev

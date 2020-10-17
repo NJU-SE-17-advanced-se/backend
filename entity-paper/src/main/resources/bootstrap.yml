@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: entity-paper
+
+  profiles:
+    active: dev
