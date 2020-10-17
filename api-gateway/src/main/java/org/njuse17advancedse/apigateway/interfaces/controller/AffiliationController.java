@@ -23,7 +23,7 @@ public class AffiliationController {
   @ApiOperation("根据机构的id获取机构详细信息")
   @GetMapping("/{id}")
   public IAffiliation getAffiliationById(
-    @ApiParam(value = "论文id") @PathVariable String id
+    @ApiParam(value = "机构id") @PathVariable String id
   ) {
     return modelMapper.map(
       affiliationService.getAffiliationById(id),
@@ -34,7 +34,7 @@ public class AffiliationController {
   @ApiOperation("根据机构的id获取机构简略信息")
   @GetMapping("/{id}/basic-info")
   public IAffiliationBasic getAffiliationBasicInfoById(
-    @ApiParam(value = "论文id") @PathVariable String id
+    @ApiParam(value = "机构id") @PathVariable String id
   ) {
     return modelMapper.map(
       affiliationService.getAffiliationBasicInfoById(id),
