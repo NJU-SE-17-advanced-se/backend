@@ -11,7 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IResearcherNet;
-import org.njuse17advancedse.taskpartnershipanalysis.dto.rScoreData;
+import org.njuse17advancedse.taskpartnershipanalysis.dto.RScoreData;
 import org.njuse17advancedse.taskpartnershipanalysis.entity.Paper;
 import org.njuse17advancedse.taskpartnershipanalysis.entity.Researcher;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -181,7 +181,7 @@ class TaskPartnershipAnalysisServiceImpTest {
           )
         )
         .thenReturn((double) i);
-      rScoreData r_scoreData = new rScoreData();
+      RScoreData r_scoreData = new RScoreData();
       HashMap<Integer, Integer> coNumber = new HashMap<>();
       HashMap<Integer, Integer> sum1 = new HashMap<>();
       HashMap<Integer, Integer> sum2 = new HashMap<>();
@@ -195,7 +195,7 @@ class TaskPartnershipAnalysisServiceImpTest {
       r_scoreData.setMapOfYearAndSum2(sum2);
       Mockito
         .when(
-          restTemplate.getForObject("/R-score/171250661/" + i, rScoreData.class)
+          restTemplate.getForObject("/R-score/171250661/" + i, RScoreData.class)
         )
         .thenReturn(r_scoreData);
     }
