@@ -5,13 +5,17 @@
   "author": "Wen Sun <syl1887415157@126.com>",
   "license": "MIT",
   "scripts": {
-    "lint": "npx prettier --write \"**/*.java\""
+    "lint": "npx prettier --write \"**/*.java\"",
+    "service-registry": "cd service-registry && mvn spring-boot:run",
+    "config-server": "cd config-server && mvn spring-boot:run",
+    "predev": "npm-run-all --parallel service-registry config-server"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "husky": "^4.3.0",
     "lint-staged": "^10.4.0",
+    "npm-run-all": "^4.1.5",
     "prettier-plugin-java": "^0.8.2"
   }
 }

@@ -66,3 +66,13 @@ yarn install
 ```
 
 **一定**要运行此条命令，否则项目规范相关工具无法工作。
+
+## 项目启动
+
+由于使用了 spring cloud，需要首先启动 service-registry，然后启动 config-server，才能确保正确运行。
+
+请在命令行运行以下命令，以启动上述服务：
+
+```shell script
+yarn run predev
+```
