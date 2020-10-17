@@ -26,7 +26,10 @@ public class TaskPartnershipAnalysisController {
     return taskPartnershipAnalysisService.getPartnership(id, start, end);
   }
 
-  @RequestMapping(value = "/potential-partners/{id}")
+  @RequestMapping(
+    value = "/potential-partners/{id}",
+    method = RequestMethod.GET
+  )
   private ResponseEntity<Map<String, Double>> getPotentialPartners(
     @PathVariable String id
   ) {
