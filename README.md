@@ -35,7 +35,7 @@ https://wensun.top/
 | 服务名称     | 构建状态                                                     | 负责人 |
 | ------------ | ------------------------------------------------------------ | ------ |
 | 引用分析     | [![Task Citation Analysis](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Citation%20Analysis%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 勇中坚 |
-| 研究方向预测 | WIP                                                          | 勇中坚 |
+| 研究方向预测 | [![Task Domain Prediction](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Domain%20Prediction%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 勇中坚 |
 | 影响力分析   | [![Task Impact Analysis](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Impact%20Analysis%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 勇中坚 |
 | 合作关系分析 | [![Task Partnership Analysis](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Partnership%20Analysis%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 殷承鉴 |
 | 审稿人推荐   | [![Task Reviewer Recommendation](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Reviewer%20Recommendation%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 殷承鉴 |
@@ -44,11 +44,11 @@ https://wensun.top/
 
 | 服务名称 | 构建状态 |
 | -------- | -------- |
-| 机构     | WIP      |
-| 领域     | WIP      |
-| 论文     | WIP      |
-| 出版物    | WIP      |
-| 学者     | WIP      |
+| 机构     | [![Entity Affiliation](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Affiliation%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) |
+| 领域     | [![Entity Domain](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Domain%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)      |
+| 论文     | [![Entity Paper](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Paper%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)      |
+| 出版物    | [![Entity Publication](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Publication%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)      |
+| 学者     | [![Entity Researcher](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Researcher%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)      |
 
 ## 环境配置
 
