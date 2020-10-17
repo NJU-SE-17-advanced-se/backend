@@ -1,4 +1,4 @@
-# backend [![API Gateway](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20API%20Gateway/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)
+# backend
 
 南京大学软件学院 2017 级软件工程高级技术方向实践。
 
@@ -20,19 +20,35 @@ https://wensun.top/
 
 文档地址：https://wensun.top/api/swagger-ui/index.html
 
-1. 查看某学者不同时间所在机构（需求 3.1）
-2. 查看某学者不同时间研究方向（需求 4.1，需求 4.2）
-3. 预测某学者未来的**研究方向**（需求 4.3）
-4. 查看某学者不同时间的**合作关系**（需求 5.1）
-5. 预测某学者未来的**合作关系**（需求 5.2）
-6. 查看某学者的论文*引用情况*（需求 7.1）
-7. 查看某学者的论文*被引情况*（需求 7.2）
-8. 查看某学者的**影响力**（需求 7.3）
-9. 查看某论文*引用情况*（需求 7.1）
-10. 查看某论文*被引情况*（需求 7.2）
-11. 查看某论文**推荐的审稿人**（需求 6.1）
-12. 查看某论文**被屏蔽的审稿人**（需求 6.2）
-13. 查看某论文的**影响力**（需求 7.3）
+## 构建状态
+
+### 基础设施
+
+| 服务名称 | 构建状态                                                     | 负责人 |
+| -------- | ------------------------------------------------------------ | ------ |
+| 注册中心 | [![Service Registry](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Service%20Registry/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 孙逸伦 |
+| 配置服务 | [![Config Server](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Config%20Server/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 孙逸伦 |
+| 服务网关 | [![API Gateway](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20API%20Gateway/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 孙逸伦 |
+
+### 任务服务
+
+| 服务名称     | 构建状态                                                     | 负责人 |
+| ------------ | ------------------------------------------------------------ | ------ |
+| 引用分析     | [![Task Citation Analysis](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Citation%20Analysis%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 勇中坚 |
+| 研究方向分析 | WIP                                                          | 勇中坚 |
+| 影响力分析   | [![Task Impact Analysis](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Impact%20Analysis%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 勇中坚 |
+| 合作关系分析 | [![Task Partnership Analysis](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Partnership%20Analysis%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 殷承鉴 |
+| 审稿人推荐   | [![Task Reviewer Recommendation](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Reviewer%20Recommendation%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 殷承鉴 |
+
+### 实体服务
+
+| 服务名称 | 构建状态 |
+| -------- | -------- |
+| 机构     | WIP      |
+| 会议     | WIP      |
+| 期刊     | WIP      |
+| 论文     | WIP      |
+| 学者     | WIP      |
 
 ## 环境配置
 

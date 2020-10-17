@@ -29,41 +29,27 @@ public class PaperController {
   private final ReviewerRecommendationService reviewerRecommendationService;
 
   @ApiOperation(
-    value = "接口 2.1：查看某论文引用情况（不稳定）",
-    notes = "需求 7.1：论文引用其它论文"
+    value = "接口 2.1：查看某论文和其他论文的引用情况",
+    notes = "需求 7.1：论文引用其它论文及被其它论文引用情况"
   )
-  @Deprecated
-  @GetMapping("/{id}/references")
-  // TODO: 明确接口内容
-  public List<String> getReferences(
-    @ApiParam(value = "论文id") @PathVariable String id
-  )
-    throws Exception {
-    List<Long> referenceIds = citationAnalysisService.getPaperReferences(id);
-    // 转换 long 类型为 String 类型
-    return referenceIds
-      .stream()
-      .map(String::valueOf)
-      .collect(Collectors.toList());
+  @GetMapping("/citations/{id}")
+  public List<String> getPaperCitations(
+    @ApiParam(value = "论文id") @PathVariable String id,
+    @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
+  ) {
+    return citationAnalysisService.getPaperCitations(id, type);
   }
 
   @ApiOperation(
-    value = "接口 2.2：查看某论文被引情况（不稳定）",
-    notes = "需求 7.1：论文被其它论文引用情况"
+    value = "接口 2.2：查看某论文和学者的引用情况",
+    notes = "即，论文引用了哪些学者，哪些学者引用了该论文"
   )
-  @Deprecated
-  @GetMapping("/{id}/citations")
-  // TODO: 明确接口内容
-  public List<String> getCitations(
-    @ApiParam(value = "论文id") @PathVariable String id
-  )
-    throws Exception {
-    List<Long> citationIds = citationAnalysisService.getPaperCitations(id);
-    // 转换 long 类型为 String 类型
-    return citationIds
-      .stream()
-      .map(String::valueOf)
-      .collect(Collectors.toList());
+  @GetMapping("/citations/{id}/researchers")
+  public List<String> getPaperCitedResearchers(
+    @ApiParam(value = "论文id") @PathVariable String id,
+    @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
+  ) {
+    return citationAnalysisService.getPaperCitedResearchers(id, type);
   }
 
   @ApiOperation(
@@ -71,11 +57,11 @@ public class PaperController {
     notes = "需求 6.1：提交审稿时，能够自动推荐相关审稿人"
   )
   @PostMapping("/recommend-reviewers")
+  // TODO: 2.3 和 2.4 两个接口是否需要合并，以满足 REST 的风格？
   public List<String> getRecommendedReviewers(
     @ApiParam(value = "论文内容") @RequestBody IPaperUpload paper
-  )
-    throws Exception {
-    return reviewerRecommendationService.getPaperRecommendedReviewers(paper);
+  ) {
+    return reviewerRecommendationService.getRecommendReviewer(paper);
   }
 
   @ApiOperation(
@@ -83,11 +69,11 @@ public class PaperController {
     notes = "需求 6.2：提交审稿时，能够自动屏蔽相关审稿人"
   )
   @PostMapping("/not-recommend-reviewers")
+  // TODO: 2.3 和 2.4 两个接口是否需要合并，以满足 REST 的风格？
   public List<String> getNotRecommendedReviewers(
     @ApiParam(value = "论文内容") @RequestBody IPaperUpload paper
-  )
-    throws Exception {
-    return reviewerRecommendationService.getPaperNotRecommendedReviewers(paper);
+  ) {
+    return reviewerRecommendationService.getNotRecommendReviewer(paper);
   }
 
   @ApiOperation(
@@ -95,9 +81,11 @@ public class PaperController {
     notes = "需求 7.3：评价研究影响力"
   )
   @GetMapping("/{id}/impact")
-  public double getImpact(@ApiParam(value = "论文id") @PathVariable String id)
-    throws Exception {
-    return impactAnalysisService.getPaperImpact(id);
+  public double getImpact(
+    @ApiParam(value = "论文id") @PathVariable String id,
+    @RequestParam(value = "影响力指标", defaultValue = "custom") String type
+  ) {
+    return impactAnalysisService.getPaperImpact(id, type);
   }
 
   @ApiOperation("根据论文的id获取论文详细信息（WIP)")

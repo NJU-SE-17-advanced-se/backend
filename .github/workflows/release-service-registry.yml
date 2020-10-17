@@ -96,6 +96,7 @@ jobs:
             fi
 
             docker run -d \
+              --restart=always \
               --name service-registry \
               -p ${{ secrets.REGISTRY_PORT }}:8080 \
               -e REGISTRY_IP=${{ secrets.REGISTRY_IP }} \

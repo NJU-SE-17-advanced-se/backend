@@ -1,6 +1,6 @@
 spring:
   application:
-    name: task-reviewer-recommendation
+    name: task-impact-analysis
 
   profiles:
     active: dev

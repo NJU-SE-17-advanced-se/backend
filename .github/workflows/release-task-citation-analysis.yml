@@ -96,6 +96,7 @@ jobs:
             fi
 
             docker run -d \
+              --restart=always \
               --name task-citation-analysis \
-              -p 6324:8080 \
+              -p 6324:6324 \
               ${{ secrets.TASK_CITATION_ANALYSIS_REPO }}:latest
