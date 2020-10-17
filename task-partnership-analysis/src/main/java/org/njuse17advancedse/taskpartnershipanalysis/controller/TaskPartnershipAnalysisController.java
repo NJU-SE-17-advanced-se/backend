@@ -27,8 +27,10 @@ public class TaskPartnershipAnalysisController {
     return taskPartnershipAnalysisService.getPartnership(id, start, end);
   }
 
-  // 合作关系分析预测
-  @RequestMapping(value = "/potential-partners/{id}")
+  @RequestMapping(
+    value = "/potential-partners/{id}",
+    method = RequestMethod.GET
+  )
   private ResponseEntity<Map<String, Double>> getPotentialPartners(
     @PathVariable String id
   ) {

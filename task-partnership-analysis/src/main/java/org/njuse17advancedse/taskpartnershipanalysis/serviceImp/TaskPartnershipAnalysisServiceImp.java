@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.assertj.core.util.Lists;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IResearcherNet;
-import org.njuse17advancedse.taskpartnershipanalysis.dto.R_ScoreData;
+import org.njuse17advancedse.taskpartnershipanalysis.dto.RScoreData;
 import org.njuse17advancedse.taskpartnershipanalysis.entity.Paper;
 import org.njuse17advancedse.taskpartnershipanalysis.entity.Researcher;
 import org.njuse17advancedse.taskpartnershipanalysis.service.TaskPartnershipAnalysisService;
@@ -255,9 +255,9 @@ public class TaskPartnershipAnalysisServiceImp
     int nowYear = cal.get(Calendar.YEAR) + 1;
     try {
       //通过R_ScoreData中的数据来计算两作者之间的合作程度量化数值
-      R_ScoreData r_scoreData = restTemplate.getForObject(
+      RScoreData r_scoreData = restTemplate.getForObject(
         researcherServiceAddress + "/R-score/" + researchId + "/" + partnerId,
-        R_ScoreData.class
+        RScoreData.class
       );
       if (r_scoreData != null) {
         for (Integer year : r_scoreData.getMapOfYearAndCoNumber().keySet()) {
