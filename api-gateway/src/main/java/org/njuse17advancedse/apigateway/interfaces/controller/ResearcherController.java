@@ -12,7 +12,9 @@ import org.modelmapper.ModelMapper;
 import org.njuse17advancedse.apigateway.apps.entity.ResearcherService;
 import org.njuse17advancedse.apigateway.apps.task.CitationAnalysisService;
 import org.njuse17advancedse.apigateway.apps.task.ImpactAnalysisService;
+import org.njuse17advancedse.apigateway.apps.task.PartnershipAnalysisService;
 import org.njuse17advancedse.apigateway.interfaces.dto.IResearcher;
+import org.njuse17advancedse.apigateway.interfaces.dto.IResearcherNet;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = { "学者" })
@@ -24,6 +26,8 @@ public class ResearcherController {
   private final ImpactAnalysisService impactAnalysisService;
 
   private final ModelMapper modelMapper;
+
+  private final PartnershipAnalysisService partnershipAnalysisService;
 
   private final ResearcherService researcherService;
 
@@ -72,97 +76,79 @@ public class ResearcherController {
   }
 
   @ApiOperation(
-    value = "接口 1.4：查看某学者某一时间段的合作关系（WIP）",
+    value = "接口 1.4：查看某学者某一时间段的合作关系",
     notes = "需求 5.1：能够识别研究者存在的合作关系，形成社会网络"
   )
-  @Deprecated
   @GetMapping("/{id}/partnership")
-  // TODO: 完成该接口
-  public List<String> getPartnershipByTimeRange(
+  public IResearcherNet getPartnershipByTimeRange(
     @ApiParam(value = "学者id") @PathVariable String id,
     @ApiParam(value = "开始日期，形如 '2020-09-21'") @RequestParam String start,
     @ApiParam(value = "结束日期，形如 '2020-09-21'") @RequestParam String end
   ) {
-    return new ArrayList<>();
+    return partnershipAnalysisService.getPartnership(id, start, end);
   }
 
   @ApiOperation(
-    value = "接口 1.5：预测某学者未来的合作关系（WIP）",
+    value = "接口 1.5：预测某学者未来的合作关系",
     notes = "需求 5.2：能够初步预测研究者之间的合作走向"
   )
-  @Deprecated
-  @GetMapping("/{id}/future/partnership")
-  // TODO: 完成该接口
-  public List<String> getFuturePartnership(
+  @GetMapping("/{id}/partnership/prediction")
+  // 返回的是每个学者合作的**可能性**，所以是double
+  public Map<String, Double> getPartnershipPrediction(
     @ApiParam(value = "学者id") @PathVariable String id
   ) {
-    return new ArrayList<>();
+    return partnershipAnalysisService.getPotentialPartners(id);
   }
 
   @ApiOperation(
-    value = "接口 1.6：查看某学者的论文引用情况（不稳定）",
-    notes = "需求 7.2：研究者引用其他研究者（的论文）"
+    value = "接口 1.6：查看某学者的引用和被引情况",
+    notes = "需求 7.2：研究者引用其他研究者及被其他研究者引用情况"
   )
-  @Deprecated
-  @GetMapping("/{id}/references")
-  // TODO: 明确接口内容
-  public Map<String, List<String>> getReferences(
-    @ApiParam(value = "学者id") @PathVariable String id
+  @GetMapping("/citations/{id}")
+  public List<String> getResearcherCitations(
+    @ApiParam(value = "学者id") @PathVariable String id,
+    @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
+  ) {
+    return citationAnalysisService.getResearcherCitations(id, type);
+  }
+
+  @ApiOperation(
+    value = "接口 1.7：查看某学者的论文引用和被引情况",
+    notes = "需求 7.2：研究者引用其他研究者的论文及论文被其他研究者引用情况"
   )
-    throws Exception {
-    Map<String, List<String>> res = new HashMap<>();
-    Map<Long, List<Long>> references = citationAnalysisService.getResearcherReferences(
-      id
+  @GetMapping("/citations/{id}/papers")
+  public Map<String, List<String>> getResearcherPapersCitations(
+    @ApiParam(value = "学者id") @PathVariable String id,
+    @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
+  ) {
+    return citationAnalysisService.getResearcherPapersCitations(id, type);
+  }
+
+  @ApiOperation(
+    value = "接口 1.8：查看某学者的论文引用其他学者和被其他学者引用情况",
+    notes = "即，某个学者的论文分别引用了哪些学者，某个学者的论文分别被哪些学者引用"
+  )
+  @GetMapping("/citations/{id}/papers/researchers")
+  public Map<String, List<String>> getResearcherPapersCitedResearchers(
+    @ApiParam(value = "学者id") @PathVariable String id,
+    @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
+  ) {
+    return citationAnalysisService.getResearcherPapersCitedResearchers(
+      id,
+      type
     );
-    for (Map.Entry<Long, List<Long>> reference : references.entrySet()) {
-      res.put(
-        reference.getKey().toString(),
-        reference
-          .getValue()
-          .stream()
-          .map(String::valueOf)
-          .collect(Collectors.toList())
-      );
-    }
-    return res;
   }
 
   @ApiOperation(
-    value = "接口 1.7：查看某学者的论文被引情况（不稳定）",
-    notes = "需求 7.2：研究者被其他研究者引用情况"
-  )
-  @Deprecated
-  @GetMapping("/{id}/citations")
-  // TODO: 明确接口内容
-  public Map<String, List<String>> getCitations(
-    @ApiParam(value = "学者id") @PathVariable String id
-  )
-    throws Exception {
-    Map<String, List<String>> res = new HashMap<>();
-    Map<Long, List<Long>> citations = citationAnalysisService.getResearcherCitations(
-      id
-    );
-    for (Map.Entry<Long, List<Long>> citation : citations.entrySet()) {
-      res.put(
-        citation.getKey().toString(),
-        citation
-          .getValue()
-          .stream()
-          .map(String::valueOf)
-          .collect(Collectors.toList())
-      );
-    }
-    return res;
-  }
-
-  @ApiOperation(
-    value = "接口 1.8：查看某学者的影响力",
+    value = "接口 1.9：查看某学者的影响力",
     notes = "需求 7.3：评价研究者影响力"
   )
   @GetMapping("/{id}/impact")
-  public double getImpact(@ApiParam(value = "学者id") @PathVariable String id)
-    throws Exception {
-    return impactAnalysisService.getResearcherImpact(id);
+  public double getImpact(
+    @ApiParam(value = "学者id") @PathVariable String id,
+    @RequestParam(value = "影响力指标", defaultValue = "h-index") String type
+  ) {
+    return impactAnalysisService.getResearcherImpact(id, type);
   }
 
   @ApiOperation("根据学者的id获取学者详细信息（WIP)")
@@ -182,11 +168,13 @@ public class ResearcherController {
     CitationAnalysisService citationAnalysisService,
     ImpactAnalysisService impactAnalysisService,
     ModelMapper modelMapper,
+    PartnershipAnalysisService partnershipAnalysisService,
     ResearcherService researcherService
   ) {
     this.citationAnalysisService = citationAnalysisService;
     this.impactAnalysisService = impactAnalysisService;
     this.modelMapper = modelMapper;
+    this.partnershipAnalysisService = partnershipAnalysisService;
     this.researcherService = researcherService;
   }
 }

@@ -1,11 +1,11 @@
-name: Release Impact Analysis Task Service
+name: Release Partnership Analysis Task Service
 
 on:
   push:
     branches:
       - master
     paths:
-      - task-impact-analysis/**
+      - task-partnership-analysis/**
 
   workflow_dispatch:
 
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-18.04
     defaults:
       run:
-        working-directory: task-impact-analysis
+        working-directory: task-partnership-analysis
 
     steps:
       - uses: actions/checkout@v2
@@ -44,14 +44,14 @@ jobs:
         with:
           name: prod
           path: |
-            task-impact-analysis/target
-            task-impact-analysis/Dockerfile
+            task-partnership-analysis/target
+            task-partnership-analysis/Dockerfile
 
   docker:
     name: Publish Docker Image
     runs-on: ubuntu-18.04
     env:
-      REPO: ${{ secrets.TASK_IMPACT_ANALYSIS_REPO }}
+      REPO: ${{ secrets.TASK_PARTNERSHIP_ANALYSIS_REPO }}
     needs: [test]
 
     steps:
@@ -80,15 +80,15 @@ jobs:
         # 这其实稍微有点冗余，但是好在整个脚本的体量并不大
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.YZG_ALI_SSH_HOST }}
-          username: ${{ secrets.YZG_ALI_SSH_USER }}
-          password: ${{ secrets.YZG_ALI_SSH_PASS }}
+          host: ${{ secrets.ZZ_SSH_HOST }}
+          username: ${{ secrets.ZZ_SSH_USER }}
+          password: ${{ secrets.ZZ_SSH_PASS }}
           script: |
             echo '${{ secrets.DOCKERHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
 
-            docker pull ${{ secrets.TASK_IMPACT_ANALYSIS_REPO }}:latest
+            docker pull ${{ secrets.TASK_PARTNERSHIP_ANALYSIS_REPO }}:latest
 
-            service_id=$(sudo docker container ls -aqf name="task-impact-analysis")
+            service_id=$(sudo docker container ls -aqf name="task-partnership-analysis")
             if [ "$service_id" ]; then
               sudo docker container rm -v -f "$service_id"
             else
@@ -97,6 +97,6 @@ jobs:
 
             docker run -d \
               --restart=always \
-              --name task-impact-analysis \
-              -p 8080:8080 \
-              ${{ secrets.TASK_IMPACT_ANALYSIS_REPO }}:latest
+              --name task-partnership-analysis \
+              -p 8081:8081 \
+              ${{ secrets.TASK_PARTNERSHIP_ANALYSIS_REPO }}:latest

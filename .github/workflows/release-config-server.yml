@@ -96,6 +96,7 @@ jobs:
             fi
 
             docker run -d \
+              --restart=always \
               --name config-server \
               -p 8080:8080 \
               -e REGISTRY_IP=${{ secrets.REGISTRY_IP }} \

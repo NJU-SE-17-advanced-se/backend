@@ -1,6 +1,6 @@
 spring:
   application:
-    name: task-reviewer-recommendation
+    name: task-citation-analysis
 
   profiles:
     active: dev
