@@ -30,7 +30,7 @@ public class PaperController {
   // 根据其他指标获取论文
   // 如果都没填，返回全部论文
   // TODO: 分页
-  public List<String> getPaper(
+  public List<String> getPapers(
     @RequestParam(required = false) String researcher,
     @RequestParam(required = false) String publication,
     @RequestParam(required = false) String date
@@ -55,7 +55,7 @@ public class PaperController {
   // 根据指标获取论文简略信息
   // 如果都没填，返回全部论文的简略信息
   // TODO: 分页
-  public List<String> getPaperBasicInfo(
+  public List<String> getPapersBasicInfo(
     @RequestParam(required = false) String researcher,
     @RequestParam(required = false) String publication,
     @RequestParam(required = false) String date
@@ -65,7 +65,7 @@ public class PaperController {
 
   @GetMapping("/{id}/domains")
   // 获取论文所属领域
-  public List<String> getDomain(@PathVariable String id) {
+  public List<String> getDomains(@PathVariable String id) {
     return new ArrayList<>();
   }
 }

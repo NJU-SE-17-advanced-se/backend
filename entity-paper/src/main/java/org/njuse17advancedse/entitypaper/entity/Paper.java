@@ -1,4 +1,4 @@
-package org.njuse17advancedse.entitypaper.domain;
+package org.njuse17advancedse.entitypaper.entity;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
