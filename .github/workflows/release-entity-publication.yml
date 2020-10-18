@@ -1,4 +1,4 @@
-name: Release publication Entity Service
+name: Release Publication Entity Service
 
 on:
   push:
