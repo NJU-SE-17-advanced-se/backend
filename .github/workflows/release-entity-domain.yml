@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       REPO: ${{ secrets.ENTITY_DOMAIN_REPO }}
-    needs: [test]
+    needs: [ test ]
 
     steps:
       - name: Restore Production
@@ -98,5 +98,5 @@ jobs:
             docker run -d \
               --restart=always \
               --name entity-domain \
-              -p 8080:8080 \
+              -p 8081:8081 \
               ${{ secrets.ENTITY_DOMAIN_REPO }}:latest

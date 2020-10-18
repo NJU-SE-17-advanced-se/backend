@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       REPO: ${{ secrets.ENTITY_PAPER_REPO }}
-    needs: [test]
+    needs: [ test ]
 
     steps:
       - name: Restore Production
@@ -98,5 +98,5 @@ jobs:
             docker run -d \
               --restart=always \
               --name entity-paper \
-              -p 8080:8080 \
+              -p 8082:8082 \
               ${{ secrets.ENTITY_PAPER_REPO }}:latest

@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       REPO: ${{ secrets.TASK_PARTNERSHIP_ANALYSIS_REPO }}
-    needs: [test]
+    needs: [ test ]
 
     steps:
       - name: Restore Production

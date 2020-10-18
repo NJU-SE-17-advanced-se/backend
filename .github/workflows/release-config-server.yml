@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       REPO: ${{ secrets.CONFIG_SERVER_REPO }}
-    needs: [test]
+    needs: [ test ]
 
     steps:
       - name: Restore Production

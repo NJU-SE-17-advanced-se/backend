@@ -1,4 +1,4 @@
-name: Release PUBLICATION Entity Service
+name: Release publication Entity Service
 
 on:
   push:
@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       REPO: ${{ secrets.ENTITY_PUBLICATION_REPO }}
-    needs: [test]
+    needs: [ test ]
 
     steps:
       - name: Restore Production
