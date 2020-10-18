@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: entity-domain
+
+  profiles:
+    active: dev

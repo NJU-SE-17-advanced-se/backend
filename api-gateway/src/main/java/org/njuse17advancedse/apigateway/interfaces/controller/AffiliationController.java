@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import org.modelmapper.ModelMapper;
 import org.njuse17advancedse.apigateway.apps.entity.AffiliationService;
 import org.njuse17advancedse.apigateway.interfaces.dto.IAffiliation;
+import org.njuse17advancedse.apigateway.interfaces.dto.IAffiliationBasic;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,16 +20,25 @@ public class AffiliationController {
 
   private final ModelMapper modelMapper;
 
-  @ApiOperation("根据机构的id获取机构详细信息（WIP)")
-  @Deprecated
+  @ApiOperation("根据机构的id获取机构详细信息")
   @GetMapping("/{id}")
-  // TODO: 完成该接口
   public IAffiliation getAffiliationById(
-    @ApiParam(value = "论文id") @PathVariable String id
+    @ApiParam(value = "机构id") @PathVariable String id
   ) {
     return modelMapper.map(
       affiliationService.getAffiliationById(id),
       IAffiliation.class
+    );
+  }
+
+  @ApiOperation("根据机构的id获取机构简略信息")
+  @GetMapping("/{id}/basic-info")
+  public IAffiliationBasic getAffiliationBasicInfoById(
+    @ApiParam(value = "机构id") @PathVariable String id
+  ) {
+    return modelMapper.map(
+      affiliationService.getAffiliationBasicInfoById(id),
+      IAffiliationBasic.class
     );
   }
 

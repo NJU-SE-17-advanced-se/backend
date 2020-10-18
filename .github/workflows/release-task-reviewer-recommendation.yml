@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       REPO: ${{ secrets.TASK_REVIEWER_RECOMMENDATION_REPO }}
-    needs: [test]
+    needs: [ test ]
 
     steps:
       - name: Restore Production
@@ -60,14 +60,22 @@ jobs:
         with:
           name: prod
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: all
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          version: latest
+
       - name: Login to Docker Registry
         run: echo '${{ secrets.DOCKERHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
 
       - name: Build Docker Image
-        run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
-
-      - name: Publish Docker Image
-        run: docker push $REPO
+        run: docker buildx build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} --platform linux/amd64,linux/arm64 --push .
 
   deploy:
     name: Restart Service
@@ -96,8 +104,7 @@ jobs:
             fi
 
             docker run -d \
+              --restart=always \
               --name task-reviewer-recommendation \
               -p 8080:8080 \
-              -e REGISTRY_IP=${{ secrets.REGISTRY_IP }} \
-              -e REGISTRY_PORT=${{ secrets.REGISTRY_PORT }} \
               ${{ secrets.TASK_REVIEWER_RECOMMENDATION_REPO }}:latest

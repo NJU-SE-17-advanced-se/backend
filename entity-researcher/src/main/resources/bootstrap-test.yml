@@ -1,0 +1,16 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://106.15.248.145:6324/eureka/
+
+spring:
+  profiles: test
+
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-server
+      label: master
+      name: entity-researcher
+      profile: test

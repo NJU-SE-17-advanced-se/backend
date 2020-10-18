@@ -15,7 +15,9 @@ public class IAffiliation {
 
   private String name;
 
-  private List<Researcher> researchers;
+  private String description;
 
-  private List<Paper> papers;
+  private List<String> researchers;
+
+  private List<String> papers;
 }

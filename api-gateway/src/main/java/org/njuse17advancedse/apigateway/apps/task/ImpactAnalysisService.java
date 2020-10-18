@@ -1,41 +1,15 @@
 package org.njuse17advancedse.apigateway.apps.task;
 
-import org.njuse17advancedse.apigateway.infra.exception.TestException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
-@Service
-public class ImpactAnalysisService {
-  private static final String serverLocation = "http://101.37.152.235:8080";
+@FeignClient(name = "task-impact-analysis")
+public interface ImpactAnalysisService {
+  @GetMapping(value = "/impact/researcher/{id}")
+  int getResearcherImpact(@PathVariable String id, @RequestParam String type);
 
-  private final RestTemplate restTemplate;
-
-  // 查看某论文的影响力
-  public double getPaperImpact(String id) throws Exception {
-    String url = serverLocation + "/impact/paper/" + id;
-    return getImpact(url);
-  }
-
-  // 查看某学者的影响力
-  public double getResearcherImpact(String id) throws Exception {
-    String url = serverLocation + "/impact/researcher/" + id;
-    return getImpact(url);
-  }
-
-  // 请求
-  private double getImpact(String url) throws Exception {
-    ResponseEntity<Double> res = restTemplate.getForEntity(url, Double.class);
-    HttpStatus status = res.getStatusCode();
-    if (status.is2xxSuccessful() && res.getBody() != null) {
-      return res.getBody();
-    } else {
-      throw new TestException();
-    }
-  }
-
-  public ImpactAnalysisService(RestTemplate restTemplate) {
-    this.restTemplate = restTemplate;
-  }
+  @GetMapping(value = "/impact/paper/{id}")
+  double getPaperImpact(@PathVariable String id, @RequestParam String type);
 }
