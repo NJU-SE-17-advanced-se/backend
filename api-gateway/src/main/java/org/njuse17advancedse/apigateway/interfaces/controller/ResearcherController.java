@@ -18,7 +18,7 @@ import org.njuse17advancedse.apigateway.interfaces.dto.IResearcherNet;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = { "学者" })
-@RequestMapping("/researcher")
+@RequestMapping("/researchers")
 @RestController
 public class ResearcherController {
   private final CitationAnalysisService citationAnalysisService;

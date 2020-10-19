@@ -15,7 +15,7 @@ import org.njuse17advancedse.apigateway.interfaces.dto.IPaperUpload;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = { "论文" })
-@RequestMapping("/paper")
+@RequestMapping("/papers")
 @RestController
 public class PaperController {
   private final CitationAnalysisService citationAnalysisService;
