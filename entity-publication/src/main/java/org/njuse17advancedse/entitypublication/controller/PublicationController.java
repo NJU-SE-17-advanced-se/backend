@@ -22,9 +22,20 @@ public class PublicationController {
     );
   }
 
+  @GetMapping("")
+  // 根据其他指标获取出版物
+  // NOTE: 如果没有任何指标，返回的就是全部的出版物
+  public List<String> getPublicationsByTimeRange(
+    @RequestParam(required = false) String name,
+    @RequestParam(required = false) String start,
+    @RequestParam(required = false) String end
+  ) {
+    return new ArrayList<>();
+  }
+
   @GetMapping("/{id}/papers")
   // 根据ID（和时间范围）获取出版物包含的论文
-  public List<String> getPublicationPapersById(
+  public List<String> getPapersByIdOrTimeRange(
     @PathVariable String id,
     @RequestParam(required = false) String start,
     @RequestParam(required = false) String end
@@ -38,14 +49,5 @@ public class PublicationController {
     @PathVariable String id
   ) {
     return new IPublicationBasic(id, "测试出版物", "2020-10-18");
-  }
-
-  @GetMapping("/papers")
-  // 根据时间范围获取出版物
-  public List<String> getPublicationByTimeRange(
-    @RequestParam String start,
-    @RequestParam String end
-  ) {
-    return new ArrayList<>();
   }
 }
