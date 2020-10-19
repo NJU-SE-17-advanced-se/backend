@@ -4,16 +4,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.njuse17advancedse.apigateway.apps.entity.ResearcherService;
 import org.njuse17advancedse.apigateway.apps.task.CitationAnalysisService;
 import org.njuse17advancedse.apigateway.apps.task.ImpactAnalysisService;
 import org.njuse17advancedse.apigateway.apps.task.PartnershipAnalysisService;
 import org.njuse17advancedse.apigateway.interfaces.dto.IResearcher;
+import org.njuse17advancedse.apigateway.interfaces.dto.IResearcherBasic;
 import org.njuse17advancedse.apigateway.interfaces.dto.IResearcherNet;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,32 +31,28 @@ public class ResearcherController {
   private final ResearcherService researcherService;
 
   @ApiOperation(
-    value = "接口 1.1：查看某学者某一时间段所在机构（WIP）",
+    value = "接口 1.1：查看某学者某一时间段所在机构",
     notes = "需求 3.1：能够识别同一研究者在不同时间的单位情况"
   )
-  @Deprecated
   @GetMapping("/{id}/affiliations")
-  // TODO: 完成该接口
   public List<String> getAffiliationsByTimeRange(
     @ApiParam(value = "学者id") @PathVariable String id,
-    @ApiParam(value = "开始日期，形如 '2020-09-21'") @RequestParam String start,
-    @ApiParam(value = "结束日期，形如 '2020-09-21'") @RequestParam String end
+    @ApiParam(value = "开始日期，形如 '2020'") @RequestParam String start,
+    @ApiParam(value = "结束日期，形如 '2020'") @RequestParam String end
   ) {
     return researcherService.getAffiliationsByTimeRange(id, start, end);
   }
 
   @ApiOperation(
-    value = "接口 1.2：查看某学者某一时间段的研究方向（WIP）",
+    value = "接口 1.2：查看某学者某一时间段的研究方向",
     notes = "需求 4.1：能够识别研究者的兴趣\n\n" +
     "需求 4.2：能够识别研究者在不同阶段的研究兴趣"
   )
-  @Deprecated
   @GetMapping("/{id}/domains")
-  // TODO: 完成该接口
   public List<String> getDomainsByTimeRange(
     @ApiParam(value = "学者id") @PathVariable String id,
-    @ApiParam(value = "开始日期，形如 '2020-09-21'") @RequestParam String start,
-    @ApiParam(value = "结束日期，形如 '2020-09-21'") @RequestParam String end
+    @ApiParam(value = "开始日期，形如 '2020'") @RequestParam String start,
+    @ApiParam(value = "结束日期，形如 '2020'") @RequestParam String end
   ) {
     return researcherService.getDomainsByTimeRange(id, start, end);
   }
@@ -72,7 +67,7 @@ public class ResearcherController {
   public List<String> getFutureDomains(
     @ApiParam(value = "学者id") @PathVariable String id
   ) {
-    return researcherService.getFutureDomains(id);
+    return new ArrayList<>();
   }
 
   @ApiOperation(
@@ -82,8 +77,8 @@ public class ResearcherController {
   @GetMapping("/{id}/partnership")
   public IResearcherNet getPartnershipByTimeRange(
     @ApiParam(value = "学者id") @PathVariable String id,
-    @ApiParam(value = "开始日期，形如 '2020-09-21'") @RequestParam String start,
-    @ApiParam(value = "结束日期，形如 '2020-09-21'") @RequestParam String end
+    @ApiParam(value = "开始日期，形如 '2020'") @RequestParam String start,
+    @ApiParam(value = "结束日期，形如 '2020'") @RequestParam String end
   ) {
     return partnershipAnalysisService.getPartnership(id, start, end);
   }
@@ -151,10 +146,8 @@ public class ResearcherController {
     return impactAnalysisService.getResearcherImpact(id, type);
   }
 
-  @ApiOperation("根据学者的id获取学者详细信息（WIP)")
-  @Deprecated
+  @ApiOperation("根据学者的id获取学者详细信息")
   @GetMapping("/{id}")
-  // TODO: 完成该接口
   public IResearcher getResearcherById(
     @ApiParam(value = "学者id") @PathVariable String id
   ) {
@@ -162,6 +155,27 @@ public class ResearcherController {
       researcherService.getResearcherById(id),
       IResearcher.class
     );
+  }
+
+  @ApiOperation("根据学者的id获取学者简略信息")
+  @GetMapping("/{id}/basic-info")
+  public IResearcherBasic getResearcherBasicInfoById(
+    @ApiParam(value = "学者id") @PathVariable String id
+  ) {
+    return modelMapper.map(
+      researcherService.getResearcherById(id),
+      IResearcherBasic.class
+    );
+  }
+
+  @ApiOperation("根据学者的id获取学者的论文")
+  @GetMapping("/{id}/papers")
+  public List<String> getResearcherPapersByTimeRange(
+    @ApiParam(value = "学者id") @PathVariable String id,
+    @RequestParam(required = false) String start,
+    @RequestParam(required = false) String end
+  ) {
+    return researcherService.getResearcherPapersByTimeRange(id, start, end);
   }
 
   public ResearcherController(
