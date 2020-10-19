@@ -18,4 +18,6 @@ public class DAffiliation {
   private List<String> researchers;
 
   private List<String> papers;
+
+  private List<String> domains;
 }

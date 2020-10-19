@@ -20,4 +20,6 @@ public class IAffiliation {
   private List<String> researchers;
 
   private List<String> papers;
+
+  private List<String> domains;
 }
