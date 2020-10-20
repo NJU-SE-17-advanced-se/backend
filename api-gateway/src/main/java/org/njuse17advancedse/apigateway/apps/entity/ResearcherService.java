@@ -1,52 +1,39 @@
 package org.njuse17advancedse.apigateway.apps.entity;
 
-import java.util.ArrayList;
 import java.util.List;
-import org.njuse17advancedse.apigateway.domains.entity.Affiliation;
-import org.njuse17advancedse.apigateway.domains.entity.Domain;
-import org.njuse17advancedse.apigateway.domains.entity.Researcher;
-import org.springframework.stereotype.Service;
+import org.njuse17advancedse.apigateway.domains.dto.DResearcher;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
-@Service
-public class ResearcherService {
+@FeignClient(name = "entity-researcher")
+public interface ResearcherService {
+  @GetMapping("/researchers/{id}")
+  // 根据ID获取学者
+  DResearcher getResearcherById(@PathVariable String id);
 
-  public Researcher getResearcherById(String id) {
-    return new Researcher(
-      id,
-      "测试学者" + id,
-      new Affiliation(
-        id,
-        "测试机构" + id,
-        new ArrayList<>(),
-        new ArrayList<>()
-      ),
-      new ArrayList<>()
-    );
-  }
+  @GetMapping("/researchers/{id}/papers")
+  // 获取某作者的论文
+  List<String> getResearcherPapersByTimeRange(
+    @PathVariable String id,
+    @RequestParam(required = false) String start,
+    @RequestParam(required = false) String end
+  );
 
-  public List<String> getAffiliationsByTimeRange(
-    String id,
-    String start,
-    String end
-  ) {
-    List<String> res = new ArrayList<>();
-    res.add(id);
-    return res;
-  }
+  @GetMapping("/researchers/{id}/domains")
+  // 获取作者所属领域
+  List<String> getDomainsByTimeRange(
+    @PathVariable String id,
+    @RequestParam(required = false) String start,
+    @RequestParam(required = false) String end
+  );
 
-  public List<String> getDomainsByTimeRange(
-    String id,
-    String start,
-    String end
-  ) {
-    List<String> res = new ArrayList<>();
-    res.add(id);
-    return res;
-  }
-
-  public List<String> getFutureDomains(String id) {
-    List<String> res = new ArrayList<>();
-    res.add(id);
-    return res;
-  }
+  @GetMapping("/researchers/{id}/affiliations")
+  // 获取作者所属机构
+  List<String> getAffiliationsByTimeRange(
+    @PathVariable String id,
+    @RequestParam(required = false) String start,
+    @RequestParam(required = false) String end
+  );
 }
