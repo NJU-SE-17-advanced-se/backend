@@ -7,8 +7,10 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.njuse17advancedse.taskreviewerrecommendation.dto.IAffiliation;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.IPaperBasic;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.IPaperUpload;
+import org.njuse17advancedse.taskreviewerrecommendation.dto.IResearcher;
 import org.njuse17advancedse.taskreviewerrecommendation.service.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -121,5 +123,57 @@ class TaskReviewerRecommendationServiceImpTest {
   }
 
   @Test
-  void getNotRecommendReviewer() {}
+  void getNotRecommendReviewer() {
+    IPaperUpload testPaper = new IPaperUpload();
+    testPaper.setTitle("testPaper");
+    testPaper.setId("test");
+    List<String> researcherIds = Lists.newArrayList("0", "1", "2");
+    testPaper.setResearcherIds(researcherIds);
+
+    List<String> testDomains = new ArrayList<>();
+    for (int i = 2; i < 5; i++) {
+      testDomains.add(i + "");
+    }
+    testPaper.setDomainIds(testDomains);
+    for (String rid : testPaper.getResearcherIds()) {
+      Mockito
+        .when(taskPartnershipService.getPartnersByResearcherId(rid))
+        .thenReturn(
+          Lists.newArrayList(
+            Integer.parseInt(rid) * 2 + "",
+            Integer.parseInt(rid) * 2 + 1 + ""
+          )
+        );
+      IResearcher iResearcher = new IResearcher();
+      iResearcher.setAffiliation(Lists.newArrayList("a" + rid));
+      Mockito
+        .when(researcherEntityService.getResearcherById(rid))
+        .thenReturn(iResearcher);
+      for (String aid : iResearcher.getAffiliation()) {
+        IAffiliation iAffiliation = new IAffiliation();
+        iAffiliation.setResearchers(
+          Lists.newArrayList(
+            Integer.parseInt(rid) * 2 - 1 + "",
+            Integer.parseInt(rid) * 2 + ""
+          )
+        );
+        Mockito
+          .when(affiliationEntityService.getAffiliationById(aid))
+          .thenReturn(iAffiliation);
+      }
+    }
+
+    for (int i = -1; i < 6; i++) {
+      Mockito
+        .when(researcherEntityService.getDomainsByResearcherId(i + ""))
+        .thenReturn(Lists.newArrayList((i + 1) + "", i + "", (i - 1) + ""));
+    }
+    List<String> result = Lists.newArrayList("3", "2", "4", "1", "5");
+    assertEquals(
+      taskReviewerRecommendationService
+        .getNotRecommendReviewer(testPaper)
+        .getBody(),
+      result
+    );
+  }
 }
