@@ -1,15 +1,12 @@
 package org.njuse17advancedse.taskreviewerrecommendation.serviceImp;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import org.njuse17advancedse.taskreviewerrecommendation.dto.IImpact;
-import org.njuse17advancedse.taskreviewerrecommendation.dto.IPaperUpload;
-import org.njuse17advancedse.taskreviewerrecommendation.entity.Domain;
-import org.njuse17advancedse.taskreviewerrecommendation.service.TaskReviewerRecommendationService;
+import org.njuse17advancedse.taskreviewerrecommendation.dto.*;
+import org.njuse17advancedse.taskreviewerrecommendation.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * 审稿人推荐服务实现
@@ -19,15 +16,37 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class TaskReviewerRecommendationServiceImp
   implements TaskReviewerRecommendationService {
-  private static String paperServiceAddress = ""; // 论文实体服务地址
-  private static String researcherServiceAddress = ""; // 作者实体服务地址
-  private static String taskImpactAnalysisServiceAddress = ""; // 影响力业务服务地址
-  private static String taskPartnerShipServiceAddress = ""; // 合作关系业务服务地址
+  private final PaperEntityService paperEntityService;
 
-  private final RestTemplate restTemplate;
+  private final DomainEntityService domainEntityService;
 
-  public TaskReviewerRecommendationServiceImp(RestTemplate restTemplate) {
-    this.restTemplate = restTemplate;
+  private final PublicationEntityService publicationEntityService;
+
+  private final ResearcherEntityService researcherEntityService;
+
+  private final AffiliationEntityService affiliationEntityService;
+
+  private final TaskImpactAnalysisService taskImpactAnalysisService;
+
+  private final TaskPartnershipService taskPartnershipService;
+
+  @Autowired
+  public TaskReviewerRecommendationServiceImp(
+    PaperEntityService paperEntityService,
+    DomainEntityService domainEntityService,
+    PublicationEntityService publicationEntityService,
+    ResearcherEntityService researcherEntityService,
+    AffiliationEntityService affiliationEntityService,
+    TaskImpactAnalysisService taskImpactAnalysisService,
+    TaskPartnershipService taskPartnershipService
+  ) {
+    this.paperEntityService = paperEntityService;
+    this.domainEntityService = domainEntityService;
+    this.publicationEntityService = publicationEntityService;
+    this.researcherEntityService = researcherEntityService;
+    this.affiliationEntityService = affiliationEntityService;
+    this.taskImpactAnalysisService = taskImpactAnalysisService;
+    this.taskPartnershipService = taskPartnershipService;
   }
 
   @Override
@@ -44,9 +63,7 @@ public class TaskReviewerRecommendationServiceImp
         references
       );
 
-      if (referenceResearcherIds != null) {
-        researcherIds = new ArrayList<>(referenceResearcherIds);
-      }
+      researcherIds = new ArrayList<>(referenceResearcherIds);
       // 作者id列表
 
       /* 第二步，获得最近在投稿刊物发表过文章（不在引文中）的作者 */
@@ -79,15 +96,17 @@ public class TaskReviewerRecommendationServiceImp
    */
   private List<String> getResearcherIdsByPaperIds(List<String> references) {
     List<String> researcherIds = new ArrayList<>();
-    try {
-      researcherIds =
-        (List<String>) restTemplate.postForObject(
-          paperServiceAddress + "/getResearchersByPaperIds",
-          references,
-          List.class
+    for (String reference : references) {
+      try {
+        IPaperBasic iPaperBasic = paperEntityService.getPaperBasicInfo(
+          reference
         );
-    } catch (Exception e) {
-      e.printStackTrace();
+        if (iPaperBasic != null) {
+          researcherIds.addAll(iPaperBasic.getResearchers());
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
     return researcherIds;
   }
@@ -97,24 +116,23 @@ public class TaskReviewerRecommendationServiceImp
    * @param researcherIds 作者列表
    */
   private List<String> sortResearchersByImpact(List<String> researcherIds) {
+    List<Double> impacts = new ArrayList<>();
     try {
-      List<Double> impacts = (List<Double>) restTemplate.postForObject(
-        taskImpactAnalysisServiceAddress + "/impact/researchers",
-        researcherIds,
-        List.class
-      );
-      if (impacts != null) {
-        HashMap<String, Double> map = new HashMap<>();
-        for (int i = 0; i < researcherIds.size(); i++) {
-          map.put(researcherIds.get(i), impacts.get(i));
-        }
-        researcherIds.sort((o1, o2) -> (int) (map.get(o2) - map.get(o1)));
-        if (researcherIds.size() > 5) {
-          researcherIds = researcherIds.subList(0, 5);
-        }
+      for (String researcherId : researcherIds) {
+        impacts.add(
+          taskImpactAnalysisService.getImpactByResearcherId(researcherId)
+        );
       }
     } catch (Exception e) {
       e.printStackTrace();
+    }
+    HashMap<String, Double> map = new HashMap<>();
+    for (int i = 0; i < researcherIds.size(); i++) {
+      map.put(researcherIds.get(i), impacts.get(i));
+    }
+    researcherIds.sort((o1, o2) -> (int) (map.get(o2) - map.get(o1)));
+    if (researcherIds.size() > 5) {
+      researcherIds = researcherIds.subList(0, 5);
     }
     return researcherIds;
   }
@@ -128,15 +146,17 @@ public class TaskReviewerRecommendationServiceImp
     List<String> domainIds,
     List<String> researcherIds
   ) {
+    List<String> researcherOfSimilarDomainPapers = new ArrayList<>();
     try {
-      List<String> researcherOfSimilarDomainPapers = (List<String>) restTemplate.postForObject(
-        paperServiceAddress + "/paper/getPapersByDomain",
-        domainIds,
-        List.class
-      );
-      if (researcherOfSimilarDomainPapers != null) {
-        researcherIds.addAll(researcherOfSimilarDomainPapers);
+      for (String domainId : domainIds) {
+        researcherOfSimilarDomainPapers.addAll(
+          domainEntityService.getResearcherByDomain(domainId)
+        );
       }
+      HashSet<String> hashSet = new HashSet<>(researcherOfSimilarDomainPapers);
+      researcherOfSimilarDomainPapers.clear();
+      researcherOfSimilarDomainPapers.addAll(hashSet);
+      researcherIds.addAll(researcherOfSimilarDomainPapers);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -154,13 +174,10 @@ public class TaskReviewerRecommendationServiceImp
     List<String> researcherIds
   ) {
     try {
-      List<String> researchersOfSameJournalPapers = (List<String>) restTemplate.getForObject(
-        paperServiceAddress +
-        "/paper/getPapersByJournal/" +
-        paperJournalId +
-        "/" +
+      List<String> researchersOfSameJournalPapers = publicationEntityService.getPapersByPublication(
+        paperJournalId,
         date,
-        List.class
+        null
       );
       if (researchersOfSameJournalPapers != null) {
         researcherIds.addAll(researchersOfSameJournalPapers);
@@ -209,26 +226,24 @@ public class TaskReviewerRecommendationServiceImp
     List<String> paperDomainIds
   ) {
     try {
-      List<List<String>> reviewersDomainIds = (List<List<String>>) restTemplate.postForObject(
-        researcherServiceAddress + "/researcher/getDomains",
-        researcherIds,
-        List.class
-      );
-
-      if (reviewersDomainIds != null) {
-        HashMap<String, List<String>> map = new HashMap<>();
-        for (int i = 0; i < researcherIds.size(); i++) {
-          map.put(researcherIds.get(i), reviewersDomainIds.get(i));
-        }
-        for (String rid : map.keySet()) {
-          List<String> domainIds = map.get(rid);
-          boolean hasNoSameDomain = Collections.disjoint(
-            paperDomainIds,
-            domainIds
-          );
-          if (hasNoSameDomain) {
-            researcherIds.removeIf(s -> s.equals(rid));
-          }
+      List<List<String>> reviewersDomainIds = new ArrayList<>();
+      for (String researcherId : researcherIds) {
+        reviewersDomainIds.add(
+          researcherEntityService.getDomainsByResearcherId(researcherId)
+        );
+      }
+      HashMap<String, List<String>> map = new HashMap<>();
+      for (int i = 0; i < researcherIds.size(); i++) {
+        map.put(researcherIds.get(i), reviewersDomainIds.get(i));
+      }
+      for (String rid : map.keySet()) {
+        List<String> domainIds = map.get(rid);
+        boolean hasNoSameDomain = Collections.disjoint(
+          paperDomainIds,
+          domainIds
+        );
+        if (hasNoSameDomain) {
+          researcherIds.removeIf(s -> s.equals(rid));
         }
       }
     } catch (Exception e) {
@@ -249,11 +264,39 @@ public class TaskReviewerRecommendationServiceImp
       //第一步，根据id获得与论文作者合作过的作者列表
       partners.addAll(getPartnersByRid(researcherIdsOfPaper));
 
+      //第二步，根据id获得与论文作者同机构的作者列表
+      partners.addAll(getPartnerFromSameAffiliation(researcherIdsOfPaper));
+
       //第二步，获得合作者的研究领域并按照相关程度排序，取前五名作者
       researcherIds =
         sortPartnersByDomains(partners, iPaperUpload.getDomainIds());
     }
     return new ResponseEntity<>(researcherIds, HttpStatus.OK);
+  }
+
+  /**
+   * 获得与论文作者相同机构的作者列表
+   * @param researcherIdsOfPaper 当前论文作者id列表
+   * @return 同机构作者id列表
+   */
+  private List<String> getPartnerFromSameAffiliation(
+    List<String> researcherIdsOfPaper
+  ) {
+    List<String> partnersFromSameAffiliation = new ArrayList<>();
+    for (String rid : researcherIdsOfPaper) {
+      IResearcher iResearcher = researcherEntityService.getResearcherById(rid);
+      List<String> affiliations = iResearcher.getAffiliation();
+      for (String aid : affiliations) {
+        IAffiliation iAffiliation = affiliationEntityService.getAffiliationById(
+          aid
+        );
+        partnersFromSameAffiliation.addAll(iAffiliation.getResearchers());
+      }
+    }
+    HashSet<String> hashSet = new HashSet<>(partnersFromSameAffiliation);
+    partnersFromSameAffiliation.clear();
+    partnersFromSameAffiliation.addAll(hashSet);
+    return partnersFromSameAffiliation;
   }
 
   /**
@@ -274,33 +317,28 @@ public class TaskReviewerRecommendationServiceImp
     rids.addAll(set);
 
     try {
-      List<List<Domain>> partnerDomains = (List<List<Domain>>) restTemplate.postForObject(
-        researcherServiceAddress + "/researcher/getDomains",
-        rids,
-        List.class
-      );
-      if (partnerDomains != null) {
-        HashMap<String, Integer> map = new HashMap<>();
-        for (int i = 0; i < rids.size(); i++) {
-          List<String> tempDomainIds = new ArrayList<>(domainIds);
-          int sumOfDomain;
-          List<Domain> domainsOfPartners = partnerDomains.get(i);
-          List<String> domainOfPartnersIds = domainsOfPartners
-            .stream()
-            .map(Domain::getId)
-            .collect(Collectors.toList());
-          //          System.out.println("this:" + tempDomainIds);
-          //          System.out.println("that:" + domainOfPartnersIds);
-          tempDomainIds.retainAll(domainOfPartnersIds);
-          sumOfDomain = tempDomainIds.size();
-          map.put(rids.get(i), sumOfDomain);
-        }
-        rids.sort((o1, o2) -> map.get(o2) - map.get(o1));
-        if (rids.size() > 5) {
-          rids = rids.subList(0, 5);
-        }
-        researcherIds = new ArrayList<>(rids);
+      List<List<String>> partnerDomains = new ArrayList<>();
+      for (String rid : rids) {
+        partnerDomains.add(
+          researcherEntityService.getDomainsByResearcherId(rid)
+        );
       }
+      HashMap<String, Integer> map = new HashMap<>();
+      for (int i = 0; i < rids.size(); i++) {
+        List<String> tempDomainIds = new ArrayList<>(domainIds);
+        int sumOfDomain;
+        List<String> domainOfPartnersIds = partnerDomains.get(i);
+        //System.out.println("this:" + tempDomainIds);
+        //System.out.println("that:" + domainOfPartnersIds);
+        tempDomainIds.retainAll(domainOfPartnersIds);
+        sumOfDomain = tempDomainIds.size();
+        map.put(rids.get(i), sumOfDomain);
+      }
+      rids.sort((o1, o2) -> map.get(o2) - map.get(o1));
+      if (rids.size() > 5) {
+        rids = rids.subList(0, 5);
+      }
+      researcherIds = new ArrayList<>(rids);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -315,12 +353,14 @@ public class TaskReviewerRecommendationServiceImp
   private List<String> getPartnersByRid(List<String> rids) {
     List<String> researchers = new ArrayList<>();
     try {
-      researchers =
-        (List<String>) restTemplate.postForObject(
-          taskPartnerShipServiceAddress + "/getPartnersByRids/",
-          rids,
-          List.class
+      for (String rid : rids) {
+        researchers.addAll(
+          taskPartnershipService.getPartnersByResearcherId(rid)
         );
+      }
+      HashSet<String> hashSet = new HashSet<>(researchers);
+      researchers.clear();
+      researchers.addAll(hashSet);
     } catch (Exception e) {
       e.printStackTrace();
     }
