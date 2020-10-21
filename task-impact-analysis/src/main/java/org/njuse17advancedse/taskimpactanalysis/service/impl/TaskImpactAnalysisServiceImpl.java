@@ -1,9 +1,12 @@
 package org.njuse17advancedse.taskimpactanalysis.service.impl;
 
+import java.awt.print.Paper;
 import java.util.*;
-import org.njuse17advancedse.taskimpactanalysis.entity.Paper;
-import org.njuse17advancedse.taskimpactanalysis.entity.Researcher;
-import org.njuse17advancedse.taskimpactanalysis.service.FakeService;
+import org.checkerframework.checker.units.qual.A;
+import org.njuse17advancedse.taskimpactanalysis.dto.IPaper;
+import org.njuse17advancedse.taskimpactanalysis.dto.IResearcher;
+import org.njuse17advancedse.taskimpactanalysis.service.PaperService;
+import org.njuse17advancedse.taskimpactanalysis.service.ResearcherService;
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,19 +21,26 @@ public class TaskImpactAnalysisServiceImpl
   }
 
   @Autowired
-  FakeService service;
+  PaperService paperService;
+
+  @Autowired
+  ResearcherService researcherService;
 
   /**
    * 计算学者影响力（H指数）
    */
   @Override
   public int getHIndex(String id) {
-    Researcher r = service.getResearcherById(id);
-    ArrayList<Paper> tmpPapers = new ArrayList<>(r.getPapers());
-    tmpPapers.sort(Comparator.comparingInt(a -> -a.getQuotedIds().size()));
+    IResearcher r = researcherService.getResearcherById(id);
+    ArrayList<String> tmpPaperIds = new ArrayList<>(r.getPapers());
+    ArrayList<IPaper> tmpPapers = new ArrayList<>();
+    for (String s : tmpPaperIds) {
+      tmpPapers.add(paperService.getPaper(s));
+    }
+    tmpPapers.sort(Comparator.comparingInt(a -> -a.getReferences().size()));
     int res = 0;
     for (int i = 0; i < tmpPapers.size(); i++) {
-      if (tmpPapers.get(i).getQuotedIds().size() > i) {
+      if (tmpPapers.get(i).getReferences().size() > i) {
         res = i + 1;
       } else {
         break;
@@ -46,11 +56,12 @@ public class TaskImpactAnalysisServiceImpl
    */
   @Override
   public double getPaperImpact(String id) {
-    Paper p = service.getPaperById(id);
+    IPaper p = paperService.getPaper(id);
     return Double.parseDouble(
       String.format(
         "%.2f",
-        p.getQuotedIds().size() * impactFactors.getOrDefault(p.getJournal(), 0d)
+        p.getReferences().size() *
+        impactFactors.getOrDefault(p.getPublication(), 0d)
       )
     );
   }
