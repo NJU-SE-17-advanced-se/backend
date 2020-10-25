@@ -1,5 +1,6 @@
 package org.njuse17advancedse.taskpartnershipanalysis.service;
 
+import java.util.List;
 import java.util.Map;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IResearcherNet;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,13 @@ import org.springframework.http.ResponseEntity;
  * @date 2020/10/13
  */
 public interface TaskPartnershipAnalysisService {
+  /**
+   * 根据作者id获得与作者合作过的作者
+   * @param researcherId 作者id
+   * @return id列表
+   */
+  ResponseEntity<List<String>> getPartners(String researcherId);
+
   /**
    * 根据作者id获得作者某一时期的合作网络
    * @param researcherId 作者id
