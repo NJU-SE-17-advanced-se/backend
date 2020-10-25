@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.njuse17advancedse.entitypaper.entity.Paper;
 
 @Data
 @AllArgsConstructor
@@ -26,4 +27,16 @@ public class IPaper {
   private List<String> domains;
 
   private List<String> references;
+
+  public IPaper(Paper paper) {
+    this.id = paper.getId();
+    this.title = paper.getTitle();
+    this.abs = paper.getAbs();
+    this.publication = paper.getPublication();
+    this.publicationDate = paper.getPublicationDate();
+    this.link = paper.getLink();
+    this.references = paper.getResearchers();
+    this.domains = paper.getDomains();
+    this.references = paper.getResearchers();
+  }
 }
