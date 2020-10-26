@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class ResearcherController {
 
   @GetMapping("/{id}")
-  // 根据ID获取学者
+  // 根据 id 获取学者
   public IResearcher getResearcherById(@PathVariable String id) {
     return new IResearcher(
       id,
@@ -23,7 +23,7 @@ public class ResearcherController {
   }
 
   @GetMapping("/{id}/papers")
-  // 获取某作者的论文
+  // 获取某作者的论文 id
   public List<String> getResearcherPapersByTimeRange(
     @PathVariable String id,
     @RequestParam(required = false) String start,
@@ -33,7 +33,7 @@ public class ResearcherController {
   }
 
   @GetMapping("/{id}/domains")
-  // 获取作者所属领域
+  // 获取作者所属领域 id
   public List<String> getDomainsByTimeRange(
     @PathVariable String id,
     @RequestParam(required = false) String start,
@@ -43,7 +43,7 @@ public class ResearcherController {
   }
 
   @GetMapping("/{id}/affiliations")
-  // 获取作者所属机构
+  // 获取作者所属机构 id
   public List<String> getAffiliationsByTimeRange(
     @PathVariable String id,
     @RequestParam(required = false) String start,
@@ -53,7 +53,7 @@ public class ResearcherController {
   }
 
   @GetMapping("/{id}/basic-info")
-  // 根据ID获取学者
+  // 根据学者 id 获取学者简略信息
   public IResearcherBasic getResearcherBasicInfoById(@PathVariable String id) {
     return new IResearcherBasic(
       id,
