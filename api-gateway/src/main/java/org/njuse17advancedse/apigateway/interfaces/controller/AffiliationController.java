@@ -3,6 +3,7 @@ package org.njuse17advancedse.apigateway.interfaces.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.njuse17advancedse.apigateway.apps.entity.AffiliationService;
 import org.njuse17advancedse.apigateway.interfaces.dto.IAffiliation;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = { "机构" })
-@RequestMapping("/affiliation")
+@RequestMapping("/affiliations")
 @RestController
 public class AffiliationController {
   private final AffiliationService affiliationService;
@@ -40,6 +41,30 @@ public class AffiliationController {
       affiliationService.getAffiliationBasicInfoById(id),
       IAffiliationBasic.class
     );
+  }
+
+  @ApiOperation("根据机构的id获取机构学者id")
+  @GetMapping("/{id}/researchers")
+  List<String> getAffiliationResearchersById(
+    @ApiParam(value = "机构id") @PathVariable String id
+  ) {
+    return affiliationService.getAffiliationResearchersById(id);
+  }
+
+  @ApiOperation("根据机构的id获取机构论文id")
+  @GetMapping("/{id}/papers")
+  List<String> getAffiliationPapersById(
+    @ApiParam(value = "机构id") @PathVariable String id
+  ) {
+    return affiliationService.getAffiliationPapersById(id);
+  }
+
+  @ApiOperation("根据机构的id获取机构研究领域id")
+  @GetMapping("/{id}/domains")
+  List<String> getAffiliationDomainsById(
+    @ApiParam(value = "机构id") @PathVariable String id
+  ) {
+    return affiliationService.getAffiliationDomainsById(id);
   }
 
   public AffiliationController(

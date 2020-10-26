@@ -1,4 +1,4 @@
-package org.njuse17advancedse.apigateway.interfaces.dto;
+package org.njuse17advancedse.apigateway.domains.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class IPaper {
+public class DPaperBasic {
   private String id;
 
   private String title;
@@ -19,11 +19,5 @@ public class IPaper {
 
   private String publicationDate; // 发表日期，形如'2020'（目前暂定为年）
 
-  private String link;
-
   private List<String> researchers;
-
-  private List<String> domains;
-
-  private List<String> references;
 }

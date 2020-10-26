@@ -1,4 +1,4 @@
-package org.njuse17advancedse.apigateway.interfaces.dto;
+package org.njuse17advancedse.apigateway.domains.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class IPaper {
+public class DPaper {
   private String id;
 
   private String title;
