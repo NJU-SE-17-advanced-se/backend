@@ -1,6 +1,5 @@
 package org.njuse17advancedse.apigateway.domains.dto;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,16 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DAffiliation {
+public class DPublicationBasic {
   private String id;
 
   private String name;
 
-  private String description;
-
-  private List<String> researchers;
-
-  private List<String> papers;
-
-  private List<String> domains;
+  private String publicationDate; // 出版日期
 }

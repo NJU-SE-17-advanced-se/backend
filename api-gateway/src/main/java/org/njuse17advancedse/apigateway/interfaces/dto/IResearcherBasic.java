@@ -4,22 +4,18 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.njuse17advancedse.apigateway.domains.entity.Paper;
-import org.njuse17advancedse.apigateway.domains.entity.Researcher;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class IAffiliation {
+public class IResearcherBasic {
   private String id;
 
   private String name;
 
-  private String description;
+  private List<String> affiliation; // 可能同时身在多个机构
 
-  private List<String> researchers;
-
-  private List<String> papers;
+  private List<String> papers; // 五篇代表作
 
   private List<String> domains;
 }

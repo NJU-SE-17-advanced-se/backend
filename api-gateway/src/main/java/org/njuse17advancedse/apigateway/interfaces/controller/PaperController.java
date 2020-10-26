@@ -4,18 +4,18 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.njuse17advancedse.apigateway.apps.entity.PaperService;
 import org.njuse17advancedse.apigateway.apps.task.CitationAnalysisService;
 import org.njuse17advancedse.apigateway.apps.task.ImpactAnalysisService;
 import org.njuse17advancedse.apigateway.apps.task.ReviewerRecommendationService;
 import org.njuse17advancedse.apigateway.interfaces.dto.IPaper;
+import org.njuse17advancedse.apigateway.interfaces.dto.IPaperBasic;
 import org.njuse17advancedse.apigateway.interfaces.dto.IPaperUpload;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = { "论文" })
-@RequestMapping("/paper")
+@RequestMapping("/papers")
 @RestController
 public class PaperController {
   private final CitationAnalysisService citationAnalysisService;
@@ -88,14 +88,52 @@ public class PaperController {
     return impactAnalysisService.getPaperImpact(id, type);
   }
 
-  @ApiOperation("根据论文的id获取论文详细信息（WIP)")
-  @Deprecated
+  @ApiOperation("根据论文的id获取论文详细信息")
   @GetMapping("/{id}")
-  // TODO: 完成该接口
-  public IPaper getPaperById(
-    @ApiParam(value = "论文id") @PathVariable String id
+  // 根据ID获取论文
+  public IPaper getPaper(@PathVariable String id) {
+    return modelMapper.map(paperService.getPaper(id), IPaper.class);
+  }
+
+  @ApiOperation(
+    value = "根据其他指标获取论文",
+    notes = "如果都没填，返回全部论文"
+  )
+  @GetMapping("")
+  public List<String> getPapers(
+    @RequestParam(required = false) String researcher,
+    @RequestParam(required = false) String publication,
+    @RequestParam(required = false) String date
   ) {
-    return modelMapper.map(paperService.getPaperById(id), IPaper.class);
+    return paperService.getPapers(researcher, publication, date);
+  }
+
+  @ApiOperation("根据指标获取论文简略信息")
+  @GetMapping("/basic-info/{id}")
+  public IPaperBasic getPaperBasicInfo(@PathVariable String id) {
+    return modelMapper.map(
+      paperService.getPaperBasicInfo(id),
+      IPaperBasic.class
+    );
+  }
+
+  @ApiOperation(
+    value = "根据指标获取论文简略信息",
+    notes = "如果都没填，返回全部论文的简略信息"
+  )
+  @GetMapping("/basic-info")
+  public List<String> getPapersBasicInfo(
+    @RequestParam(required = false) String researcher,
+    @RequestParam(required = false) String publication,
+    @RequestParam(required = false) String date
+  ) {
+    return paperService.getPapersBasicInfo(researcher, publication, date);
+  }
+
+  @ApiOperation("获取论文所属领域")
+  @GetMapping("/{id}/domains")
+  public List<String> getDomains(@PathVariable String id) {
+    return paperService.getDomains(id);
   }
 
   public PaperController(
