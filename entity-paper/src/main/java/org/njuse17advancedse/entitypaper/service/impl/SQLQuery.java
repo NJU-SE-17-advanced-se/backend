@@ -21,6 +21,8 @@ public class SQLQuery {
 
   public SQLQuery() throws Exception {
     Class.forName(DBDRIVER);
+    connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+    statement = connection.createStatement();
   }
 
   private void connect() throws Exception {
