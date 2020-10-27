@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DomainController {
 
   @GetMapping("/{id}")
-  // 根据ID获取某领域信息
+  // 根据 id 获取某领域信息
   public IDomain getDomainById(@PathVariable String id) {
     return new IDomain(
       id,
@@ -25,19 +25,19 @@ public class DomainController {
   }
 
   @GetMapping("/{id}/basic-info")
-  // 根据ID获取某领域简略信息
+  // 根据 id 获取某领域简略信息
   public IDomainBasic getDomainBasicInfoById(@PathVariable String id) {
     return new IDomainBasic(id, "测试领域" + id);
   }
 
   @GetMapping("/{id}/papers")
-  // 某领域下的论文
+  // 根据领域 id 获取某领域下的论文 id
   public List<String> getPapers(@PathVariable String id) {
     return new ArrayList<>();
   }
 
   @GetMapping("/{id}/researchers")
-  // 某领域下的学者
+  // 根据领域 id 获取某领域下的学者 id
   public List<String> getResearchers(@PathVariable String id) {
     return new ArrayList<>();
   }
