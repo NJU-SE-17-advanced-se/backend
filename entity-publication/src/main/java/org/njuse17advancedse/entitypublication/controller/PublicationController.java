@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class PublicationController {
 
   @GetMapping("/{id}")
-  // 根据ID获取出版物
+  // 根据 id 获取出版物
   public IPublication getPublicationById(@PathVariable String id) {
     return new IPublication(
       id,
@@ -23,8 +23,8 @@ public class PublicationController {
   }
 
   @GetMapping("")
-  // 根据其他指标获取出版物
-  // NOTE: 如果没有任何指标，返回的就是全部的出版物
+  // 根据其他查询条件获取出版物 id
+  // NOTE: 如果没有任何查询条件，返回的就是全部出版物 id
   public List<String> getPublicationsByTimeRange(
     @RequestParam(required = false) String name,
     @RequestParam(required = false) String start,
@@ -34,7 +34,7 @@ public class PublicationController {
   }
 
   @GetMapping("/{id}/papers")
-  // 根据ID（和时间范围）获取出版物包含的论文
+  // 根据 id （和时间范围）获取出版物包含的论文 id
   public List<String> getPapersByIdOrTimeRange(
     @PathVariable String id,
     @RequestParam(required = false) String start,
@@ -44,7 +44,7 @@ public class PublicationController {
   }
 
   @GetMapping("/{id}/basic-info")
-  // 根据ID获取出版物基本信息
+  // 根据 id 获取出版物基本信息
   public IPublicationBasic getPublicationBasicInfoById(
     @PathVariable String id
   ) {

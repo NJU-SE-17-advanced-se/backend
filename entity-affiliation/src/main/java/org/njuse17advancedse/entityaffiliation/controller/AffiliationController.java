@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AffiliationController {
 
   @GetMapping("/{id}")
-  // 根据机构的id获取机构详细信息
+  // 根据机构 id 获取机构详细信息
   public IAffiliation getAffiliationById(@PathVariable String id) {
     return new IAffiliation(
       id,
@@ -27,7 +27,7 @@ public class AffiliationController {
   }
 
   @GetMapping("/{id}/basic-info")
-  // 根据机构的id获取机构简略信息
+  // 根据机构 id 获取机构简略信息
   public IAffiliationBasic getAffiliationBasicInfoById(
     @PathVariable String id
   ) {
@@ -35,19 +35,19 @@ public class AffiliationController {
   }
 
   @GetMapping("/{id}/researchers")
-  // 根据机构的id获取机构学者
+  // 根据机构 id 获取该机构的学者
   public List<String> getAffiliationResearchersById(@PathVariable String id) {
     return new ArrayList<>();
   }
 
   @GetMapping("/{id}/papers")
-  // 根据机构的id获取机构论文
+  // 根据机构 id 获取该机构发表的论文
   public List<String> getAffiliationPapersById(@PathVariable String id) {
     return new ArrayList<>();
   }
 
   @GetMapping("/{id}/domains")
-  // 根据机构的id获取机构研究领域
+  // 根据机构 id 获取该机构的研究领域
   public List<String> getAffiliationDomainsById(@PathVariable String id) {
     return new ArrayList<>();
   }
