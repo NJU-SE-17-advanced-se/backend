@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.var;
-import org.njuse17advancedse.taskcitationanalysis.entity.*;
-import org.njuse17advancedse.taskcitationanalysis.service.FakeService;
+import org.njuse17advancedse.taskcitationanalysis.dto.IPaper;
+import org.njuse17advancedse.taskcitationanalysis.dto.IResearcher;
+import org.njuse17advancedse.taskcitationanalysis.service.PaperService;
+import org.njuse17advancedse.taskcitationanalysis.service.ResearcherService;
 import org.njuse17advancedse.taskcitationanalysis.service.TaskCitationAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,10 @@ import org.springframework.stereotype.Service;
 public class TaskCitationAnalysisServiceImpl
   implements TaskCitationAnalysisService {
   @Autowired
-  FakeService fakeService;
+  private PaperService paperService;
+
+  @Autowired
+  private ResearcherService researcherService;
 
   private Map<String, List<String>> quoted = new HashMap<>(); //被它引用的论文
 
@@ -37,8 +42,10 @@ public class TaskCitationAnalysisServiceImpl
     String researcherId
   ) {
     Map<String, List<String>> res = new HashMap<>();
-    for (Paper p : fakeService.getResearcherById(researcherId).getPapers()) {
-      res.put(p.getId(), quoting.get(p.getId()));
+    for (String s : researcherService
+      .getResearcherById(researcherId)
+      .getPapers()) {
+      res.put(s, quoting.get(s));
     }
     return res;
   }
@@ -51,8 +58,10 @@ public class TaskCitationAnalysisServiceImpl
     String researcherId
   ) {
     Map<String, List<String>> res = new HashMap<>();
-    for (Paper p : fakeService.getResearcherById(researcherId).getPapers()) {
-      res.put(p.getId(), quoted.get(p.getId()));
+    for (String s : researcherService
+      .getResearcherById(researcherId)
+      .getPapers()) {
+      res.put(s, quoted.get(s));
     }
     return res;
   }
@@ -79,16 +88,18 @@ public class TaskCitationAnalysisServiceImpl
   ) {
     Map<String, List<String>> res = new HashMap<>();
     Set<String> set = new HashSet<>();
-    List<Paper> pList = fakeService.getResearcherById(researcherId).getPapers();
-    for (Paper p : pList) {
+    List<String> pList = researcherService
+      .getResearcherById(researcherId)
+      .getPapers();
+    for (String s : pList) {
       set = new HashSet<>();
-      List<String> quotedPapers = getQuotedPapersByPaperId(p.getId());
+      List<String> quotedPapers = getQuotedPapersByPaperId(s);
       for (String tp : quotedPapers) {
-        for (Researcher r : fakeService.getPaperById(tp).getResearchers()) {
-          set.add(r.getId());
+        for (String r : paperService.getPaper(tp).getResearchers()) {
+          set.add(r);
         }
       }
-      res.put(p.getId(), new ArrayList<>(set));
+      res.put(s, new ArrayList<>(set));
     }
     return res;
   }
@@ -99,16 +110,18 @@ public class TaskCitationAnalysisServiceImpl
   ) {
     Map<String, List<String>> res = new HashMap<>();
     Set<String> set;
-    List<Paper> pList = fakeService.getResearcherById(researcherId).getPapers();
-    for (Paper p : pList) {
+    List<String> pList = researcherService
+      .getResearcherById(researcherId)
+      .getPapers();
+    for (String s : pList) {
       set = new HashSet<>();
-      List<String> quotingPapers = getQuotingPapersByPaperId(p.getId());
+      List<String> quotingPapers = getQuotingPapersByPaperId(s);
       for (String tp : quotingPapers) {
-        for (Researcher r : fakeService.getPaperById(tp).getResearchers()) {
-          set.add(r.getId());
+        for (String r : paperService.getPaper(tp).getResearchers()) {
+          set.add(r);
         }
       }
-      res.put(p.getId(), new ArrayList<>(set));
+      res.put(s, new ArrayList<>(set));
     }
 
     return res;
@@ -117,12 +130,14 @@ public class TaskCitationAnalysisServiceImpl
   @Override
   public List<String> getResearcherQuotedResearcher(String researcherId) {
     Set<String> set = new HashSet<>();
-    List<Paper> pList = fakeService.getResearcherById(researcherId).getPapers();
-    for (Paper p : pList) {
-      List<String> quotedPapers = getQuotedPapersByPaperId(p.getId());
+    List<String> pList = researcherService
+      .getResearcherById(researcherId)
+      .getPapers();
+    for (String s : pList) {
+      List<String> quotedPapers = getQuotedPapersByPaperId(s);
       for (String tp : quotedPapers) {
-        for (Researcher r : fakeService.getPaperById(tp).getResearchers()) {
-          set.add(r.getId());
+        for (String r : paperService.getPaper(tp).getResearchers()) {
+          set.add(r);
         }
       }
     }
@@ -133,12 +148,14 @@ public class TaskCitationAnalysisServiceImpl
   @Override
   public List<String> getResearcherQuotingResearcher(String researcherId) {
     Set<String> set = new HashSet<>();
-    List<Paper> pList = fakeService.getResearcherById(researcherId).getPapers();
-    for (Paper p : pList) {
-      List<String> quotingPapers = getQuotingPapersByPaperId(p.getId());
+    List<String> pList = researcherService
+      .getResearcherById(researcherId)
+      .getPapers();
+    for (String s : pList) {
+      List<String> quotingPapers = getQuotingPapersByPaperId(s);
       for (String tp : quotingPapers) {
-        for (Researcher r : fakeService.getPaperById(tp).getResearchers()) {
-          set.add(r.getId());
+        for (String r : paperService.getPaper(tp).getResearchers()) {
+          set.add(r);
         }
       }
     }
@@ -149,11 +166,11 @@ public class TaskCitationAnalysisServiceImpl
   @Override
   public List<String> getPaperQuotedResearcher(String paperId) {
     Set<String> set = new HashSet<>();
-    Paper p = fakeService.getPaperById(paperId);
+    IPaper p = paperService.getPaper(paperId);
     List<String> quotedPapers = getQuotedPapersByPaperId(p.getId());
     for (String tp : quotedPapers) {
-      for (Researcher r : fakeService.getPaperById(tp).getResearchers()) {
-        set.add(r.getId());
+      for (String r : paperService.getPaper(tp).getResearchers()) {
+        set.add(r);
       }
     }
     return new ArrayList<>(set);
@@ -162,11 +179,11 @@ public class TaskCitationAnalysisServiceImpl
   //某论文被哪些学者引用
   public List<String> getPaperQuotingResearcher(String paperId) {
     Set<String> set = new HashSet<>();
-    Paper p = fakeService.getPaperById(paperId);
+    IPaper p = paperService.getPaper(paperId);
     List<String> quotingPapers = getQuotingPapersByPaperId(p.getId());
     for (String tp : quotingPapers) {
-      for (Researcher r : fakeService.getPaperById(tp).getResearchers()) {
-        set.add(r.getId());
+      for (String r : paperService.getPaper(tp).getResearchers()) {
+        set.add(r);
       }
     }
     return new ArrayList<>(set);
@@ -177,18 +194,22 @@ public class TaskCitationAnalysisServiceImpl
     String researcherId1,
     String researcherId2
   ) {
-    Researcher researcher1 = fakeService.getResearcherById(researcherId1);
-    Researcher researcher2 = fakeService.getResearcherById(researcherId2);
+    IResearcher researcher1 = researcherService.getResearcherById(
+      researcherId1
+    );
+    IResearcher researcher2 = researcherService.getResearcherById(
+      researcherId2
+    );
     var tmpVar1 = researcher1.getPapers();
     var tmpVar2 = researcher2.getPapers();
     Set<String> researcher2Ids = new HashSet<>();
     Map<String, Integer> res = new HashMap<>();
 
-    for (Paper p : tmpVar2) {
-      researcher2Ids.add(p.getId());
+    for (String s : tmpVar2) {
+      researcher2Ids.add(s);
     }
-    for (Paper p : tmpVar1) {
-      String id = p.getId();
+    for (String s : tmpVar1) {
+      String id = s;
       List<String> tmpList = getQuotedPapersByPaperId(id);
       int cnt = 0;
       for (String tId : tmpList) {
@@ -204,15 +225,15 @@ public class TaskCitationAnalysisServiceImpl
 
   @Override
   public void init() {
-    List<Paper> papers = fakeService.getAllPapers();
+    List<String> paperids = paperService.getPapers(null, null, null);
     //String cnt=0;
     quoted = new HashMap<>();
     quoting = new HashMap<>();
-    for (Paper paper : papers) {
-      String id = paper.getId();
+    for (String id : paperids) {
       //            string2String.put(id,cnt);
       //            String2String.put(cnt,id);
-      List<String> quotedIds = paper.getQuotedIds();
+      IPaper paper = paperService.getPaper(id);
+      List<String> quotedIds = paper.getReferences();
       for (String s : quotedIds) {
         put(quoted, id, s);
         put(quoting, s, id);
@@ -231,6 +252,10 @@ public class TaskCitationAnalysisServiceImpl
       map.get(id).add(s);
     }
   }
+  //  @Override
+  //  public String test(){
+  //    return paperService.getPaper("4").getPublication();
+  //  }
   // String string2String(String string) {
   //   return string2String.get(string);
   // }
