@@ -38,22 +38,10 @@ public class PaperController {
     return service.getPapers(researcher, publication, date);
   }
 
-  @GetMapping("/basic-info/{id}")
+  @GetMapping("/{id}/basic-info")
   // 根据 id 获取论文简略信息
   public IPaperBasic getPaperBasicInfo(@PathVariable String id) {
     return service.getPaperBasicInfo(id);
-  }
-
-  @GetMapping("/basic-info")
-  // 根据其他查询条件获取论文 id，以获取简略信息
-  // 如果没有任何查询条件，返回全部论文的 id，以获取简略信息
-  // TODO: 分页
-  public List<String> getPapersBasicInfo(
-    @RequestParam(required = false) String researcher,
-    @RequestParam(required = false) String publication,
-    @RequestParam(required = false) String date
-  ) {
-    return service.getPapersBasicInfo(researcher, publication, date);
   }
 
   @GetMapping("/{id}/domains")
