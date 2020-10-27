@@ -6,24 +6,71 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.njuse17advancedse.taskpartnershipanalysis.dto.IPaper;
+import org.njuse17advancedse.taskpartnershipanalysis.dto.IPaperBasic;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IResearcherNet;
-import org.njuse17advancedse.taskpartnershipanalysis.dto.RScoreData;
-import org.njuse17advancedse.taskpartnershipanalysis.entity.Paper;
-import org.njuse17advancedse.taskpartnershipanalysis.entity.Researcher;
+import org.njuse17advancedse.taskpartnershipanalysis.service.DomainEntityService;
+import org.njuse17advancedse.taskpartnershipanalysis.service.PaperEntityService;
+import org.njuse17advancedse.taskpartnershipanalysis.service.ResearcherEntityService;
+import org.njuse17advancedse.taskpartnershipanalysis.service.TaskImpactAnalysisService;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 class TaskPartnershipAnalysisServiceImpTest {
-  @Mock
-  private RestTemplate restTemplate;
+  @MockBean
+  private DomainEntityService domainEntityService;
 
-  @InjectMocks
+  @MockBean
+  private PaperEntityService paperEntityService;
+
+  @MockBean
+  private ResearcherEntityService researcherEntityService;
+
+  @MockBean
+  private TaskImpactAnalysisService taskImpactAnalysisService;
+
   private TaskPartnershipAnalysisServiceImp taskPartnershipAnalysisService;
+
+  @BeforeEach
+  public void init() {
+    taskPartnershipAnalysisService =
+      new TaskPartnershipAnalysisServiceImp(
+        researcherEntityService,
+        paperEntityService,
+        domainEntityService,
+        taskImpactAnalysisService
+      );
+  }
+
+  @Test
+  void getPartners() {
+    String testResearcherId = "test";
+    List<String> papers = Lists.newArrayList("1", "2", "3", "4");
+    Mockito
+      .when(researcherEntityService.getPaperByResearcherId("test", null, null))
+      .thenReturn(papers);
+    for (String pid : papers) {
+      IPaperBasic iPaperBasic = new IPaperBasic();
+      iPaperBasic.setResearchers(
+        Lists.newArrayList(
+          Integer.parseInt(pid) + 1 + "",
+          Integer.parseInt(pid) + "",
+          Integer.parseInt(pid) - 1 + ""
+        )
+      );
+      Mockito
+        .when(paperEntityService.getPaperBasicInfo(pid))
+        .thenReturn(iPaperBasic);
+    }
+    assertEquals(
+      taskPartnershipAnalysisService.getPartners(testResearcherId).getBody(),
+      Lists.newArrayList("0", "1", "2", "3", "4", "5")
+    );
+  }
 
   @Test
   void getPartnership() {
@@ -31,90 +78,68 @@ class TaskPartnershipAnalysisServiceImpTest {
     String startDate = "2018";
     String endDate = "2020";
 
-    List<Paper> testPapers1 = new ArrayList<>();
+    List<String> papers = Lists.newArrayList("p0", "p1", "p2");
+
+    List<IPaper> iPapers = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
-      Paper paper = new Paper();
-      paper.setId("test" + i);
-      List<Researcher> researchers = new ArrayList<>();
-      for (int j = 0; j < i + 1; j++) {
-        Researcher researcher = new Researcher();
-        researcher.setId("17125066" + (j + 2));
-        researchers.add(researcher);
+      IPaper iPaper = new IPaper();
+      iPaper.setId(i + "");
+      iPaper.setResearchers(Lists.newArrayList(i + "", i - 1 + "", i + 1 + ""));
+      iPaper.setReferences(Lists.newArrayList("a" + i, "b" + i, "c" + i));
+      iPapers.add(iPaper);
+    }
+
+    Mockito
+      .when(
+        researcherEntityService.getPaperByResearcherId(
+          testRid,
+          startDate,
+          endDate
+        )
+      )
+      .thenReturn(papers);
+
+    for (int i = 0; i < 3; i++) {
+      Mockito
+        .when(paperEntityService.getPaper("p" + i))
+        .thenReturn(iPapers.get(i));
+    }
+
+    for (int i = -1; i < 4; i++) {
+      List<String> partnerPapers = new ArrayList<>();
+      for (int j = 0; j < i + 2; j++) {
+        partnerPapers.add(j + "");
       }
-      paper.setResearchers(researchers);
-      List<Paper> refs = new ArrayList<>();
-      for (int j = 0; j < 5; j++) {
-        Paper ref = new Paper();
-        ref.setId(j + "");
-        refs.add(ref);
+      Mockito
+        .when(
+          researcherEntityService.getPaperByResearcherId(
+            i + "",
+            startDate,
+            endDate
+          )
+        )
+        .thenReturn(partnerPapers);
+    }
+
+    for (int i = 0; i < 6; i++) {
+      IPaper iPaper = new IPaper();
+      if (i % 2 == 0) {
+        iPaper.setReferences(Lists.newArrayList("a" + i, "b" + i));
+      } else {
+        iPaper.setReferences(Lists.newArrayList("b" + i, "c" + i));
       }
-      paper.setReferences(refs);
-      testPapers1.add(paper);
+      Mockito.when(paperEntityService.getPaper(i + "")).thenReturn(iPaper);
     }
-
-    List<Paper> testPapers2 = new ArrayList<>();
-    Paper paper2 = new Paper();
-    List<Paper> refs2 = new ArrayList<>();
-    for (int i = 0; i < 2; i++) {
-      Paper paper = new Paper();
-      paper.setId(i + "");
-      refs2.add(paper);
-    }
-    paper2.setReferences(refs2);
-    testPapers2.add(paper2);
-
-    List<Paper> testPapers3 = new ArrayList<>();
-    Paper paper3 = new Paper();
-    List<Paper> refs3 = new ArrayList<>();
-    for (int i = 0; i < 1; i++) {
-      Paper paper = new Paper();
-      paper.setId(i + "");
-      refs3.add(paper);
-    }
-    paper3.setReferences(refs3);
-    testPapers3.add(paper3);
-
-    List<Paper> testPapers4 = new ArrayList<>();
-    Paper paper4 = new Paper();
-    List<Paper> refs4 = new ArrayList<>();
-    for (int i = 0; i < 4; i++) {
-      Paper paper = new Paper();
-      paper.setId(i + "");
-      refs4.add(paper);
-    }
-    paper4.setReferences(refs4);
-    testPapers4.add(paper4);
-
-    Mockito
-      .when(
-        restTemplate.getForObject("/getPapers/171250661/2018/2020", List.class)
-      )
-      .thenReturn(testPapers1);
-    Mockito
-      .when(
-        restTemplate.getForObject("/getPapers/171250662/2018/2020", List.class)
-      )
-      .thenReturn(testPapers2);
-    Mockito
-      .when(
-        restTemplate.getForObject("/getPapers/171250663/2018/2020", List.class)
-      )
-      .thenReturn(testPapers3);
-    Mockito
-      .when(
-        restTemplate.getForObject("/getPapers/171250664/2018/2020", List.class)
-      )
-      .thenReturn(testPapers4);
 
     IResearcherNet iResearcherNet = new IResearcherNet();
-    iResearcherNet.setPartners(
-      Lists.newArrayList("171250664", "171250663", "171250662")
-    );
+    iResearcherNet.setPartners(Lists.newArrayList("0", "1", "2", "3", "-1"));
     iResearcherNet.setWeight(
       Lists.newArrayList(
-        new Double[] { 0.33, 1.00 },
-        new Double[] { 0.67, 0.25 },
-        new Double[] { 1.00, 0.50 }
+        new Double[] { 0.67, 0.6 },
+        new Double[] { 1.0, 1.0 },
+        new Double[] { 0.67, 1.0 },
+        new Double[] { 0.33, 1.0 },
+        new Double[] { 0.33, 0.2 }
       )
     );
 
@@ -138,83 +163,79 @@ class TaskPartnershipAnalysisServiceImpTest {
   @Test
   void getPotentialPartners() {
     String testRid = "171250661";
-    List<String> candidate_domain = Lists.newArrayList(
-      "0",
-      "1",
-      "2",
+    List<String> testPapers = Lists.newArrayList("8", "9");
+    List<String> candidate_domain = Lists.newArrayList("0", "1", "2", "3", "4");
+    List<String> candidate_cooperation = Lists.newArrayList(
       "3",
       "4",
       "5",
       "6",
       "7"
     );
-    List<String> candidate_cooperation = Lists.newArrayList(
+
+    Mockito
+      .when(researcherEntityService.getDomainsByResearcherId(testRid))
+      .thenReturn(Lists.newArrayList("d0", "d1", "d2"));
+    for (int i = 0; i < 3; i++) {
+      Mockito
+        .when(domainEntityService.getResearcherByDomain("d" + i))
+        .thenReturn(Lists.newArrayList(i + "", i + 1 + "", i + 2 + ""));
+    }
+
+    Mockito
+      .when(researcherEntityService.getPaperByResearcherId(testRid, null, null))
+      .thenReturn(testPapers);
+
+    for (String pid : testPapers) {
+      IPaperBasic iPaperBasic = new IPaperBasic();
+      iPaperBasic.setResearchers(
+        Lists.newArrayList(
+          Integer.parseInt(pid) - 1 + "",
+          Integer.parseInt(pid) + "",
+          Integer.parseInt(pid) - 2 + ""
+        )
+      );
+      Mockito
+        .when(paperEntityService.getPaperBasicInfo(pid))
+        .thenReturn(iPaperBasic);
+    }
+
+    List<String> candidate = Lists.newArrayList(
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
       "6",
       "7",
       "8",
-      "9",
-      "10",
-      "11",
-      "12"
+      "9"
     );
-    Mockito
-      .when(
-        restTemplate.getForObject(
-          "/researchers-similar-domain/171250661",
-          List.class
-        )
-      )
-      .thenReturn(candidate_domain);
-    Mockito
-      .when(restTemplate.getForObject("/past-partners/171250661", List.class))
-      .thenReturn(candidate_cooperation);
-
-    for (int i = 0; i < 13; i++) {
+    for (String rid : candidate) {
       Mockito
-        .when(restTemplate.getForObject("/impact/" + i, Double.class))
-        .thenReturn((double) i);
+        .when(taskImpactAnalysisService.getImpactByResearcherId(rid))
+        .thenReturn(Double.parseDouble(rid));
       Mockito
-        .when(
-          restTemplate.getForObject(
-            "/domain-coverage/171250661/" + i,
-            Double.class
+        .when(researcherEntityService.getDomainsByResearcherId(rid))
+        .thenReturn(
+          Lists.newArrayList(
+            "d" + rid,
+            "d" + Integer.parseInt(rid) + 1,
+            "d" + Integer.parseInt(rid) + 2
           )
-        )
-        .thenReturn((double) i);
-      RScoreData r_scoreData = new RScoreData();
-      HashMap<Integer, Integer> coNumber = new HashMap<>();
-      HashMap<Integer, Integer> sum1 = new HashMap<>();
-      HashMap<Integer, Integer> sum2 = new HashMap<>();
-      for (int j = 2018; j < 2021; j++) {
-        coNumber.put(j, i + 1);
-        sum1.put(j, i + 5);
-        sum2.put(j, i + 4);
-      }
-      r_scoreData.setMapOfYearAndCoNumber(coNumber);
-      r_scoreData.setMapOfYearAndSum1(sum1);
-      r_scoreData.setMapOfYearAndSum2(sum2);
+        );
+      IPaperBasic iPaperBasic = new IPaperBasic();
+      iPaperBasic.setPublicationDate(2010 + Integer.parseInt(rid) + "");
+      iPaperBasic.setId(rid + "");
       Mockito
-        .when(
-          restTemplate.getForObject("/R-score/171250661/" + i, RScoreData.class)
-        )
-        .thenReturn(r_scoreData);
+        .when(paperEntityService.getPaperBasicInfo(rid))
+        .thenReturn(iPaperBasic);
     }
 
     HashMap<String, Double> result = new HashMap<>();
-    List<Double> values = Lists.newArrayList(
-      26.27,
-      24.23,
-      22.19,
-      20.13,
-      18.07,
-      16.0,
-      13.92,
-      11.82,
-      9.69,
-      7.54
-    );
-    for (int i = 0; i < 10; i++) {
-      result.put((12 - i) + "", values.get(i));
+    List<Double> values = Lists.newArrayList(0.17, 1.17, 2.17, 3.0, 4.0);
+    for (int i = 0; i < 5; i++) {
+      result.put(i + "", values.get(i));
     }
     assertEquals(
       taskPartnershipAnalysisService.getPotentialPartners(testRid).getBody(),
