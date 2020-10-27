@@ -1,8 +1,6 @@
 package org.njuse17advancedse.taskimpactanalysis.service.impl;
 
-import java.awt.print.Paper;
 import java.util.*;
-import org.checkerframework.checker.units.qual.A;
 import org.njuse17advancedse.taskimpactanalysis.dto.IPaper;
 import org.njuse17advancedse.taskimpactanalysis.dto.IResearcher;
 import org.njuse17advancedse.taskimpactanalysis.service.PaperService;

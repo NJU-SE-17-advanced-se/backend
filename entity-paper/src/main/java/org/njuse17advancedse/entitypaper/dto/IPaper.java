@@ -37,6 +37,6 @@ public class IPaper {
     this.link = paper.getLink();
     this.references = paper.getResearchers();
     this.domains = paper.getDomains();
-    this.references = paper.getResearchers();
+    this.references = paper.getReferences();
   }
 }
