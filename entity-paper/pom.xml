@@ -14,6 +14,11 @@
 	<name>entity-paper</name>
 	<description>Repo for paper entity service.</description>
 
+	<properties>
+		<java.version>1.8</java.version>
+		<spring-cloud.version>Hoxton.SR8</spring-cloud.version>
+        <kotlin.version>1.4.10</kotlin.version>
+    </properties>
 
 	<dependencies>
 		<dependency>
