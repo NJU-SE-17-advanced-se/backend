@@ -1,18 +1,11 @@
 package org.njuse17advancedse.entitypaper.controller;
 
-import com.netflix.discovery.converters.Auto;
-import java.util.ArrayList;
 import java.util.List;
-import org.checkerframework.checker.units.qual.A;
 import org.njuse17advancedse.entitypaper.dto.IPaper;
 import org.njuse17advancedse.entitypaper.dto.IPaperBasic;
 import org.njuse17advancedse.entitypaper.service.PaperService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/papers")
 @RestController
