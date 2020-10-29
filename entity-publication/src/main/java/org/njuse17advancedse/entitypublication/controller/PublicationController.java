@@ -1,25 +1,26 @@
 package org.njuse17advancedse.entitypublication.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entitypublication.dto.IPublication;
 import org.njuse17advancedse.entitypublication.dto.IPublicationBasic;
+import org.njuse17advancedse.entitypublication.service.PublicationEntityService;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/publications")
 @RestController
 public class PublicationController {
+  private final PublicationEntityService publicationEntityService;
+
+  public PublicationController(
+    PublicationEntityService publicationEntityService
+  ) {
+    this.publicationEntityService = publicationEntityService;
+  }
 
   @GetMapping("/{id}")
   // 根据 id 获取出版物
   public IPublication getPublicationById(@PathVariable String id) {
-    return new IPublication(
-      id,
-      "测试出版物",
-      "2020-10-18",
-      1.32,
-      new ArrayList<>()
-    );
+    return publicationEntityService.getPublicationById(id);
   }
 
   @GetMapping("")
@@ -30,7 +31,7 @@ public class PublicationController {
     @RequestParam(required = false) String start,
     @RequestParam(required = false) String end
   ) {
-    return new ArrayList<>();
+    return publicationEntityService.getPublications(name, start, end);
   }
 
   @GetMapping("/{id}/papers")
@@ -40,7 +41,7 @@ public class PublicationController {
     @RequestParam(required = false) String start,
     @RequestParam(required = false) String end
   ) {
-    return new ArrayList<>();
+    return publicationEntityService.getPapersByIdOrTimeRange(id, start, end);
   }
 
   @GetMapping("/{id}/basic-info")
@@ -48,6 +49,6 @@ public class PublicationController {
   public IPublicationBasic getPublicationBasicInfoById(
     @PathVariable String id
   ) {
-    return new IPublicationBasic(id, "测试出版物", "2020-10-18");
+    return publicationEntityService.getIPublicationBasic(id);
   }
 }
