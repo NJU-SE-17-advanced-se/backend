@@ -44,11 +44,11 @@ https://wensun.top/api/swagger-ui/index.html
 
 | 服务名称 | 构建状态 | 负责人 |
 | -------- | -------- | -------- |
-| 机构     | [![Entity Affiliation](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Affiliation%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 孙逸伦 |
-| 领域     | [![Entity Domain](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Domain%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)      | 孙逸伦 |
-| 论文     | [![Entity Paper](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Paper%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)      | 孙逸伦 |
-| 出版物    | [![Entity Publication](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Publication%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)      | 孙逸伦 |
-| 学者     | [![Entity Researcher](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Researcher%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)      | 孙逸伦 |
+| 机构     | [![Entity Affiliation](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Affiliation%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 勇中坚，孙逸伦 |
+| 领域     | [![Entity Domain](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Domain%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)      | 勇中坚，孙逸伦 |
+| 论文     | [![Entity Paper](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Paper%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)      | 勇中坚，孙逸伦 |
+| 出版物    | [![Entity Publication](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Publication%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)      | 殷承鉴，孙逸伦 |
+| 学者     | [![Entity Researcher](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Researcher%20Entity%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions)      | 殷承鉴，孙逸伦 |
 
 ## 环境配置
 
