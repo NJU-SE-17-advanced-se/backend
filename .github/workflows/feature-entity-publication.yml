@@ -32,7 +32,4 @@ jobs:
           java-version: 1.8
 
       - name: Maven Test
-        run: mvn -B clean test
-
-      - name: Maven Verify
-        run: mvn -B clean verify
+        run: mvn -B clean test -Dspring.profiles.active=test

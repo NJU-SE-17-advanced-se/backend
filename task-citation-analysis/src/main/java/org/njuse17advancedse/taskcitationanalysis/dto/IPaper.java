@@ -1,4 +1,4 @@
-package org.njuse17advancedse.entitypaper.entity;
+package org.njuse17advancedse.taskcitationanalysis.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Paper {
+public class IPaper {
   private String id;
 
   private String title;
@@ -20,8 +20,6 @@ public class Paper {
   private String publicationDate; // 发表日期，形如'2020'（目前暂定为年）
 
   private String link;
-
-  private int citations; // 引用数
 
   private List<String> researchers;
 
