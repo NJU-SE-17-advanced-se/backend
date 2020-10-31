@@ -36,8 +36,9 @@ public class AllRepository {
   public IDomain getDomain(String id) {
     String sql =
       "select group_concat(distinct paper_domain.pid) as papers, group_concat(distinct paper_researcher.rid) as researchers" +
-      "from paper_domain,paper_researcher,`domain` where" +
-      "paper_domain.pid=paper_researcher.pid and paper_domain.did=`domain`.did and `domain`.did='" +
+      " from paper_domain,paper_researcher,`domain` where" +
+      " paper_domain.pid=paper_researcher.pid and paper_domain.did=`domain`.did and `domain`.did='" +
+      id +
       "'";
     return jdbcTemplate.queryForObject(sql, new DomainRowMapper());
   }
