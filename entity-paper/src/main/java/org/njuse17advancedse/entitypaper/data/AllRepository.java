@@ -105,7 +105,7 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public List<String> getDomains(String pid) {
-    String sql = "select dname from `paper_domain` where pid='" + pid + "';";
+    String sql = "select `did` from `paper_domain` where pid='" + pid + "';";
     return jdbcTemplate.queryForList(sql, String.class);
   }
 
@@ -113,7 +113,7 @@ public class AllRepository {
   public IPaper getIPaper(String paperId) {
     String sql =
       "select paper.*,group_concat(distinct paper_reference.reference_doi) as `references`," +
-      "group_concat(distinct paper_researcher.rid) as researchers, group_concat(distinct paper_domain.dname) as domains" +
+      "group_concat(distinct paper_researcher.rid) as researchers, group_concat(distinct paper_domain.did) as domains" +
       " from `paper`,`paper_reference`,`paper_researcher`,`paper_domain` " +
       "where paper.id= '" +
       paperId +
