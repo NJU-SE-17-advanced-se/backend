@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 @Entity(name = "domain")
 public class JpaDomain {
   @Id
+  private String id;
+
+  @Column(name = "name")
   private String name;
 
   @Column(name = "url")

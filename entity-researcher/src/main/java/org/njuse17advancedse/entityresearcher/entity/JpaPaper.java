@@ -29,11 +29,14 @@ public class JpaPaper {
   @Column(name = "link")
   private String link;
 
+  @Column(name = "citation")
+  private int citation;
+
   @ManyToMany
   @JoinTable(
     name = "paper_domain",
     joinColumns = @JoinColumn(name = "pid"),
-    inverseJoinColumns = @JoinColumn(name = "dname")
+    inverseJoinColumns = @JoinColumn(name = "did")
   )
   private List<JpaDomain> domains;
 }
