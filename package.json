@@ -8,7 +8,17 @@
     "lint": "npx prettier --write \"**/*.java\"",
     "service-registry": "cd service-registry && mvn spring-boot:run",
     "config-server": "cd config-server && mvn spring-boot:run",
-    "predev": "npm-run-all --parallel service-registry config-server"
+    "entity-affiliation": "cd entity-affiliation && mvn spring-boot:run",
+    "entity-domain": "cd entity-domain && mvn spring-boot:run",
+    "entity-paper": "cd entity-paper && mvn spring-boot:run",
+    "entity-publication": "cd entity-publication && mvn spring-boot:run",
+    "task-citation-analysis": "cd task-citation-analysis && mvn spring-boot:run",
+    "task-impact-analysis": "cd task-impact-analysis && mvn spring-boot:run",
+    "task-partnership-analysis": "cd task-partnership-analysis && mvn spring-boot:run",
+    "task-reviewer-recommendation": "cd task-reviewer-recommendation && mvn spring-boot:run",
+    "predev": "npm-run-all --parallel service-registry config-server",
+    "entity": "npm-run-all --parallel entity-affiliation entity-domain entity-paper entity-publication entity-researcher",
+    "task": "npm-run-all --parallel task-citation-analysis task-impact-analysis task-partnership-analysis task-reviewer-recommendation"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
