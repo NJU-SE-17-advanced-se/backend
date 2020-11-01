@@ -35,9 +35,9 @@ public class AllRepository {
   @Transactional(readOnly = true)
   public IDomain getDomain(String id) {
     String sql =
-      "select group_concat(distinct paper_domain.pid) as papers, group_concat(distinct paper_researcher.rid) as researchers" +
+      "select group_concat(distinct paper_domain.pid) as papers, group_concat(distinct paper_researcher.rid) as researchers, `domain`.*" +
       " from paper_domain,paper_researcher,`domain` where" +
-      " paper_domain.pid=paper_researcher.pid and paper_domain.did=`domain`.did and `domain`.did='" +
+      " paper_domain.pid=paper_researcher.pid and paper_domain.did=`domain`.id and `domain`.id='" +
       id +
       "'";
     return jdbcTemplate.queryForObject(sql, new DomainRowMapper());
@@ -45,7 +45,7 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IDomainBasic getDomainBasic(String id) {
-    String sql = "select * from `domain` where did='" + id + "'";
+    String sql = "select * from `domain` where id='" + id + "'";
     return jdbcTemplate.queryForObject(sql, new DomainBasicRowMapper());
   }
 }
@@ -57,6 +57,8 @@ class DomainRowMapper implements RowMapper<IDomain> {
     IDomain res = new IDomain();
     res.setPapers(string2List(rs.getString("papers")));
     res.setResearchers(string2List(rs.getString("researchers")));
+    res.setId(rs.getString("id"));
+    res.setName(rs.getString("name"));
     return res;
   }
 
@@ -71,8 +73,8 @@ class DomainBasicRowMapper implements RowMapper<IDomainBasic> {
   @Override
   public IDomainBasic mapRow(ResultSet rs, int rowNum) throws SQLException {
     IDomainBasic res = new IDomainBasic();
-    res.setId(rs.getString("did"));
-    res.setName(rs.getString("dname"));
+    res.setId(rs.getString("id"));
+    res.setName(rs.getString("name"));
     return res;
   }
 }
