@@ -37,19 +37,7 @@ public class ResearcherEntityService {
           .stream()
           .map(JpaPaper::getId)
           .collect(Collectors.toList());
-        List<String> domains = new ArrayList<>();
-        for (JpaPaper jpaPaper : jpaResearcher.getPapers()) {
-          domains.addAll(
-            jpaPaper
-              .getDomains()
-              .stream()
-              .map(JpaDomain::getName)
-              .collect(Collectors.toList())
-          );
-        }
-        HashSet<String> hashSet = new HashSet<>(domains);
-        domains.clear();
-        domains.addAll(hashSet);
+        List<String> domains = getDomains(jpaResearcher);
         iResearcher.setId(jpaResearcher.getId());
         iResearcher.setName(jpaResearcher.getName());
         if (jpaResearcher.getAffiliations() != null) {
@@ -127,7 +115,7 @@ public class ResearcherEntityService {
               paper
                 .getDomains()
                 .stream()
-                .map(JpaDomain::getName)
+                .map(JpaDomain::getId)
                 .collect(Collectors.joining())
             );
           }
@@ -156,16 +144,7 @@ public class ResearcherEntityService {
   ) {
     List<String> affiliations = new ArrayList<>();
     try {
-      JpaResearcher jpaResearcher = researcherRepository.findResearcherById(
-        rid
-      );
-      //TODO 需要时间段与作者-机构的关系
-      affiliations =
-        jpaResearcher
-          .getAffiliations()
-          .stream()
-          .map(JpaAffiliation::getId)
-          .collect(Collectors.toList());
+      affiliations = researcherRepository.findById(rid, start, end);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -181,11 +160,60 @@ public class ResearcherEntityService {
     IResearcherBasic iResearcherBasic = new IResearcherBasic();
     try {
       JpaResearcher jpaResearcher = researcherRepository.findResearcherById(id);
-      //TODO 需要获得代表性论文
+      if (jpaResearcher.getPapers() != null) {
+        List<JpaPaper> jpaPapers = jpaResearcher.getPapers();
+        List<String> papers = new ArrayList<>();
+        jpaPapers.sort((o1, o2) -> o2.getCitation() - o1.getCitation());
+        if (jpaPapers.size() <= 5) {
+          for (JpaPaper jpaPaper : jpaPapers) {
+            papers.add(jpaPaper.getId());
+          }
+        } else {
+          for (int i = 0; i < 5; i++) {
+            papers.add(jpaPapers.get(i).getId());
+          }
+        }
+        List<String> domains = getDomains(jpaResearcher);
+        iResearcherBasic.setId(jpaResearcher.getId());
+        iResearcherBasic.setName(jpaResearcher.getName());
+        if (jpaResearcher.getAffiliations() != null) {
+          iResearcherBasic.setAffiliation(
+            jpaResearcher
+              .getAffiliations()
+              .stream()
+              .map(JpaAffiliation::getId)
+              .collect(Collectors.toList())
+          );
+        }
+        iResearcherBasic.setPapers(papers);
+        iResearcherBasic.setDomains(domains);
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
     return iResearcherBasic;
+  }
+
+  /**
+   * 获得领域列表
+   * @param jpaResearcher 作者实体
+   * @return 领域id列表
+   */
+  private List<String> getDomains(JpaResearcher jpaResearcher) {
+    List<String> domains = new ArrayList<>();
+    for (JpaPaper jpaPaper : jpaResearcher.getPapers()) {
+      domains.addAll(
+        jpaPaper
+          .getDomains()
+          .stream()
+          .map(JpaDomain::getId)
+          .collect(Collectors.toList())
+      );
+    }
+    HashSet<String> hashSet = new HashSet<>(domains);
+    domains.clear();
+    domains.addAll(hashSet);
+    return domains;
   }
 
   /**
