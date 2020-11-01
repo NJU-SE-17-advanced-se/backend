@@ -1,25 +1,24 @@
 package org.njuse17advancedse.entityresearcher.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
+import org.njuse17advancedse.entityresearcher.service.ResearcherEntityService;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/researchers")
 @RestController
 public class ResearcherController {
+  private final ResearcherEntityService researcherEntityService;
+
+  public ResearcherController(ResearcherEntityService researcherEntityService) {
+    this.researcherEntityService = researcherEntityService;
+  }
 
   @GetMapping("/{id}")
   // 根据 id 获取学者
   public IResearcher getResearcherById(@PathVariable String id) {
-    return new IResearcher(
-      id,
-      "测试学者" + id,
-      new ArrayList<>(),
-      new ArrayList<>(),
-      new ArrayList<>()
-    );
+    return researcherEntityService.getResearcherById(id);
   }
 
   @GetMapping("/{id}/papers")
@@ -29,7 +28,7 @@ public class ResearcherController {
     @RequestParam(required = false) String start,
     @RequestParam(required = false) String end
   ) {
-    return new ArrayList<>();
+    return researcherEntityService.getPapersByRid(id, start, end);
   }
 
   @GetMapping("/{id}/domains")
@@ -39,7 +38,7 @@ public class ResearcherController {
     @RequestParam(required = false) String start,
     @RequestParam(required = false) String end
   ) {
-    return new ArrayList<>();
+    return researcherEntityService.getDomainByRid(id, start, end);
   }
 
   @GetMapping("/{id}/affiliations")
@@ -49,18 +48,12 @@ public class ResearcherController {
     @RequestParam(required = false) String start,
     @RequestParam(required = false) String end
   ) {
-    return new ArrayList<>();
+    return researcherEntityService.getAffiliationByRid(id, start, end);
   }
 
   @GetMapping("/{id}/basic-info")
   // 根据学者 id 获取学者简略信息
   public IResearcherBasic getResearcherBasicInfoById(@PathVariable String id) {
-    return new IResearcherBasic(
-      id,
-      "测试学者" + id,
-      new ArrayList<>(),
-      new ArrayList<>(),
-      new ArrayList<>()
-    );
+    return researcherEntityService.getResearcherBasicById(id);
   }
 }
