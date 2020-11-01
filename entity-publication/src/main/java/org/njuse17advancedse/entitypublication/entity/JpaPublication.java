@@ -1,6 +1,5 @@
 package org.njuse17advancedse.entitypublication.entity;
 
-import java.sql.Date;
 import java.util.List;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
