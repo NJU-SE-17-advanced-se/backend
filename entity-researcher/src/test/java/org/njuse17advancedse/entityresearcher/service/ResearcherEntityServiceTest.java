@@ -31,7 +31,7 @@ class ResearcherEntityServiceTest {
     JpaPaper jpaPaper = new JpaPaper();
     jpaPaper.setId("test");
     JpaDomain jpaDomain = new JpaDomain();
-    jpaDomain.setName("domain1");
+    jpaDomain.setId("domain1");
     jpaPaper.setDomains(Lists.newArrayList(jpaDomain));
     jpaResearcher.setPapers(Lists.newArrayList(jpaPaper));
     jpaResearcher.setName("ycj");
@@ -51,14 +51,14 @@ class ResearcherEntityServiceTest {
     JpaPaper jpaPaper1 = new JpaPaper();
     jpaPaper1.setId("test1");
     JpaDomain jpaDomain1 = new JpaDomain();
-    jpaDomain1.setName("domain1");
+    jpaDomain1.setId("domain1");
     jpaPaper1.setDomains(Lists.newArrayList(jpaDomain1));
     jpaPaper1.setPublicationDate("2018");
 
     JpaPaper jpaPaper2 = new JpaPaper();
     jpaPaper2.setId("test1");
     JpaDomain jpaDomain2 = new JpaDomain();
-    jpaDomain2.setName("domain2");
+    jpaDomain2.setId("domain2");
     jpaPaper2.setDomains(Lists.newArrayList(jpaDomain2));
     jpaPaper2.setPublicationDate("2020");
 
@@ -80,14 +80,14 @@ class ResearcherEntityServiceTest {
     JpaPaper jpaPaper1 = new JpaPaper();
     jpaPaper1.setId("test1");
     JpaDomain jpaDomain1 = new JpaDomain();
-    jpaDomain1.setName("domain1");
+    jpaDomain1.setId("domain1");
     jpaPaper1.setDomains(Lists.newArrayList(jpaDomain1));
     jpaPaper1.setPublicationDate("2018");
 
     JpaPaper jpaPaper2 = new JpaPaper();
     jpaPaper2.setId("test1");
     JpaDomain jpaDomain2 = new JpaDomain();
-    jpaDomain2.setName("domain2");
+    jpaDomain2.setId("domain2");
     jpaPaper2.setDomains(Lists.newArrayList(jpaDomain2));
     jpaPaper2.setPublicationDate("2020");
 
@@ -103,11 +103,33 @@ class ResearcherEntityServiceTest {
 
   @Test
   void getAffiliationByRid() {
-    //TODO 等待方法完成后补充
+    Mockito
+      .when(researcherRepository.findById("test", "2015", "2018"))
+      .thenReturn(Lists.newArrayList("a1"));
+    assertEquals(
+      researcherEntityService.getAffiliationByRid("test", "2015", "2018"),
+      Lists.newArrayList("a1")
+    );
   }
 
   @Test
   void getResearcherBasicById() {
-    //TODO 等待方法完成后补充
+    JpaResearcher jpaResearcher = new JpaResearcher();
+    JpaPaper jpaPaper = new JpaPaper();
+    jpaPaper.setId("test");
+    JpaDomain jpaDomain = new JpaDomain();
+    jpaDomain.setId("domain1");
+    jpaPaper.setDomains(Lists.newArrayList(jpaDomain));
+    jpaPaper.setCitation(15);
+    jpaResearcher.setPapers(Lists.newArrayList(jpaPaper));
+    jpaResearcher.setName("ycj");
+    jpaResearcher.setId("IEEE_37085391626");
+    Mockito
+      .when(researcherRepository.findResearcherById("test"))
+      .thenReturn(jpaResearcher);
+    assertEquals(
+      researcherEntityService.getResearcherBasicById("test").getName(),
+      "ycj"
+    );
   }
 }
