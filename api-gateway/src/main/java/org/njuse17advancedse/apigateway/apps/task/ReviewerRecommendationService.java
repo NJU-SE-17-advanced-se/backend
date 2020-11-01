@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "task-reviewer-recommendation")
 public interface ReviewerRecommendationService {
   // 查看某论文推荐的审稿人
-  @PostMapping(value = "/paper/recommend")
+  @PostMapping(value = "/papers/recommend")
   List<String> getRecommendReviewer(@RequestBody IPaperUpload iPaperUpload);
 
   // 查看某论文不推荐的审稿人
-  @PostMapping(value = "/paper/not-recommend")
+  @PostMapping(value = "/papers/not-recommend")
   List<String> getNotRecommendReviewer(@RequestBody IPaperUpload iPaperUpload);
 }

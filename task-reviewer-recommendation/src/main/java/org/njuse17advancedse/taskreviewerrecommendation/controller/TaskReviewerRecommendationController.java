@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "paper")
+@RequestMapping(value = "papers")
 public class TaskReviewerRecommendationController {
   private final TaskReviewerRecommendationService recommendationService;
 
