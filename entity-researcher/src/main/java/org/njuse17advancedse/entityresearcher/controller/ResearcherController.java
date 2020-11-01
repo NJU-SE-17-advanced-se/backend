@@ -16,7 +16,7 @@ public class ResearcherController {
   }
 
   @GetMapping("/{id}")
-  // 根据 id 获取学者
+  // 根据 id 获取学者详细信息
   public IResearcher getResearcherById(@PathVariable String id) {
     return researcherEntityService.getResearcherById(id);
   }

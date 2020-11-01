@@ -11,13 +11,19 @@ public class Paper {
 
   private String title;
 
-  private String abs; // 与关键字冲突
+  private String abs;
+
+  private String publication; // 发表位置
+
+  private String publicationDate; // 发表日期，形如'2020'（目前暂定为年）
 
   private String link;
 
-  private List<Researcher> researchers;
+  private int citations; // 引用数
 
-  private List<Domain> domains;
+  private List<String> researchers;
 
-  private List<Paper> references;
+  private List<String> domains;
+
+  private List<String> references;
 }

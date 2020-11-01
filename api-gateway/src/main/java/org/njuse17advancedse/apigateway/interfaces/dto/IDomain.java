@@ -15,7 +15,7 @@ public class IDomain {
 
   private String name;
 
-  private List<Researcher> researchers;
+  private List<String> researchers;
 
-  private List<Paper> papers;
+  private List<String> papers;
 }

@@ -107,6 +107,7 @@ class PaperControllerTest {
       "",
       "2020",
       "google.com",
+      0,
       new ArrayList<>(),
       new ArrayList<>(),
       new ArrayList<>()
@@ -143,6 +144,7 @@ class PaperControllerTest {
       "",
       "2020",
       "google.com",
+      0,
       new ArrayList<>(),
       new ArrayList<>(),
       new ArrayList<>()

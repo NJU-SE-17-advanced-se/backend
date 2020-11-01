@@ -18,7 +18,7 @@ public class PublicationController {
   }
 
   @GetMapping("/{id}")
-  // 根据 id 获取出版物
+  // 根据 id 获取出版物详细信息
   public IPublication getPublicationById(@PathVariable String id) {
     return publicationEntityService.getPublicationById(id);
   }

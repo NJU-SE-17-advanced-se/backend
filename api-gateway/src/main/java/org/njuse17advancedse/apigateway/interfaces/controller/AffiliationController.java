@@ -21,10 +21,10 @@ public class AffiliationController {
 
   private final ModelMapper modelMapper;
 
-  @ApiOperation("根据机构的id获取机构详细信息")
+  @ApiOperation("根据机构 id 获取机构详细信息")
   @GetMapping("/{id}")
   public IAffiliation getAffiliationById(
-    @ApiParam(value = "机构id") @PathVariable String id
+    @ApiParam(value = "机构 id") @PathVariable String id
   ) {
     return modelMapper.map(
       affiliationService.getAffiliationById(id),
@@ -32,10 +32,10 @@ public class AffiliationController {
     );
   }
 
-  @ApiOperation("根据机构的id获取机构简略信息")
+  @ApiOperation("根据机构 id 获取机构简略信息")
   @GetMapping("/{id}/basic-info")
   public IAffiliationBasic getAffiliationBasicInfoById(
-    @ApiParam(value = "机构id") @PathVariable String id
+    @ApiParam(value = "机构 id") @PathVariable String id
   ) {
     return modelMapper.map(
       affiliationService.getAffiliationBasicInfoById(id),
@@ -43,26 +43,26 @@ public class AffiliationController {
     );
   }
 
-  @ApiOperation("根据机构的id获取机构学者id")
+  @ApiOperation("根据机构 id 获取该机构的学者 id")
   @GetMapping("/{id}/researchers")
   List<String> getAffiliationResearchersById(
-    @ApiParam(value = "机构id") @PathVariable String id
+    @ApiParam(value = "机构 id") @PathVariable String id
   ) {
     return affiliationService.getAffiliationResearchersById(id);
   }
 
-  @ApiOperation("根据机构的id获取机构论文id")
+  @ApiOperation("根据机构 id 获取该机构发表的论文 id")
   @GetMapping("/{id}/papers")
   List<String> getAffiliationPapersById(
-    @ApiParam(value = "机构id") @PathVariable String id
+    @ApiParam(value = "机构 id") @PathVariable String id
   ) {
     return affiliationService.getAffiliationPapersById(id);
   }
 
-  @ApiOperation("根据机构的id获取机构研究领域id")
+  @ApiOperation("根据机构 id 获取该机构的研究领域 id")
   @GetMapping("/{id}/domains")
   List<String> getAffiliationDomainsById(
-    @ApiParam(value = "机构id") @PathVariable String id
+    @ApiParam(value = "机构 id") @PathVariable String id
   ) {
     return affiliationService.getAffiliationDomainsById(id);
   }

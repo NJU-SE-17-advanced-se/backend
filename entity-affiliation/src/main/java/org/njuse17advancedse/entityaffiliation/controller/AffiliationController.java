@@ -32,19 +32,19 @@ public class AffiliationController {
   }
 
   @GetMapping("/{id}/researchers")
-  // 根据机构 id 获取该机构的学者
+  // 根据机构 id 获取该机构的学者 id
   public List<String> getAffiliationResearchersById(@PathVariable String id) {
     return service.getAffiliationResearchersById(id);
   }
 
   @GetMapping("/{id}/papers")
-  // 根据机构 id 获取该机构发表的论文
+  // 根据机构 id 获取该机构发表的论文 id
   public List<String> getAffiliationPapersById(@PathVariable String id) {
     return service.getAffiliationPapersById(id);
   }
 
   @GetMapping("/{id}/domains")
-  // 根据机构 id 获取该机构的研究领域
+  // 根据机构 id 获取该机构的研究领域 id
   public List<String> getAffiliationDomainsById(@PathVariable String id) {
     return service.getAffiliationDomainsById(id);
   }

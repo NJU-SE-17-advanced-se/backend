@@ -21,6 +21,8 @@ public class DPaper {
 
   private String link;
 
+  private int citations; // 引用数
+
   private List<String> researchers;
 
   private List<String> domains;
