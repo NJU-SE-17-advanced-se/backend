@@ -168,7 +168,7 @@ public class ResearcherController {
     );
   }
 
-  @ApiOperation("获取某作者的论文 id")
+  @ApiOperation("获取某学者的论文 id")
   @GetMapping("/{id}/papers")
   public List<String> getResearcherPapersByTimeRange(
     @ApiParam(value = "学者 id") @PathVariable String id,

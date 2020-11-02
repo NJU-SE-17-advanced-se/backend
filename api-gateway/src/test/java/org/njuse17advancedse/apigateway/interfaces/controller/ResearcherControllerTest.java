@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@ActiveProfiles({ "test" })
 @SpringBootTest
 @WebAppConfiguration
 class ResearcherControllerTest {
@@ -26,7 +25,7 @@ class ResearcherControllerTest {
 
   private MockMvc mockMvc;
 
-  private final String BASE_URL = "/researcher";
+  private final String BASE_URL = "/researchers";
 
   @BeforeEach
   void setUp() {
@@ -159,9 +158,9 @@ class ResearcherControllerTest {
   }
 
   void testGetResearcherCitations_success(String type) throws Exception {
-    String researcherId = "1";
+    String researcherId = "IEEE_37072359200";
     RequestBuilder getResearcherCitationsReq = MockMvcRequestBuilders
-      .get(BASE_URL + "/citations/" + researcherId)
+      .get(BASE_URL + "/" + researcherId + "/citations")
       .param("type", type);
     MvcResult referencesRes = mockMvc
       .perform(getResearcherCitationsReq)
@@ -187,9 +186,9 @@ class ResearcherControllerTest {
   }
 
   void testGetResearcherPapersCitations_success(String type) throws Exception {
-    String researcherId = "1";
+    String researcherId = "IEEE_37072359200";
     RequestBuilder getResearcherPapersCitationsReq = MockMvcRequestBuilders
-      .get(BASE_URL + "/citations/" + researcherId + "/papers")
+      .get(BASE_URL + "/" + researcherId + "/citations/papers")
       .param("type", type);
     MvcResult citationsRes = mockMvc
       .perform(getResearcherPapersCitationsReq)
@@ -218,9 +217,9 @@ class ResearcherControllerTest {
 
   void testGetResearcherPapersCitedResearchers_success(String type)
     throws Exception {
-    String researcherId = "1";
+    String researcherId = "IEEE_37072359200";
     RequestBuilder getResearcherPapersCitedResearchersReq = MockMvcRequestBuilders
-      .get(BASE_URL + "/citations/" + researcherId + "/papers/researchers")
+      .get(BASE_URL + "/" + researcherId + "/citations/papers/researchers")
       .param("type", type);
     MvcResult citationsRes = mockMvc
       .perform(getResearcherPapersCitedResearchersReq)
@@ -257,7 +256,7 @@ class ResearcherControllerTest {
   @Test
   void testGetImpact_failure() {}
 
-  // 根据学者的id获取学者详细信息
+  // 根据 id 获取学者详细信息
   @Test
   void testGetResearcherById_success() throws Exception {
     String researcherId = "1";
@@ -272,4 +271,42 @@ class ResearcherControllerTest {
 
   @Test
   void testGetResearcherById_failure() {}
+
+  // 根据学者 id 获取学者简略信息
+  @Test
+  void testGetResearcherBasicInfoById_success() throws Exception {
+    String researcherId = "1";
+    MvcResult researcherRes = mockMvc
+      .perform(
+        MockMvcRequestBuilders.get(
+          BASE_URL + "/" + researcherId + "/basic-info"
+        )
+      )
+      .andExpect(MockMvcResultMatchers.status().isOk())
+      .andReturn();
+    String researcherJsonStr = researcherRes.getResponse().getContentAsString();
+    System.out.println(researcherJsonStr);
+    assertThat(researcherJsonStr, is(not(emptyOrNullString())));
+  }
+
+  @Test
+  void testGetResearcherBasicInfoById_failure() {}
+
+  // 获取某学者的论文 id
+  @Test
+  void testGetResearcherPapersByTimeRange_success() throws Exception {
+    String researcherId = "1";
+    MvcResult researcherRes = mockMvc
+      .perform(
+        MockMvcRequestBuilders.get(BASE_URL + "/" + researcherId + "/papers")
+      )
+      .andExpect(MockMvcResultMatchers.status().isOk())
+      .andReturn();
+    String researcherJsonStr = researcherRes.getResponse().getContentAsString();
+    System.out.println(researcherJsonStr);
+    assertThat(researcherJsonStr, is(not(emptyOrNullString())));
+  }
+
+  @Test
+  void testGetResearcherPapersByTimeRange_failure() {}
 }
