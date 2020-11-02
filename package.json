@@ -12,6 +12,7 @@
     "entity-domain": "cd entity-domain && mvn spring-boot:run",
     "entity-paper": "cd entity-paper && mvn spring-boot:run",
     "entity-publication": "cd entity-publication && mvn spring-boot:run",
+    "entity-researcher": "cd entity-researcher && mvn spring-boot:run",
     "task-citation-analysis": "cd task-citation-analysis && mvn spring-boot:run",
     "task-impact-analysis": "cd task-impact-analysis && mvn spring-boot:run",
     "task-partnership-analysis": "cd task-partnership-analysis && mvn spring-boot:run",
