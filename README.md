@@ -35,7 +35,7 @@ https://wensun.top/api/swagger-ui/index.html
 | 服务名称     | 构建状态                                                     | 负责人 |
 | ------------ | ------------------------------------------------------------ | ------ |
 | 引用分析     | [![Task Citation Analysis](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Citation%20Analysis%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 勇中坚 |
-| 研究方向预测 | [![Task Domain Prediction](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Domain%20Prediction%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 勇中坚 |
+| 研究领域预测 | [![Task Domain Prediction](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Domain%20Prediction%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 勇中坚 |
 | 影响力分析   | [![Task Impact Analysis](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Impact%20Analysis%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 勇中坚 |
 | 合作关系分析 | [![Task Partnership Analysis](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Partnership%20Analysis%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 殷承鉴 |
 | 审稿人推荐   | [![Task Reviewer Recommendation](https://github.com/NJU-SE-17-advanced-se/backend/workflows/Release%20Reviewer%20Recommendation%20Task%20Service/badge.svg)](https://github.com/NJU-SE-17-advanced-se/backend/actions) | 殷承鉴 |
@@ -52,14 +52,16 @@ https://wensun.top/api/swagger-ui/index.html
 
 ## 环境配置
 
-建议环境配置：
-
 - Maven 3.6.3
 - Java 8
 - Node.js 12.18.3
 - Yarn (包管理工具) 1.22.5
 
-然后在项目根目录运行命令，安装项目规范相关工具（依赖于 node.js 和 yarn）：
+## 项目启动
+
+### 首次启动
+
+在项目根目录运行命令，安装项目规范相关工具（依赖于 node.js 和 yarn）：
 
 ```shell script
 yarn install
@@ -67,7 +69,9 @@ yarn install
 
 **一定**要运行此条命令，否则项目规范相关工具无法工作。
 
-## 项目启动
+### 开发准备
+
+#### 必要
 
 由于使用了 spring cloud，需要首先启动 service-registry，然后启动 config-server，才能确保正确运行。
 
@@ -76,3 +80,27 @@ yarn install
 ```shell script
 yarn run predev
 ```
+
+#### 可选
+
+实体服务和任务服务均提供了命令行启动的方式，具体命令如下：
+
+```shell
+yarn run entity-affiliation
+yarn run entity-domain
+yarn run entity-paper
+yarn run entity-publication
+yarn run entity-researcher
+yarn run task-citation-analysis
+yarn run task-impact-analysis
+yarn run task-partnership-analysis
+yarn run task-reviewer-recommendation
+```
+
+如果需要同时启动所有的实体服务或任务服务，也提供了相应的命令：
+
+```shell
+yarn run entity
+yarn run task
+```
+

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface CitationAnalysisService {
   // 某个学者引用了哪些学者
   // 某个学者被哪些学者引用
-  @GetMapping("/citation/researcher/{id}")
+  @GetMapping("/citations/researchers/{id}")
   List<String> getResearcherCitations(
     @PathVariable String id,
     @RequestParam String type
@@ -19,7 +19,7 @@ public interface CitationAnalysisService {
 
   // 某个学者的论文分别引用了哪些论文
   // 某个学者的论文分别被哪些论文引用
-  @GetMapping("/citation/researcher/{id}/papers")
+  @GetMapping("/citations/researchers/{id}/papers")
   Map<String, List<String>> getResearcherPapersCitations(
     @PathVariable String id,
     @RequestParam String type
@@ -27,7 +27,7 @@ public interface CitationAnalysisService {
 
   // 某个学者的论文分别引用了哪些学者
   // 某个学者的论文分别被哪些学者引用
-  @GetMapping("/citation/researcher/{id}/papers/researchers")
+  @GetMapping("/citations/researchers/{id}/papers/researchers")
   Map<String, List<String>> getResearcherPapersCitedResearchers(
     @PathVariable String id,
     @RequestParam String type
@@ -35,7 +35,7 @@ public interface CitationAnalysisService {
 
   // 某篇论文引用了哪些论文
   // 某篇论文被哪些论文引用
-  @GetMapping("/citation/paper/{id}")
+  @GetMapping("/citations/papers/{id}")
   List<String> getPaperCitations(
     @PathVariable String id,
     @RequestParam String type
@@ -43,7 +43,7 @@ public interface CitationAnalysisService {
 
   // 某篇论文引用了哪些学者
   // 某篇论文被哪些学者引用
-  @GetMapping("/citation/paper/{id}/researchers")
+  @GetMapping("/citations/papers/{id}/researchers")
   List<String> getPaperCitedResearchers(
     @PathVariable String id,
     @RequestParam String type

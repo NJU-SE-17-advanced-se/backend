@@ -36,7 +36,7 @@ public class ResearcherController {
   )
   @GetMapping("/{id}/affiliations")
   public List<String> getAffiliationsByTimeRange(
-    @ApiParam(value = "学者id") @PathVariable String id,
+    @ApiParam(value = "学者 id") @PathVariable String id,
     @ApiParam(value = "开始日期，形如 '2020'") @RequestParam String start,
     @ApiParam(value = "结束日期，形如 '2020'") @RequestParam String end
   ) {
@@ -50,7 +50,7 @@ public class ResearcherController {
   )
   @GetMapping("/{id}/domains")
   public List<String> getDomainsByTimeRange(
-    @ApiParam(value = "学者id") @PathVariable String id,
+    @ApiParam(value = "学者 id") @PathVariable String id,
     @ApiParam(value = "开始日期，形如 '2020'") @RequestParam String start,
     @ApiParam(value = "结束日期，形如 '2020'") @RequestParam String end
   ) {
@@ -65,7 +65,7 @@ public class ResearcherController {
   @GetMapping("/{id}/future/domains")
   // TODO: 完成该接口
   public List<String> getFutureDomains(
-    @ApiParam(value = "学者id") @PathVariable String id
+    @ApiParam(value = "学者 id") @PathVariable String id
   ) {
     return new ArrayList<>();
   }
@@ -90,7 +90,7 @@ public class ResearcherController {
   @GetMapping("/{id}/partnership/prediction")
   // 返回的是每个学者合作的**可能性**，所以是double
   public Map<String, Double> getPartnershipPrediction(
-    @ApiParam(value = "学者id") @PathVariable String id
+    @ApiParam(value = "学者 id") @PathVariable String id
   ) {
     return partnershipAnalysisService.getPotentialPartners(id);
   }
@@ -99,9 +99,9 @@ public class ResearcherController {
     value = "接口 1.6：查看某学者的引用和被引情况",
     notes = "需求 7.2：研究者引用其他研究者及被其他研究者引用情况"
   )
-  @GetMapping("/citations/{id}")
+  @GetMapping("/{id}/citations")
   public List<String> getResearcherCitations(
-    @ApiParam(value = "学者id") @PathVariable String id,
+    @ApiParam(value = "学者 id") @PathVariable String id,
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
     return citationAnalysisService.getResearcherCitations(id, type);
@@ -111,9 +111,9 @@ public class ResearcherController {
     value = "接口 1.7：查看某学者的论文引用和被引情况",
     notes = "需求 7.2：研究者引用其他研究者的论文及论文被其他研究者引用情况"
   )
-  @GetMapping("/citations/{id}/papers")
+  @GetMapping("/{id}/citations/papers")
   public Map<String, List<String>> getResearcherPapersCitations(
-    @ApiParam(value = "学者id") @PathVariable String id,
+    @ApiParam(value = "学者 id") @PathVariable String id,
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
     return citationAnalysisService.getResearcherPapersCitations(id, type);
@@ -123,9 +123,9 @@ public class ResearcherController {
     value = "接口 1.8：查看某学者的论文引用其他学者和被其他学者引用情况",
     notes = "即，某个学者的论文分别引用了哪些学者，某个学者的论文分别被哪些学者引用"
   )
-  @GetMapping("/citations/{id}/papers/researchers")
+  @GetMapping("/{id}/citations/papers/researchers")
   public Map<String, List<String>> getResearcherPapersCitedResearchers(
-    @ApiParam(value = "学者id") @PathVariable String id,
+    @ApiParam(value = "学者 id") @PathVariable String id,
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
     return citationAnalysisService.getResearcherPapersCitedResearchers(
@@ -140,16 +140,16 @@ public class ResearcherController {
   )
   @GetMapping("/{id}/impact")
   public double getImpact(
-    @ApiParam(value = "学者id") @PathVariable String id,
+    @ApiParam(value = "学者 id") @PathVariable String id,
     @RequestParam(value = "影响力指标", defaultValue = "h-index") String type
   ) {
     return impactAnalysisService.getResearcherImpact(id, type);
   }
 
-  @ApiOperation("根据学者的id获取学者详细信息")
+  @ApiOperation("根据 id 获取学者详细信息")
   @GetMapping("/{id}")
   public IResearcher getResearcherById(
-    @ApiParam(value = "学者id") @PathVariable String id
+    @ApiParam(value = "学者 id") @PathVariable String id
   ) {
     return modelMapper.map(
       researcherService.getResearcherById(id),
@@ -157,10 +157,10 @@ public class ResearcherController {
     );
   }
 
-  @ApiOperation("根据学者的id获取学者简略信息")
+  @ApiOperation("根据学者 id 获取学者简略信息")
   @GetMapping("/{id}/basic-info")
   public IResearcherBasic getResearcherBasicInfoById(
-    @ApiParam(value = "学者id") @PathVariable String id
+    @ApiParam(value = "学者 id") @PathVariable String id
   ) {
     return modelMapper.map(
       researcherService.getResearcherById(id),
@@ -168,10 +168,10 @@ public class ResearcherController {
     );
   }
 
-  @ApiOperation("根据学者的id获取学者的论文")
+  @ApiOperation("获取某学者的论文 id")
   @GetMapping("/{id}/papers")
   public List<String> getResearcherPapersByTimeRange(
-    @ApiParam(value = "学者id") @PathVariable String id,
+    @ApiParam(value = "学者 id") @PathVariable String id,
     @RequestParam(required = false) String start,
     @RequestParam(required = false) String end
   ) {

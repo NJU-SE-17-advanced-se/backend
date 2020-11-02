@@ -11,32 +11,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "entity-paper")
 public interface PaperService {
   @GetMapping("/papers/{id}")
-  // 根据ID获取论文
+  // 根据 id 获取论文信息
   DPaper getPaper(@PathVariable String id);
 
   @GetMapping("/papers")
-  // 根据其他指标获取论文
-  // 如果都没填，返回全部论文
+  // 根据其他查询条件获取论文 id
+  // 如果没有任何查询条件，返回全部论文 id
+  // TODO: 分页
   List<String> getPapers(
     @RequestParam(required = false) String researcher,
     @RequestParam(required = false) String publication,
     @RequestParam(required = false) String date
   );
 
-  @GetMapping("/papers/basic-info/{id}")
-  // 根据指标获取论文简略信息
+  @GetMapping("/papers/{id}/basic-info")
+  // 根据 id 获取论文简略信息
   DPaperBasic getPaperBasicInfo(@PathVariable String id);
 
-  @GetMapping("/papers/basic-info")
-  // 根据指标获取论文简略信息
-  // 如果都没填，返回全部论文的简略信息
-  List<String> getPapersBasicInfo(
-    @RequestParam(required = false) String researcher,
-    @RequestParam(required = false) String publication,
-    @RequestParam(required = false) String date
-  );
-
   @GetMapping("/papers/{id}/domains")
-  // 获取论文所属领域
+  // 获取论文所属领域 id
   List<String> getDomains(@PathVariable String id);
 }

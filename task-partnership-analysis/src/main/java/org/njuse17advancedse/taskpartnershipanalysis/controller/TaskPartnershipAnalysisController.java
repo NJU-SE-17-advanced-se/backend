@@ -3,7 +3,6 @@ package org.njuse17advancedse.taskpartnershipanalysis.controller;
 import java.util.List;
 import java.util.Map;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IResearcherNet;
-import org.njuse17advancedse.taskpartnershipanalysis.service.ResearcherEntityService;
 import org.njuse17advancedse.taskpartnershipanalysis.service.TaskPartnershipAnalysisService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +34,7 @@ public class TaskPartnershipAnalysisController {
     return taskPartnershipAnalysisService.getPartnership(id, start, end);
   }
 
+  // 合作关系预测
   @RequestMapping(
     value = "/potential-partners/{id}",
     method = RequestMethod.GET

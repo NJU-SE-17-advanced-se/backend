@@ -1,6 +1,5 @@
 package org.njuse17advancedse.entitydomain.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entitydomain.dto.IDomain;
 import org.njuse17advancedse.entitydomain.dto.IDomainBasic;

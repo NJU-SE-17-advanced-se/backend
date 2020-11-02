@@ -13,7 +13,7 @@ public class TaskImpactAnalysisController {
   /**
    *  根据学者ID获取H指数
    * */
-  @GetMapping(value = "/researcher/{id}")
+  @GetMapping(value = "/researchers/{id}")
   public int getHIndex(
     @PathVariable String id,
     @RequestParam(defaultValue = "hIndex", required = false) String type
@@ -25,7 +25,7 @@ public class TaskImpactAnalysisController {
   /**
    * 根据论文ID获取影响力
    */
-  @GetMapping(value = "/paper/{id}")
+  @GetMapping(value = "/papers/{id}")
   public double getPaperImpact(@PathVariable String id) {
     return service.getPaperImpact(id);
   }

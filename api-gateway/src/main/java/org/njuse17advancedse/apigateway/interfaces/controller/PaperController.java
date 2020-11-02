@@ -32,9 +32,9 @@ public class PaperController {
     value = "接口 2.1：查看某论文和其他论文的引用情况",
     notes = "需求 7.1：论文引用其它论文及被其它论文引用情况"
   )
-  @GetMapping("/citations/{id}")
+  @GetMapping("/{id}/citations")
   public List<String> getPaperCitations(
-    @ApiParam(value = "论文id") @PathVariable String id,
+    @ApiParam(value = "论文 id") @PathVariable String id,
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
     return citationAnalysisService.getPaperCitations(id, type);
@@ -44,9 +44,9 @@ public class PaperController {
     value = "接口 2.2：查看某论文和学者的引用情况",
     notes = "即，论文引用了哪些学者，哪些学者引用了该论文"
   )
-  @GetMapping("/citations/{id}/researchers")
+  @GetMapping("/{id}/citations/researchers")
   public List<String> getPaperCitedResearchers(
-    @ApiParam(value = "论文id") @PathVariable String id,
+    @ApiParam(value = "论文 id") @PathVariable String id,
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
     return citationAnalysisService.getPaperCitedResearchers(id, type);
@@ -82,22 +82,21 @@ public class PaperController {
   )
   @GetMapping("/{id}/impact")
   public double getImpact(
-    @ApiParam(value = "论文id") @PathVariable String id,
+    @ApiParam(value = "论文 id") @PathVariable String id,
     @RequestParam(value = "影响力指标", defaultValue = "custom") String type
   ) {
     return impactAnalysisService.getPaperImpact(id, type);
   }
 
-  @ApiOperation("根据论文的id获取论文详细信息")
+  @ApiOperation("根据 id 获取论文信息")
   @GetMapping("/{id}")
-  // 根据ID获取论文
   public IPaper getPaper(@PathVariable String id) {
     return modelMapper.map(paperService.getPaper(id), IPaper.class);
   }
 
   @ApiOperation(
-    value = "根据其他指标获取论文",
-    notes = "如果都没填，返回全部论文"
+    value = "根据其他查询条件获取论文 id",
+    notes = "如果没有任何查询条件，返回全部论文 id"
   )
   @GetMapping("")
   public List<String> getPapers(
@@ -108,8 +107,8 @@ public class PaperController {
     return paperService.getPapers(researcher, publication, date);
   }
 
-  @ApiOperation("根据指标获取论文简略信息")
-  @GetMapping("/basic-info/{id}")
+  @ApiOperation("根据 id 获取论文简略信息")
+  @GetMapping("/{id}/basic-info")
   public IPaperBasic getPaperBasicInfo(@PathVariable String id) {
     return modelMapper.map(
       paperService.getPaperBasicInfo(id),
@@ -117,20 +116,7 @@ public class PaperController {
     );
   }
 
-  @ApiOperation(
-    value = "根据指标获取论文简略信息",
-    notes = "如果都没填，返回全部论文的简略信息"
-  )
-  @GetMapping("/basic-info")
-  public List<String> getPapersBasicInfo(
-    @RequestParam(required = false) String researcher,
-    @RequestParam(required = false) String publication,
-    @RequestParam(required = false) String date
-  ) {
-    return paperService.getPapersBasicInfo(researcher, publication, date);
-  }
-
-  @ApiOperation("获取论文所属领域")
+  @ApiOperation("获取论文所属领域 id")
   @GetMapping("/{id}/domains")
   public List<String> getDomains(@PathVariable String id) {
     return paperService.getDomains(id);
