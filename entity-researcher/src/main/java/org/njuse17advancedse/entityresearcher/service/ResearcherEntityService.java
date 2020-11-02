@@ -238,7 +238,7 @@ public class ResearcherEntityService {
     }
     if (end != null) {
       if (
-        Integer.parseInt(paper.getPublicationDate()) < Integer.parseInt(end)
+        Integer.parseInt(paper.getPublicationDate()) > Integer.parseInt(end)
       ) {
         betweenDate = false;
       }
