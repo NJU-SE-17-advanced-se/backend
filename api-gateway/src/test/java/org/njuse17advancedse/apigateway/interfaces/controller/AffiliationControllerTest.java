@@ -58,6 +58,7 @@ class AffiliationControllerTest {
   // 根据机构 id 获取机构简略信息
   @Test
   void testGetAffiliationBasicInfoById_success() throws Exception {
+    // TODO: 目前只能处理存在的机构 id
     String affiliationId = "00cf42618d285c0db8a8fd5364c57899";
     MvcResult affiliationRes = mockMvc
       .perform(
@@ -80,6 +81,7 @@ class AffiliationControllerTest {
   // 根据机构 id 获取该机构的学者 id
   @Test
   void testGetAffiliationResearchersById_success() throws Exception {
+    // TODO: 目前只能处理存在的机构 id
     String affiliationId = "00cf42618d285c0db8a8fd5364c57899";
     MvcResult affiliationRes = mockMvc
       .perform(
@@ -102,6 +104,7 @@ class AffiliationControllerTest {
   // 根据机构 id 获取该机构发表的论文 id
   @Test
   void testGetAffiliationPapersById_success() throws Exception {
+    // TODO: 目前只能处理存在的机构 id
     String affiliationId = "00cf42618d285c0db8a8fd5364c57899";
     MvcResult affiliationRes = mockMvc
       .perform(
@@ -122,6 +125,7 @@ class AffiliationControllerTest {
   // 根据机构 id 获取该机构的研究领域 id
   @Test
   void testGetAffiliationDomainsById_success() throws Exception {
+    // TODO: 目前只能处理存在的机构 id
     String affiliationId = "00cf42618d285c0db8a8fd5364c57899";
     MvcResult affiliationRes = mockMvc
       .perform(
