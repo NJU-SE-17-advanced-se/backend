@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/citation")
+@RequestMapping(value = "/citations")
 public class TaskCitationAnalysisController {
   @Autowired
   TaskCitationAnalysisService service;
 
   // 某个学者引用了哪些学者
   // 某个学者被哪些学者引用
-  @GetMapping("/researcher/{id}")
+  @GetMapping("/researchers/{id}")
   public List<String> getResearcherCitations(
     @PathVariable String id,
     @RequestParam String type
@@ -30,7 +30,7 @@ public class TaskCitationAnalysisController {
 
   // 某个学者的论文分别引用了哪些论文
   // 某个学者的论文分别被哪些论文引用
-  @GetMapping("/researcher/{id}/papers")
+  @GetMapping("/researchers/{id}/papers")
   public Map<String, List<String>> getResearcherPapersCitations(
     @PathVariable String id,
     @RequestParam String type
@@ -46,7 +46,7 @@ public class TaskCitationAnalysisController {
 
   // 某个学者的论文分别引用了哪些学者
   // 某个学者的论文分别被哪些学者引用
-  @GetMapping("/researcher/{id}/papers/researchers")
+  @GetMapping("/researchers/{id}/papers/researchers")
   public Map<String, List<String>> getResearcherPapersCitedResearchers(
     @PathVariable String id,
     @RequestParam String type
@@ -62,7 +62,7 @@ public class TaskCitationAnalysisController {
 
   // 某篇论文引用了哪些论文
   // 某篇论文被哪些论文引用
-  @GetMapping("/paper/{id}")
+  @GetMapping("/papers/{id}")
   public List<String> getPaperCitations(
     @PathVariable String id,
     @RequestParam String type
@@ -78,7 +78,7 @@ public class TaskCitationAnalysisController {
 
   // 某篇论文引用了哪些学者
   // 某篇论文被哪些学者引用
-  @GetMapping("/paper/{id}/researchers")
+  @GetMapping("/papers/{id}/researchers")
   public List<String> getPaperCitedResearchers(
     @PathVariable String id,
     @RequestParam String type

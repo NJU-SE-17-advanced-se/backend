@@ -19,5 +19,7 @@ public class DPaperBasic {
 
   private String publicationDate; // 发表日期，形如'2020'（目前暂定为年）
 
+  private int citations; // 引用数
+
   private List<String> researchers;
 }

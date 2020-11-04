@@ -105,15 +105,15 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public List<String> getDomains(String pid) {
-    String sql = "select dname from `paper_domain` where pid='" + pid + "';";
+    String sql = "select `did` from `paper_domain` where pid='" + pid + "';";
     return jdbcTemplate.queryForList(sql, String.class);
   }
 
   @Transactional(readOnly = true)
   public IPaper getIPaper(String paperId) {
     String sql =
-      "select paper.*,group_concat(distinct paper_reference.reference_doi) as `references`," +
-      "group_concat(distinct paper_researcher.rid) as researchers, group_concat(distinct paper_domain.dname) as domains" +
+      "select paper.*,group_concat(distinct paper_reference.rid) as `references`," +
+      "group_concat(distinct paper_researcher.rid) as researchers, group_concat(distinct paper_domain.did) as domains" +
       " from `paper`,`paper_reference`,`paper_researcher`,`paper_domain` " +
       "where paper.id= '" +
       paperId +
@@ -150,6 +150,7 @@ class PaperRowMapper implements RowMapper<IPaper> {
     res.setReferences(string2List(rs.getString("references")));
     res.setDomains(string2List(rs.getString("domains")));
     res.setResearchers(string2List(rs.getString("researchers")));
+    res.setCitations(rs.getInt("citation"));
     return res;
   }
 

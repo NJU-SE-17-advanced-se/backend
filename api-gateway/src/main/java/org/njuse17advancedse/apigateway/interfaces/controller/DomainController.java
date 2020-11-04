@@ -21,18 +21,18 @@ public class DomainController {
 
   private final ModelMapper modelMapper;
 
-  @ApiOperation("根据领域id获取领域详细信息")
+  @ApiOperation("根据 id 获取某领域信息")
   @GetMapping("/{id}")
   public IDomain getDomainById(
-    @ApiParam(value = "领域id") @PathVariable String id
+    @ApiParam(value = "领域 id") @PathVariable String id
   ) {
     return modelMapper.map(domainService.getDomainById(id), IDomain.class);
   }
 
-  @ApiOperation("根据领域id获取某领域简略信息")
+  @ApiOperation("根据 id 获取某领域简略信息")
   @GetMapping("/{id}/basic-info")
   public IDomainBasic getDomainBasicInfoById(
-    @ApiParam(value = "领域id") @PathVariable String id
+    @ApiParam(value = "领域 id") @PathVariable String id
   ) {
     return modelMapper.map(
       domainService.getDomainBasicInfoById(id),
@@ -40,18 +40,18 @@ public class DomainController {
     );
   }
 
-  @ApiOperation("根据领域id获取某领域下的论文id")
+  @ApiOperation("根据领域 id 获取某领域下的论文 id")
   @GetMapping("/{id}/papers")
   public List<String> getPapers(
-    @ApiParam(value = "领域id") @PathVariable String id
+    @ApiParam(value = "领域 id") @PathVariable String id
   ) {
     return domainService.getPapers(id);
   }
 
-  @ApiOperation("根据领域id获取某领域下的学者id")
+  @ApiOperation("根据领域 id 获取某领域下的学者 id")
   @GetMapping("/{id}/researchers")
   public List<String> getResearchers(
-    @ApiParam(value = "领域id") @PathVariable String id
+    @ApiParam(value = "领域 id") @PathVariable String id
   ) {
     return domainService.getResearchers(id);
   }

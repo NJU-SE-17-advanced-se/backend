@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "task-impact-analysis")
 public interface ImpactAnalysisService {
-  @GetMapping(value = "/impact/researcher/{id}")
+  @GetMapping(value = "/impact/researchers/{id}")
   int getResearcherImpact(@PathVariable String id, @RequestParam String type);
 
-  @GetMapping(value = "/impact/paper/{id}")
+  @GetMapping(value = "/impact/papers/{id}")
   double getPaperImpact(@PathVariable String id, @RequestParam String type);
 }

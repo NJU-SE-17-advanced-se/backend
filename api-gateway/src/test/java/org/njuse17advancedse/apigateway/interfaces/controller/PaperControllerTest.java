@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.njuse17advancedse.apigateway.interfaces.dto.IPaper;
+import org.njuse17advancedse.apigateway.interfaces.dto.IPaperUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -21,7 +22,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@ActiveProfiles({ "test" })
 @SpringBootTest
 @WebAppConfiguration
 class PaperControllerTest {
@@ -30,7 +30,7 @@ class PaperControllerTest {
 
   private MockMvc mockMvc;
 
-  private final String BASE_URL = "/paper";
+  private final String BASE_URL = "/papers";
 
   @BeforeEach
   void setUp() {
@@ -55,7 +55,7 @@ class PaperControllerTest {
   void testGetPaperCitations_success(String type) throws Exception {
     String paperId = "1";
     RequestBuilder paperCitationsReq = MockMvcRequestBuilders
-      .get(BASE_URL + "/citations/" + paperId)
+      .get(BASE_URL + "/" + paperId + "/citations")
       .param("type", type);
     MvcResult referencesRes = mockMvc
       .perform(paperCitationsReq)
@@ -81,9 +81,9 @@ class PaperControllerTest {
   }
 
   void testGetPaperCitedResearchers_success(String type) throws Exception {
-    String paperId = "1";
+    String paperId = "0836f610195c9866185ea9a3fda5a8bb";
     RequestBuilder paperCitedResearchersReq = MockMvcRequestBuilders
-      .get(BASE_URL + "/citations/" + paperId + "/researchers")
+      .get(BASE_URL + "/" + paperId + "/citations/researchers")
       .param("type", type);
     MvcResult citationsRes = mockMvc
       .perform(paperCitedResearchersReq)
@@ -100,12 +100,10 @@ class PaperControllerTest {
   // 接口 2.3：查看某论文推荐的审稿人
   @Test
   void testGetRecommendedReviewers_success() throws Exception {
-    IPaper paper = new IPaper(
+    IPaperUpload paper = new IPaperUpload(
       "9",
       "测试论文9",
       "测试论文9的摘要",
-      "",
-      "2020",
       "google.com",
       new ArrayList<>(),
       new ArrayList<>(),
@@ -136,12 +134,10 @@ class PaperControllerTest {
   // 接口 2.4：查看某论文不推荐的审稿人
   @Test
   void testGetNotRecommendedReviewers_success() throws Exception {
-    IPaper paper = new IPaper(
+    IPaperUpload paper = new IPaperUpload(
       "9",
       "测试论文9",
       "测试论文9的摘要",
-      "",
-      "2020",
       "google.com",
       new ArrayList<>(),
       new ArrayList<>(),
@@ -176,7 +172,7 @@ class PaperControllerTest {
   }
 
   void testGetImpact_success(String criteria) throws Exception {
-    String paperId = "1";
+    String paperId = "0836f610195c9866185ea9a3fda5a8bb";
     RequestBuilder getImpactReq = MockMvcRequestBuilders
       .get(BASE_URL + "/" + paperId + "/impact")
       .param("type", criteria);
@@ -192,9 +188,11 @@ class PaperControllerTest {
   @Test
   void testGetImpact_failure() {}
 
+  // 根据 id 获取论文信息
   @Test
   void testGetPaperById_success() throws Exception {
-    String paperId = "1";
+    // TODO: 目前只能处理存在的论文 id
+    String paperId = "0083fbed16238ff8193a2aa091d55bc6";
     MvcResult paperRes = mockMvc
       .perform(MockMvcRequestBuilders.get(BASE_URL + "/" + paperId))
       .andExpect(MockMvcResultMatchers.status().isOk())
@@ -206,4 +204,59 @@ class PaperControllerTest {
 
   @Test
   void testGetPaperById_failure() {}
+
+  // 根据其他查询条件获取论文 id
+  @Test
+  void testGetPapers_success() throws Exception {
+    // TODO: 目前只能处理存在的论文 id
+    String paperId = "0083fbed16238ff8193a2aa091d55bc6";
+    MvcResult paperRes = mockMvc
+      .perform(MockMvcRequestBuilders.get(BASE_URL))
+      .andExpect(MockMvcResultMatchers.status().isOk())
+      .andReturn();
+    String paperJsonStr = paperRes.getResponse().getContentAsString();
+    System.out.println(paperJsonStr);
+    assertThat(paperJsonStr, is(not(emptyOrNullString())));
+  }
+
+  @Test
+  void testGetPapers_failure() {}
+
+  // 根据 id 获取论文简略信息
+  @Test
+  void testGetPaperBasicInfo_success() throws Exception {
+    // TODO: 目前只能处理存在的论文 id
+    String paperId = "0083fbed16238ff8193a2aa091d55bc6";
+    MvcResult paperRes = mockMvc
+      .perform(
+        MockMvcRequestBuilders.get(BASE_URL + "/" + paperId + "/basic-info")
+      )
+      .andExpect(MockMvcResultMatchers.status().isOk())
+      .andReturn();
+    String paperJsonStr = paperRes.getResponse().getContentAsString();
+    System.out.println(paperJsonStr);
+    assertThat(paperJsonStr, is(not(emptyOrNullString())));
+  }
+
+  @Test
+  void testGetPaperBasicInfo_failure() {}
+
+  // 获取论文所属领域 id
+  @Test
+  void testGetDomains_success() throws Exception {
+    // TODO: 目前只能处理存在的论文 id
+    String paperId = "0083fbed16238ff8193a2aa091d55bc6";
+    MvcResult paperRes = mockMvc
+      .perform(
+        MockMvcRequestBuilders.get(BASE_URL + "/" + paperId + "/domains")
+      )
+      .andExpect(MockMvcResultMatchers.status().isOk())
+      .andReturn();
+    String paperJsonStr = paperRes.getResponse().getContentAsString();
+    System.out.println(paperJsonStr);
+    assertThat(paperJsonStr, is(not(emptyOrNullString())));
+  }
+
+  @Test
+  void testGetDomains_failure() {}
 }
