@@ -14,8 +14,8 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/HermitSun/advanced-se-config
-          username: ${CONFIG_SERVER_GIT_USER}
-          password: ${CONFIG_SERVER_GIT_PASS}
+          uri: https://github.com/NJU-SE-17-advanced-se/config.git
+          username: ${CONFIG_SERVER_GIT_USER:github_username}
+          password: ${CONFIG_SERVER_GIT_PASS:github_password}
           default-label: master
           search-paths: '*'
