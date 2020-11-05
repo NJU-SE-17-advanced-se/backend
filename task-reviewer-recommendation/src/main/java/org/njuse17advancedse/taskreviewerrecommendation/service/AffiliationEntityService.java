@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "entity-affiliation")
 public interface AffiliationEntityService {
   //通过id获得机构信息
-  @GetMapping("affiliation/{id}")
+  @GetMapping("affiliations/{id}")
   IAffiliation getAffiliationById(@PathVariable String id);
 }

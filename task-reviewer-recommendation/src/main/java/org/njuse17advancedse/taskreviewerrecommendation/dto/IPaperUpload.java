@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IPaperUpload {
-  private String id;
-
   private String title;
 
   private String abs;

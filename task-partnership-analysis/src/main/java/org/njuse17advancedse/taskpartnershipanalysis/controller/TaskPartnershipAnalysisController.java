@@ -25,18 +25,18 @@ public class TaskPartnershipAnalysisController {
   }
 
   // 合作关系分析
-  @RequestMapping(value = "/partners-net/{id}", method = RequestMethod.GET)
+  @RequestMapping(value = "/{id}/partners-net", method = RequestMethod.GET)
   private ResponseEntity<IResearcherNet> getPartnership(
     @PathVariable String id,
-    @RequestParam String start,
-    @RequestParam String end
+    @RequestParam(required = false) String start,
+    @RequestParam(required = false) String end
   ) {
     return taskPartnershipAnalysisService.getPartnership(id, start, end);
   }
 
   // 合作关系预测
   @RequestMapping(
-    value = "/potential-partners/{id}",
+    value = "/{id}/potential-partners",
     method = RequestMethod.GET
   )
   private ResponseEntity<Map<String, Double>> getPotentialPartners(

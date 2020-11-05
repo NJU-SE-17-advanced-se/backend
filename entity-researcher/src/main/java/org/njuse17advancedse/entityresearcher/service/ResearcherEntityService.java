@@ -111,12 +111,12 @@ public class ResearcherEntityService {
         List<JpaPaper> paperList = jpaResearcher.getPapers();
         for (JpaPaper paper : paperList) {
           if (isInTime(start, end, paper)) {
-            domains.add(
+            domains.addAll(
               paper
                 .getDomains()
                 .stream()
                 .map(JpaDomain::getId)
-                .collect(Collectors.joining())
+                .collect(Collectors.toList())
             );
           }
         }
