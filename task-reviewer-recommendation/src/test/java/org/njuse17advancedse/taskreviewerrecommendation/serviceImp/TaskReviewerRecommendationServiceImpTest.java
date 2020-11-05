@@ -58,7 +58,6 @@ class TaskReviewerRecommendationServiceImpTest {
   void getRecommendReviewer() {
     IPaperUpload testPaper = new IPaperUpload();
     testPaper.setTitle("testPaper");
-    testPaper.setId("test");
     testPaper.setJournal("EMSE");
     testPaper.setDate("2020/10/09");
     List<String> testDomains = Lists.newArrayList(
@@ -104,7 +103,7 @@ class TaskReviewerRecommendationServiceImpTest {
         );
       Mockito
         .when(taskImpactAnalysisService.getImpactByResearcherId(rid))
-        .thenReturn(Double.parseDouble(rid));
+        .thenReturn(Integer.parseInt(rid));
     }
 
     for (int i = 0; i < 3; i++) {
@@ -126,7 +125,6 @@ class TaskReviewerRecommendationServiceImpTest {
   void getNotRecommendReviewer() {
     IPaperUpload testPaper = new IPaperUpload();
     testPaper.setTitle("testPaper");
-    testPaper.setId("test");
     List<String> researcherIds = Lists.newArrayList("0", "1", "2");
     testPaper.setResearcherIds(researcherIds);
 

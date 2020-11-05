@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "task-partnership-analysis")
 public interface TaskPartnershipService {
   //根据作者id获得与作者合作过的作者id列表
-  @GetMapping("/partners/{id}")
+  @GetMapping("partnership/{id}/partners")
   List<String> getPartnersByResearcherId(@PathVariable String id);
 }
