@@ -111,6 +111,10 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IPaper getIPaper(String paperId) {
+    String exist = "select * from paper where id='" + paperId + "'";
+    if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
+      return null;
+    }
     String sql =
       "select paper.*,group_concat(distinct paper_reference.rid) as `references`," +
       "group_concat(distinct paper_researcher.rid) as researchers, group_concat(distinct paper_domain.did) as domains" +
@@ -124,6 +128,10 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IPaperBasic getPaperBasic(String paperId) {
+    String exist = "select * from paper where id='" + paperId + "'";
+    if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
+      return null;
+    }
     String sql =
       "select paper.*, group_concat(distinct paper_researcher.rid) as researchers" +
       " from `paper`,`publication`,`paper_researcher` " +

@@ -34,6 +34,10 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IDomain getDomain(String id) {
+    String exist = "select * from `domain` where id='" + id + "'";
+    if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
+      return null;
+    }
     String sql =
       "select group_concat(distinct paper_domain.pid) as papers, group_concat(distinct paper_researcher.rid) as researchers, `domain`.*" +
       " from paper_domain,paper_researcher,`domain` where" +
@@ -45,6 +49,10 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IDomainBasic getDomainBasic(String id) {
+    String exist = "select * from `domain` where id='" + id + "'";
+    if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
+      return null;
+    }
     String sql = "select * from `domain` where id='" + id + "'";
     return jdbcTemplate.queryForObject(sql, new DomainBasicRowMapper());
   }

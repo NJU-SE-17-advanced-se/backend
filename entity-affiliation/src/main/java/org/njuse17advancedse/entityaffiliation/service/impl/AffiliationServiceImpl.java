@@ -1,5 +1,6 @@
 package org.njuse17advancedse.entityaffiliation.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entityaffiliation.data.AllRepository;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliation;
@@ -15,26 +16,46 @@ public class AffiliationServiceImpl implements AffiliationService {
 
   @Override
   public IAffiliation getAffiliationById(String id) {
-    return repository.getAffiliationById(id);
+    try {
+      return repository.getAffiliationById(id);
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   @Override
   public IAffiliationBasic getAffiliationBasicInfoById(String id) {
-    return repository.getAffiliationBasicInfoById(id);
+    try {
+      return repository.getAffiliationBasicInfoById(id);
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   @Override
   public List<String> getAffiliationResearchersById(String id) {
-    return repository.getAffiliationResearchersById(id);
+    try {
+      return repository.getAffiliationResearchersById(id);
+    } catch (Exception e) {
+      return new ArrayList<>();
+    }
   }
 
   @Override
   public List<String> getAffiliationPapersById(String id) {
-    return repository.getAffiliationPapersById(id);
+    try {
+      return repository.getAffiliationPapersById(id);
+    } catch (Exception e) {
+      return new ArrayList<>();
+    }
   }
 
   @Override
   public List<String> getAffiliationDomainsById(String id) {
-    return repository.getAffiliationDomainsById(id);
+    try {
+      return repository.getAffiliationDomainsById(id);
+    } catch (Exception e) {
+      return new ArrayList<>();
+    }
   }
 }

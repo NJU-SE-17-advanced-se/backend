@@ -19,6 +19,10 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IAffiliation getAffiliationById(String id) {
+    String exist = "select * from affiliation where id='" + id + "'";
+    if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
+      return null;
+    }
     String sql =
       "select group_concat(distinct paper_domain.did) as domains, group_concat(distinct researcher_affiliation.rid) as researchers," +
       " group_concat(distinct paper_researcher.pid) as papers, affiliation.* " +
@@ -33,6 +37,10 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IAffiliationBasic getAffiliationBasicInfoById(String id) {
+    String exist = "select * from affiliation where id='" + id + "'";
+    if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
+      return null;
+    }
     String sql = "select * from affiliation where id='" + id + "'";
     return jdbcTemplate.queryForObject(sql, new AffiliationBasicRowMapper());
   }
