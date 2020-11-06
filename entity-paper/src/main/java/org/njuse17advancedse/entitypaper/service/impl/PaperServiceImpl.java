@@ -18,7 +18,7 @@ public class PaperServiceImpl implements PaperService {
     try {
       return repository.getIPaper(paperId);
     } catch (Exception e) {
-      return null;
+      return new IPaper();
     }
   }
 
@@ -27,8 +27,6 @@ public class PaperServiceImpl implements PaperService {
     String publication,
     String date
   ) {
-    String sql = ";";
-    List<String> res = new ArrayList<>();
     try {
       //啥都不限制
       if (researcher == null && publication == null && date == null) {
@@ -80,7 +78,7 @@ public class PaperServiceImpl implements PaperService {
     try {
       return repository.getPaperBasic(id);
     } catch (Exception e) {
-      return null;
+      return new IPaperBasic();
     }
   }
 
