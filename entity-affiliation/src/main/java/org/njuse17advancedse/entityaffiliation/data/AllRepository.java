@@ -19,7 +19,7 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IAffiliation getAffiliationById(String id) {
-    String exist = "select * from affiliation where id='" + id + "'";
+    String exist = "select id from affiliation where id='" + id + "'";
     if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
       return null;
     }
@@ -37,7 +37,7 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IAffiliationBasic getAffiliationBasicInfoById(String id) {
-    String exist = "select * from affiliation where id='" + id + "'";
+    String exist = "select id from affiliation where id='" + id + "'";
     if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
       return null;
     }

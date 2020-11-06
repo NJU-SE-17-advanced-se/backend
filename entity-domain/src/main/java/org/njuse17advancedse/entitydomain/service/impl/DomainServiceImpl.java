@@ -19,7 +19,7 @@ public class DomainServiceImpl implements DomainService {
     try {
       return repository.getDomain(id);
     } catch (Exception e) {
-      return null;
+      return new IDomain();
     }
   }
 
@@ -28,7 +28,7 @@ public class DomainServiceImpl implements DomainService {
     try {
       return repository.getDomainBasic(id);
     } catch (Exception e) {
-      return null;
+      return new IDomainBasic();
     }
   }
 

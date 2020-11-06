@@ -19,7 +19,7 @@ public class AffiliationServiceImpl implements AffiliationService {
     try {
       return repository.getAffiliationById(id);
     } catch (Exception e) {
-      return null;
+      return new IAffiliation();
     }
   }
 
@@ -28,7 +28,7 @@ public class AffiliationServiceImpl implements AffiliationService {
     try {
       return repository.getAffiliationBasicInfoById(id);
     } catch (Exception e) {
-      return null;
+      return new IAffiliationBasic();
     }
   }
 
