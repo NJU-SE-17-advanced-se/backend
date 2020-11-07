@@ -207,6 +207,7 @@ public class TaskCitationAnalysisServiceTest {
     map.put("1", Arrays.asList("1", "2", "3", "4"));
     map.put("2", Arrays.asList("1", "2", "3"));
     map.put("3", Collections.singletonList("1"));
+    Mockito.when(r1.getId()).thenReturn("R1");
     Mockito.when(researcherService.getResearcherById("R1")).thenReturn(r1);
     assertEquals(service.getQuotedPapersByResearcherId("R1"), map);
   }
@@ -264,6 +265,7 @@ public class TaskCitationAnalysisServiceTest {
     map.put("2", Arrays.asList("1", "2", "4", "6", "7", "8"));
     map.put("3", Arrays.asList("1", "2", "4", "6", "7", "8"));
 
+    Mockito.when(r1.getId()).thenReturn("R1");
     Mockito.when(researcherService.getResearcherById("R1")).thenReturn(r1);
     assertEquals(service.getQuotingPapersByResearcherId("R1"), map);
   }
