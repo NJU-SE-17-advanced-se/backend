@@ -39,7 +39,7 @@ public class AllRepository {
   public IAffiliationBasic getAffiliationBasicInfoById(String id) {
     String exist = "select id from affiliation where id='" + id + "'";
     if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
-      return new IAffiliation();
+      return new IAffiliationBasic();
     }
     String sql = "select * from affiliation where id='" + id + "'";
     return jdbcTemplate.queryForObject(sql, new AffiliationBasicRowMapper());
