@@ -11,7 +11,4 @@ public interface TaskImpactAnalysisService {
   //根据作者id获得作者影响力
   @GetMapping("/impact/researchers/{id}")
   Integer getImpactByResearcherId(@PathVariable String id);
-
-  @GetMapping("/impact/researchers")
-  List<Integer> getImpactsByRids(@RequestParam List<String> rids);
 }
