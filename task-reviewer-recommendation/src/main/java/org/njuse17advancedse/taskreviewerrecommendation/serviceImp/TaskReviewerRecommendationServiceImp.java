@@ -118,13 +118,13 @@ public class TaskReviewerRecommendationServiceImp
   private List<String> sortResearchersByImpact(List<String> researcherIds) {
     List<Integer> impacts = new ArrayList<>();
     try {
-      impacts = taskImpactAnalysisService.getImpactsByRids(researcherIds);
-      System.out.println(impacts);
-      //      for (String researcherId : researcherIds) {
-      //        impacts.add(
-      //                taskImpactAnalysisService.getImpactByResearcherId(researcherId)
-      //        );
-      //      }
+      //impacts = taskImpactAnalysisService.getImpactsByRids(researcherIds);
+      //System.out.println(impacts);
+      for (String researcherId : researcherIds) {
+        impacts.add(
+          taskImpactAnalysisService.getImpactByResearcherId(researcherId)
+        );
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
