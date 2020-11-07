@@ -1,9 +1,5 @@
 package org.njuse17advancedse.taskimpactanalysis.controller;
 
-import com.google.common.collect.Lists;
-import com.google.inject.internal.cglib.core.$ClassNameReader;
-import java.util.ArrayList;
-import java.util.List;
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,20 +20,6 @@ public class TaskImpactAnalysisController {
   ) {
     if (type.equals("hIndex")) return service.getHIndex(id);
     return -1;
-  }
-
-  @GetMapping(value = "/researchers")
-  public List<Integer> getHIndexList(
-    @RequestParam(value = "rids") List<String> rids,
-    @RequestParam(defaultValue = "hIndex", required = false) String type
-  ) {
-    List<Integer> result = new ArrayList<>();
-    if (type.equals("hIndex")) {
-      for (String id : rids) {
-        result.add(service.getHIndex(id));
-      }
-    }
-    return result;
   }
 
   /**
