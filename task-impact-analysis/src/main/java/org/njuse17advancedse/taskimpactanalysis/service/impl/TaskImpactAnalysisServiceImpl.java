@@ -47,15 +47,6 @@ public class TaskImpactAnalysisServiceImpl
     return res;
   }
 
-  @Override
-  public List<Integer> getHIndexList(List<String> ids) {
-    List<Integer> impacts = new ArrayList<>();
-    for (String id : ids) {
-      impacts.add(getHIndex(id));
-    }
-    return impacts;
-  }
-
   static HashMap<String, Double> impactFactors;
 
   /**
