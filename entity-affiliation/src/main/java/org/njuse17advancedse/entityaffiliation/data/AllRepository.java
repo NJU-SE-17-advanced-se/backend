@@ -21,7 +21,7 @@ public class AllRepository {
   public IAffiliation getAffiliationById(String id) {
     String exist = "select id from affiliation where id='" + id + "'";
     if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
-      return null;
+      return new IAffiliation();
     }
     String sql =
       "select group_concat(distinct paper_domain.did) as domains, group_concat(distinct researcher_affiliation.rid) as researchers," +
@@ -39,7 +39,7 @@ public class AllRepository {
   public IAffiliationBasic getAffiliationBasicInfoById(String id) {
     String exist = "select id from affiliation where id='" + id + "'";
     if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
-      return null;
+      return new IAffiliation();
     }
     String sql = "select * from affiliation where id='" + id + "'";
     return jdbcTemplate.queryForObject(sql, new AffiliationBasicRowMapper());
