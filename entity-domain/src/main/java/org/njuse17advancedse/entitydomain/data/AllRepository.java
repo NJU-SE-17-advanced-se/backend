@@ -2,6 +2,7 @@ package org.njuse17advancedse.entitydomain.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.njuse17advancedse.entitydomain.dto.IDomain;
@@ -63,8 +64,18 @@ class DomainRowMapper implements RowMapper<IDomain> {
   @Override
   public IDomain mapRow(ResultSet rs, int rowNum) throws SQLException {
     IDomain res = new IDomain();
-    res.setPapers(string2List(rs.getString("papers")));
-    res.setResearchers(string2List(rs.getString("researchers")));
+    try {
+      String papers = rs.getString("papers");
+      res.setPapers(string2List(papers));
+    } catch (Exception e) {
+      res.setPapers(new ArrayList<>());
+    }
+    try {
+      String researchers = rs.getString("researchers");
+      res.setResearchers(string2List(researchers));
+    } catch (Exception e) {
+      res.setResearchers(new ArrayList<>());
+    }
     res.setId(rs.getString("id"));
     res.setName(rs.getString("name"));
     return res;

@@ -286,12 +286,14 @@ public class TaskCitationAnalysisServiceImpl
       //            string2String.put(id,cnt);
       //            String2String.put(cnt,id);
       IPaper paper = paperService.getPaper(id);
-      if (paper != null) {
+      if (!isEmptyPaper(paper)) {
         List<String> quotedIds = paper.getReferences();
         for (String s : quotedIds) {
           put(quoted, id, s);
           put(quoting, s, id);
         }
+      } else {
+        System.out.println(id);
       }
     }
     inited = true;

@@ -2,6 +2,7 @@ package org.njuse17advancedse.entityaffiliation.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliation;
@@ -83,9 +84,24 @@ class AffiliationRowMapper implements RowMapper<IAffiliation> {
     res.setId(id);
     res.setName(rs.getString("name"));
     res.setDescription(rs.getString("description"));
-    res.setPapers(string2List(rs.getString("papers")));
-    res.setDomains(string2List(rs.getString("domains")));
-    res.setResearchers(string2List(rs.getString("researchers")));
+    try {
+      String papers = rs.getString("papers");
+      res.setPapers(string2List(papers));
+    } catch (Exception e) {
+      res.setPapers(new ArrayList<>());
+    }
+    try {
+      String domains = rs.getString("domains");
+      res.setDomains(string2List(domains));
+    } catch (Exception e) {
+      res.setDomains(new ArrayList<>());
+    }
+    try {
+      String researchers = rs.getString("researchers");
+      res.setResearchers(string2List(researchers));
+    } catch (Exception e) {
+      res.setResearchers(new ArrayList<>());
+    }
     return res;
   }
 

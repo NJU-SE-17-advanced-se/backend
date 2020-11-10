@@ -20,6 +20,9 @@ public class TaskImpactAnalysisServiceTest {
   @MockBean
   ResearcherService researcherService;
 
+  @MockBean
+  CitationService citationService;
+
   @Autowired
   TaskImpactAnalysisService service;
 
@@ -140,27 +143,35 @@ public class TaskImpactAnalysisServiceTest {
     Mockito.when(paperService.getPaper("7")).thenReturn(p7);
     Mockito.when(paperService.getPaper("8")).thenReturn(p8);
     Mockito
-      .when(p1.getReferences())
+      .when(citationService.getPaperCitations("1", "quoting"))
       .thenReturn(Arrays.asList("1", "2", "3", "4"));
     Mockito.when(p1.getPublication()).thenReturn("");
-    Mockito.when(p2.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
+    Mockito
+      .when(citationService.getPaperCitations("2", "quoting"))
+      .thenReturn(Arrays.asList("1", "2", "3"));
     Mockito.when(p2.getPublication()).thenReturn("");
-    Mockito.when(p3.getReferences()).thenReturn(Arrays.asList("1"));
+    Mockito
+      .when(citationService.getPaperCitations("3", "quoting"))
+      .thenReturn(Arrays.asList("1"));
     Mockito.when(p3.getPublication()).thenReturn("");
     Mockito
-      .when(p4.getReferences())
+      .when(citationService.getPaperCitations("4", "quoting"))
       .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7"));
     Mockito.when(p4.getPublication()).thenReturn("");
-    Mockito.when(p5.getReferences()).thenReturn(Arrays.asList());
+    Mockito
+      .when(citationService.getPaperCitations("5", "quoting"))
+      .thenReturn(Arrays.asList());
     Mockito.when(p5.getPublication()).thenReturn("");
-    Mockito.when(p6.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
+    Mockito
+      .when(citationService.getPaperCitations("6", "quoting"))
+      .thenReturn(Arrays.asList("1", "2", "3"));
     Mockito.when(p6.getPublication()).thenReturn("");
     Mockito
-      .when(p7.getReferences())
+      .when(citationService.getPaperCitations("7", "quoting"))
       .thenReturn(Arrays.asList("1", "2", "3", "4", "5"));
     Mockito.when(p7.getPublication()).thenReturn("");
     Mockito
-      .when(p8.getReferences())
+      .when(citationService.getPaperCitations("8", "quoting"))
       .thenReturn(Arrays.asList("1", "2", "3", "4"));
     Mockito.when(p8.getPublication()).thenReturn("");
 
