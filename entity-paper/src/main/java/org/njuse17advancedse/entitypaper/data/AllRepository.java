@@ -2,6 +2,7 @@ package org.njuse17advancedse.entitypaper.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.njuse17advancedse.entitypaper.dto.IPaper;
@@ -155,9 +156,24 @@ class PaperRowMapper implements RowMapper<IPaper> {
     res.setPublication(rs.getString("publication_id"));
     res.setLink(rs.getString("link"));
     res.setPublicationDate(rs.getString("publication_date"));
-    res.setReferences(string2List(rs.getString("references")));
-    res.setDomains(string2List(rs.getString("domains")));
-    res.setResearchers(string2List(rs.getString("researchers")));
+    try {
+      String references = rs.getString("references");
+      res.setReferences(string2List(references));
+    } catch (Exception e) {
+      res.setReferences(new ArrayList<>());
+    }
+    try {
+      String domains = rs.getString("domains");
+      res.setDomains(string2List(domains));
+    } catch (Exception e) {
+      res.setDomains(new ArrayList<>());
+    }
+    try {
+      String researchers = rs.getString("researchers");
+      res.setResearchers(string2List(researchers));
+    } catch (Exception e) {
+      res.setResearchers(new ArrayList<>());
+    }
     res.setCitations(rs.getInt("citation"));
     return res;
   }
@@ -178,7 +194,12 @@ class PaperBasicRowMapper implements RowMapper<IPaperBasic> {
     res.setTitle(rs.getString("title"));
     res.setPublication(rs.getString("publication_id"));
     res.setPublicationDate(rs.getString("publication_date"));
-    res.setResearchers(string2List(rs.getString("researchers")));
+    try {
+      String researchers = rs.getString("researchers");
+      res.setResearchers(string2List(researchers));
+    } catch (Exception e) {
+      res.setResearchers(new ArrayList<>());
+    }
     return res;
   }
 

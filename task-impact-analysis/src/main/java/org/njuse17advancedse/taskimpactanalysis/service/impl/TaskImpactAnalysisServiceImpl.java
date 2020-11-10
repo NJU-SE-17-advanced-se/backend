@@ -3,6 +3,7 @@ package org.njuse17advancedse.taskimpactanalysis.service.impl;
 import java.util.*;
 import org.njuse17advancedse.taskimpactanalysis.dto.IPaper;
 import org.njuse17advancedse.taskimpactanalysis.dto.IResearcher;
+import org.njuse17advancedse.taskimpactanalysis.service.CitationService;
 import org.njuse17advancedse.taskimpactanalysis.service.PaperService;
 import org.njuse17advancedse.taskimpactanalysis.service.ResearcherService;
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
@@ -23,6 +24,9 @@ public class TaskImpactAnalysisServiceImpl
 
   @Autowired
   ResearcherService researcherService;
+
+  @Autowired
+  CitationService citationService;
 
   /**
    * 计算学者影响力（H指数）
@@ -55,11 +59,11 @@ public class TaskImpactAnalysisServiceImpl
   @Override
   public double getPaperImpact(String id) {
     IPaper p = paperService.getPaper(id);
+    int size = citationService.getPaperCitations(id, "quoting").size();
     return Double.parseDouble(
       String.format(
         "%.2f",
-        p.getReferences().size() *
-        impactFactors.getOrDefault(p.getPublication(), 0d)
+        size * impactFactors.getOrDefault(p.getPublication(), 0d)
       )
     );
   }
