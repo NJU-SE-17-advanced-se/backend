@@ -116,15 +116,17 @@ public class AllRepository {
     if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
       return new IPaper();
     }
-    String sql =
-      "select paper.*,group_concat(distinct paper_reference.rid) as `references`," +
-      "group_concat(distinct paper_researcher.rid) as researchers, group_concat(distinct paper_domain.did) as domains" +
-      " from `paper`,`paper_reference`,`paper_researcher`,`paper_domain` " +
-      "where paper.id= '" +
-      paperId +
-      "' and paper.id=paper_reference.pid and paper.id=paper_domain.pid and paper.id =paper_researcher.pid " +
-      "group by paper.id;";
-    return jdbcTemplate.queryForObject(sql, new PaperRowMapper());
+    IPaperBasic ipb = getPaperBasic(paperId);
+    IPaper res = new IPaper(ipb);
+    String referenceSQL =
+      "select distinct rid from paper_reference where pid='" + paperId + "';";
+    res.setReferences(jdbcTemplate.queryForList(referenceSQL, String.class));
+    String linkSQL = "select link from paper where id='" + paperId + "';";
+    res.setLink(jdbcTemplate.queryForObject(linkSQL, String.class));
+    String domainSQL =
+      "select distinct did from paper_domain where pid='" + paperId + "';";
+    res.setDomains(jdbcTemplate.queryForList(domainSQL, String.class));
+    return res;
   }
 
   @Transactional(readOnly = true)
@@ -145,44 +147,45 @@ public class AllRepository {
   }
 }
 
-class PaperRowMapper implements RowMapper<IPaper> {
-
-  @Override
-  public IPaper mapRow(ResultSet rs, int rowNum) throws SQLException {
-    IPaper res = new IPaper();
-    res.setId(rs.getString("id"));
-    res.setAbs(rs.getString("abs"));
-    res.setTitle(rs.getString("title"));
-    res.setPublication(rs.getString("publication_id"));
-    res.setLink(rs.getString("link"));
-    res.setPublicationDate(rs.getString("publication_date"));
-    try {
-      String references = rs.getString("references");
-      res.setReferences(string2List(references));
-    } catch (Exception e) {
-      res.setReferences(new ArrayList<>());
-    }
-    try {
-      String domains = rs.getString("domains");
-      res.setDomains(string2List(domains));
-    } catch (Exception e) {
-      res.setDomains(new ArrayList<>());
-    }
-    try {
-      String researchers = rs.getString("researchers");
-      res.setResearchers(string2List(researchers));
-    } catch (Exception e) {
-      res.setResearchers(new ArrayList<>());
-    }
-    res.setCitations(rs.getInt("citation"));
-    return res;
-  }
-
-  private List<String> string2List(String str) {
-    String[] strs = str.split(",");
-    return Arrays.asList(strs);
-  }
-}
+//
+//class PaperRowMapper implements RowMapper<IPaper> {
+//
+//  @Override
+//  public IPaper mapRow(ResultSet rs, int rowNum) throws SQLException {
+//    IPaper res = new IPaper();
+//    res.setId(rs.getString("id"));
+//    res.setAbs(rs.getString("abs"));
+//    res.setTitle(rs.getString("title"));
+//    res.setPublication(rs.getString("publication_id"));
+//    res.setLink(rs.getString("link"));
+//    res.setPublicationDate(rs.getString("publication_date"));
+//    try {
+//      String references = rs.getString("references");
+//      res.setReferences(string2List(references));
+//    } catch (Exception e) {
+//      res.setReferences(new ArrayList<>());
+//    }
+//    try {
+//      String domains = rs.getString("domains");
+//      res.setDomains(string2List(domains));
+//    } catch (Exception e) {
+//      res.setDomains(new ArrayList<>());
+//    }
+//    try {
+//      String researchers = rs.getString("researchers");
+//      res.setResearchers(string2List(researchers));
+//    } catch (Exception e) {
+//      res.setResearchers(new ArrayList<>());
+//    }
+//    res.setCitations(rs.getInt("citation"));
+//    return res;
+//  }
+//
+//  private List<String> string2List(String str) {
+//    String[] strs = str.split(",");
+//    return Arrays.asList(strs);
+//  }
+//}
 
 class PaperBasicRowMapper implements RowMapper<IPaperBasic> {
 

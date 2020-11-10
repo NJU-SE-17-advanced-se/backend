@@ -282,9 +282,11 @@ public class TaskCitationAnalysisServiceImpl
     //String cnt=0;
     quoted = new HashMap<>();
     quoting = new HashMap<>();
+    int count = 0;
     for (String id : paperids) {
       //            string2String.put(id,cnt);
       //            String2String.put(cnt,id);
+      System.out.println(count++);
       IPaper paper = paperService.getPaper(id);
       if (!isEmptyPaper(paper)) {
         List<String> quotedIds = paper.getReferences();

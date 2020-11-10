@@ -20,20 +20,11 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IAffiliation getAffiliationById(String id) {
-    String exist = "select id from affiliation where id='" + id + "'";
-    if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
-      return new IAffiliation();
-    }
-    String sql =
-      "select group_concat(distinct paper_domain.did) as domains, group_concat(distinct researcher_affiliation.rid) as researchers," +
-      " group_concat(distinct paper_researcher.pid) as papers, affiliation.* " +
-      "from affiliation,researcher_affiliation,paper_researcher,paper_domain" +
-      " where affiliation.id=researcher_affiliation.aid and affiliation.id='" +
-      id +
-      "' and researcher_affiliation.rid=paper_researcher.rid" +
-      " and paper_researcher.pid=paper_domain.pid;";
-    System.out.println(sql);
-    return jdbcTemplate.queryForObject(sql, new AffiliationRowMapper());
+    IAffiliation res = new IAffiliation(getAffiliationBasicInfoById(id));
+    res.setResearchers(getAffiliationResearchersById(id));
+    res.setDomains(getAffiliationDomainsById(id));
+    res.setPapers(getAffiliationPapersById(id));
+    return res;
   }
 
   @Transactional(readOnly = true)
@@ -75,41 +66,41 @@ public class AllRepository {
   }
 }
 
-class AffiliationRowMapper implements RowMapper<IAffiliation> {
-
-  @Override
-  public IAffiliation mapRow(ResultSet rs, int rowNum) throws SQLException {
-    IAffiliation res = new IAffiliation();
-    String id = rs.getString("id");
-    res.setId(id);
-    res.setName(rs.getString("name"));
-    res.setDescription(rs.getString("description"));
-    try {
-      String papers = rs.getString("papers");
-      res.setPapers(string2List(papers));
-    } catch (Exception e) {
-      res.setPapers(new ArrayList<>());
-    }
-    try {
-      String domains = rs.getString("domains");
-      res.setDomains(string2List(domains));
-    } catch (Exception e) {
-      res.setDomains(new ArrayList<>());
-    }
-    try {
-      String researchers = rs.getString("researchers");
-      res.setResearchers(string2List(researchers));
-    } catch (Exception e) {
-      res.setResearchers(new ArrayList<>());
-    }
-    return res;
-  }
-
-  private List<String> string2List(String str) {
-    String[] strs = str.split(",");
-    return Arrays.asList(strs);
-  }
-}
+//class AffiliationRowMapper implements RowMapper<IAffiliation> {
+//
+//  @Override
+//  public IAffiliation mapRow(ResultSet rs, int rowNum) throws SQLException {
+//    IAffiliation res = new IAffiliation();
+//    String id = rs.getString("id");
+//    res.setId(id);
+//    res.setName(rs.getString("name"));
+//    res.setDescription(rs.getString("description"));
+//    try {
+//      String papers = rs.getString("papers");
+//      res.setPapers(string2List(papers));
+//    } catch (Exception e) {
+//      res.setPapers(new ArrayList<>());
+//    }
+//    try {
+//      String domains = rs.getString("domains");
+//      res.setDomains(string2List(domains));
+//    } catch (Exception e) {
+//      res.setDomains(new ArrayList<>());
+//    }
+//    try {
+//      String researchers = rs.getString("researchers");
+//      res.setResearchers(string2List(researchers));
+//    } catch (Exception e) {
+//      res.setResearchers(new ArrayList<>());
+//    }
+//    return res;
+//  }
+//
+//  private List<String> string2List(String str) {
+//    String[] strs = str.split(",");
+//    return Arrays.asList(strs);
+//  }
+//}
 
 class AffiliationBasicRowMapper implements RowMapper<IAffiliationBasic> {
 

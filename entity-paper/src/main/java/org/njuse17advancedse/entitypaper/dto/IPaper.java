@@ -28,4 +28,14 @@ public class IPaper {
   private List<String> domains;
 
   private List<String> references;
+
+  public IPaper(IPaperBasic ipb) {
+    id = ipb.getId();
+    title = ipb.getTitle();
+    abs = ipb.getAbs();
+    publication = ipb.getPublication();
+    publicationDate = ipb.getPublicationDate();
+    citations = ipb.getCitations();
+    researchers = ipb.getResearchers();
+  }
 }
