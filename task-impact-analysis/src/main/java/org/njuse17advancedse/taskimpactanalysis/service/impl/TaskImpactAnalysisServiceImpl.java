@@ -63,7 +63,7 @@ public class TaskImpactAnalysisServiceImpl
     return Double.parseDouble(
       String.format(
         "%.2f",
-        size * impactFactors.getOrDefault(p.getPublication(), 0d)
+        size * impactFactors.getOrDefault(p.getPublication(), 1d)
       )
     );
   }

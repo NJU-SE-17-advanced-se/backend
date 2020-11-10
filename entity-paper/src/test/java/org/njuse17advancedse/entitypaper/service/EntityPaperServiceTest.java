@@ -19,6 +19,7 @@ public class EntityPaperServiceTest {
   PaperService service;
 
   @MockBean
+  //  @Autowired
   AllRepository repository;
 
   IPaper p1;
@@ -127,4 +128,9 @@ public class EntityPaperServiceTest {
       Arrays.asList("test1", "test8")
     );
   }
+  //  @Test
+  //  public void testSQL(){
+  //    IPaper p=service.getIPaper("b03006043294cab6b03f9ed0faa511db");
+  //    System.out.println();
+  //  }
 }
