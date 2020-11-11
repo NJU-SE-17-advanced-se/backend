@@ -87,7 +87,7 @@ public class AllRepository {
     return jdbcTemplate.queryForList(sql, String.class);
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public List<String> getPapersByResearcherAndPublicationAndDate(
     String researcher,
     String publication,
@@ -144,6 +144,13 @@ public class AllRepository {
       "and paper.id =paper_researcher.pid " +
       "group by paper.id;";
     return jdbcTemplate.queryForObject(sql, new PaperBasicRowMapper());
+  }
+
+  @Transactional(readOnly = true)
+  public List<String> getCitations(String paperId) {
+    String sql =
+      "select distinct pid from paper_reference where rid='" + paperId + "';";
+    return jdbcTemplate.queryForList(sql, String.class);
   }
 }
 

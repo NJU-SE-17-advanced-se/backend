@@ -10,4 +10,6 @@ public interface TaskImpactAnalysisService {
    * 计算论文影响力（被引次数*影响因子）
    */
   double getPaperImpact(String paperId);
+
+  String test();
 }

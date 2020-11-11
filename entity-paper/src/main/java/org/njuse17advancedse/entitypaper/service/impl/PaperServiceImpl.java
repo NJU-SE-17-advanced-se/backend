@@ -90,4 +90,12 @@ public class PaperServiceImpl implements PaperService {
       return new ArrayList<>(0);
     }
   }
+
+  public List<String> getCitations(String id) {
+    try {
+      return repository.getCitations(id);
+    } catch (Exception e) {
+      return new ArrayList<>();
+    }
+  }
 }
