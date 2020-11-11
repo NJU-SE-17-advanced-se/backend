@@ -2,6 +2,7 @@ package org.njuse17advancedse.entitydomain.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.njuse17advancedse.entitydomain.dto.IDomain;
@@ -34,17 +35,13 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IDomain getDomain(String id) {
-    String exist = "select id from `domain` where id='" + id + "'";
-    if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
-      return new IDomain();
-    }
-    String sql =
-      "select group_concat(distinct paper_domain.pid) as papers, group_concat(distinct paper_researcher.rid) as researchers, `domain`.*" +
-      " from paper_domain,paper_researcher,`domain` where" +
-      " paper_domain.pid=paper_researcher.pid and paper_domain.did=`domain`.id and `domain`.id='" +
-      id +
-      "'";
-    return jdbcTemplate.queryForObject(sql, new DomainRowMapper());
+    IDomain res = new IDomain();
+    IDomainBasic idb = getDomainBasic(id);
+    res.setName(idb.getName());
+    res.setId(id);
+    res.setPapers(getPapers(id));
+    res.setResearchers(getResearchers(id));
+    return res;
   }
 
   @Transactional(readOnly = true)
@@ -58,23 +55,34 @@ public class AllRepository {
   }
 }
 
-class DomainRowMapper implements RowMapper<IDomain> {
-
-  @Override
-  public IDomain mapRow(ResultSet rs, int rowNum) throws SQLException {
-    IDomain res = new IDomain();
-    res.setPapers(string2List(rs.getString("papers")));
-    res.setResearchers(string2List(rs.getString("researchers")));
-    res.setId(rs.getString("id"));
-    res.setName(rs.getString("name"));
-    return res;
-  }
-
-  private List<String> string2List(String str) {
-    String[] strs = str.split(",");
-    return Arrays.asList(strs);
-  }
-}
+//
+//class DomainRowMapper implements RowMapper<IDomain> {
+//
+//  @Override
+//  public IDomain mapRow(ResultSet rs, int rowNum) throws SQLException {
+//    IDomain res = new IDomain();
+//    try {
+//      String papers = rs.getString("papers");
+//      res.setPapers(string2List(papers));
+//    } catch (Exception e) {
+//      res.setPapers(new ArrayList<>());
+//    }
+//    try {
+//      String researchers = rs.getString("researchers");
+//      res.setResearchers(string2List(researchers));
+//    } catch (Exception e) {
+//      res.setResearchers(new ArrayList<>());
+//    }
+//    res.setId(rs.getString("id"));
+//    res.setName(rs.getString("name"));
+//    return res;
+//  }
+//
+//  private List<String> string2List(String str) {
+//    String[] strs = str.split(",");
+//    return Arrays.asList(strs);
+//  }
+//}
 
 class DomainBasicRowMapper implements RowMapper<IDomainBasic> {
 

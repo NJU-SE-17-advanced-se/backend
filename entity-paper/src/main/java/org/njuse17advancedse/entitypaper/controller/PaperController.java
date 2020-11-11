@@ -42,4 +42,9 @@ public class PaperController {
   public List<String> getDomains(@PathVariable String id) {
     return service.getDomains(id);
   }
+
+  @GetMapping("/{id}/citations")
+  public List<String> getCitations(@PathVariable String id) {
+    return service.getCitations(id);
+  }
 }

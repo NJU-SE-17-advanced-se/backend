@@ -67,6 +67,30 @@ public class TaskCitationAnalysisServiceTest {
     Mockito
       .when(p8.getReferences())
       .thenReturn(Arrays.asList("1", "2", "3", "4"));
+    Mockito
+      .when(paperService.getCitations("1"))
+      .thenReturn(Arrays.asList("1", "2", "3", "4", "6", "7", "8"));
+    Mockito
+      .when(paperService.getCitations("2"))
+      .thenReturn(Arrays.asList("1", "2", "4", "6", "7", "8"));
+    Mockito
+      .when(paperService.getCitations("3"))
+      .thenReturn(Arrays.asList("1", "2", "4", "6", "7", "8"));
+    Mockito
+      .when(paperService.getCitations("4"))
+      .thenReturn(Arrays.asList("1", "4", "7", "8"));
+    Mockito
+      .when(paperService.getCitations("5"))
+      .thenReturn(Arrays.asList("4", "7"));
+    Mockito
+      .when(paperService.getCitations("6"))
+      .thenReturn(Collections.singletonList("4"));
+    Mockito
+      .when(paperService.getCitations("7"))
+      .thenReturn(Collections.singletonList("4"));
+    Mockito
+      .when(paperService.getCitations("8"))
+      .thenReturn(Collections.emptyList());
     IResearcher r = mock(IResearcher.class);
     r.setId("rid");
     Mockito
@@ -80,7 +104,6 @@ public class TaskCitationAnalysisServiceTest {
     Mockito.when(paperService.getPaper("6")).thenReturn(p6);
     Mockito.when(paperService.getPaper("7")).thenReturn(p7);
     Mockito.when(paperService.getPaper("8")).thenReturn(p8);
-    service.init();
   }
 
   @Test

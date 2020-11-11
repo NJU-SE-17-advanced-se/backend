@@ -54,8 +54,7 @@ public interface TaskCitationAnalysisService {
   List<String> getPaperQuotedResearcher(String researcherId);
   //某论文被哪些学者引用
   List<String> getPaperQuotingResearcher(String researcherId);
-
   //计算一遍数据
-  void init();
+  //  void init();
   //  String test();
 }

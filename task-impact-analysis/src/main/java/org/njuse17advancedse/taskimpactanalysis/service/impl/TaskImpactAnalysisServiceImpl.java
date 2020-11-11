@@ -27,18 +27,18 @@ public class TaskImpactAnalysisServiceImpl
   /**
    * 计算学者影响力（H指数）
    */
-  @Override
   public int getHIndex(String id) {
     IResearcher r = researcherService.getResearcherById(id);
+    if (isEmptyResearcher(r)) return -1;
     ArrayList<String> tmpPaperIds = new ArrayList<>(r.getPapers());
-    ArrayList<IPaper> tmpPapers = new ArrayList<>();
+    ArrayList<Integer> tmpPapers = new ArrayList<>();
     for (String s : tmpPaperIds) {
-      tmpPapers.add(paperService.getPaper(s));
+      tmpPapers.add(paperService.getCitations(s).size());
     }
-    tmpPapers.sort(Comparator.comparingInt(a -> -a.getReferences().size()));
+    tmpPapers.sort(Comparator.comparingInt(a -> -a));
     int res = 0;
     for (int i = 0; i < tmpPapers.size(); i++) {
-      if (tmpPapers.get(i).getReferences().size() > i) {
+      if (tmpPapers.get(i) > i) {
         res = i + 1;
       } else {
         break;
@@ -55,12 +55,29 @@ public class TaskImpactAnalysisServiceImpl
   @Override
   public double getPaperImpact(String id) {
     IPaper p = paperService.getPaper(id);
+    if (isEmptyPaper(p)) return -1;
+    int size = paperService.getCitations(id).size();
     return Double.parseDouble(
       String.format(
         "%.2f",
-        p.getReferences().size() *
-        impactFactors.getOrDefault(p.getPublication(), 0d)
+        size * impactFactors.getOrDefault(p.getPublication(), 1d)
       )
     );
+  }
+
+  public String test() {
+    IPaper p = paperService.getPaper("f9e5a809fc0e03c3dd75d87e6b6f05bf");
+    System.out.println(p.getAbs());
+    IResearcher r = researcherService.getResearcherById("IEEE_37317862200");
+    System.out.println(r.getName());
+    return p.getTitle() + " " + r.getName();
+  }
+
+  private boolean isEmptyResearcher(IResearcher r) {
+    return r.getId() == null;
+  }
+
+  private boolean isEmptyPaper(IPaper p) {
+    return p.getId() == null;
   }
 }

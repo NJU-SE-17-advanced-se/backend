@@ -20,4 +20,10 @@ public class IAffiliation {
   private List<String> papers;
 
   private List<String> domains;
+
+  public IAffiliation(IAffiliationBasic iab) {
+    id = iab.getId();
+    name = iab.getName();
+    description = iab.getDescription();
+  }
 }
