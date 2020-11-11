@@ -29,8 +29,9 @@ public class TaskImpactAnalysisController {
   public double getPaperImpact(@PathVariable String id) {
     return service.getPaperImpact(id);
   }
-  //  @GetMapping(value = "")
-  //  public int test() {
-  //    return 4396;
-  //  }
+
+  @GetMapping(value = "")
+  public String test() {
+    return service.test();
+  }
 }

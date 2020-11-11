@@ -20,9 +20,6 @@ public class TaskImpactAnalysisServiceTest {
   @MockBean
   ResearcherService researcherService;
 
-  @MockBean
-  CitationService citationService;
-
   @Autowired
   TaskImpactAnalysisService service;
 
@@ -34,35 +31,47 @@ public class TaskImpactAnalysisServiceTest {
   public void testGetHIndex1() {
     IPaper p1 = mock(IPaper.class);
     p1.setId("1");
+    Mockito.when(p1.getId()).thenReturn("1");
     IPaper p2 = mock(IPaper.class);
     p2.setId("2");
+    Mockito.when(p2.getId()).thenReturn("2");
     IPaper p3 = mock(IPaper.class);
     p3.setId("3");
+    Mockito.when(p3.getId()).thenReturn("3");
     IPaper p4 = mock(IPaper.class);
     p4.setId("4");
+    Mockito.when(p4.getId()).thenReturn("4");
     IPaper p5 = mock(IPaper.class);
     p5.setId("5");
+    Mockito.when(p5.getId()).thenReturn("5");
     IPaper p6 = mock(IPaper.class);
     p6.setId("6");
+    Mockito.when(p6.getId()).thenReturn("6");
     IPaper p7 = mock(IPaper.class);
     p7.setId("7");
+    Mockito.when(p7.getId()).thenReturn("7");
     IPaper p8 = mock(IPaper.class);
     p8.setId("8");
+    Mockito.when(p8.getId()).thenReturn("8");
     Mockito
-      .when(p1.getReferences())
+      .when(paperService.getCitations("1"))
       .thenReturn(Arrays.asList("1", "2", "3", "4"));
-    Mockito.when(p2.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito.when(p3.getReferences()).thenReturn(Arrays.asList("1"));
     Mockito
-      .when(p4.getReferences())
+      .when(paperService.getCitations("2"))
+      .thenReturn(Arrays.asList("1", "2", "3"));
+    Mockito.when(paperService.getCitations("3")).thenReturn(Arrays.asList("1"));
+    Mockito
+      .when(paperService.getCitations("4"))
       .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7"));
-    Mockito.when(p5.getReferences()).thenReturn(Arrays.asList());
-    Mockito.when(p6.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
+    Mockito.when(paperService.getCitations("5")).thenReturn(Arrays.asList());
     Mockito
-      .when(p7.getReferences())
+      .when(paperService.getCitations("6"))
+      .thenReturn(Arrays.asList("1", "2", "3"));
+    Mockito
+      .when(paperService.getCitations("7"))
       .thenReturn(Arrays.asList("1", "2", "3", "4", "5"));
     Mockito
-      .when(p8.getReferences())
+      .when(paperService.getCitations("8"))
       .thenReturn(Arrays.asList("1", "2", "3", "4"));
     IResearcher r = mock(IResearcher.class);
     r.setId("rid");
@@ -85,23 +94,30 @@ public class TaskImpactAnalysisServiceTest {
   public void testGetHIndex2() {
     IPaper p1 = mock(IPaper.class);
     p1.setId("1");
+    Mockito.when(p1.getId()).thenReturn("1");
     IPaper p2 = mock(IPaper.class);
     p2.setId("2");
+    Mockito.when(p2.getId()).thenReturn("2");
     IPaper p3 = mock(IPaper.class);
     p3.setId("3");
+    Mockito.when(p3.getId()).thenReturn("3");
     IPaper p4 = mock(IPaper.class);
     p4.setId("4");
+    Mockito.when(p4.getId()).thenReturn("4");
     IPaper p5 = mock(IPaper.class);
     p5.setId("5");
+    Mockito.when(p5.getId()).thenReturn("5");
     Mockito
-      .when(p1.getReferences())
+      .when(paperService.getCitations("1"))
       .thenReturn(Arrays.asList("1", "2", "3", "4"));
-    Mockito.when(p2.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito.when(p3.getReferences()).thenReturn(Arrays.asList("1"));
     Mockito
-      .when(p4.getReferences())
+      .when(paperService.getCitations("2"))
+      .thenReturn(Arrays.asList("1", "2", "3"));
+    Mockito.when(paperService.getCitations("3")).thenReturn(Arrays.asList("1"));
+    Mockito
+      .when(paperService.getCitations("4"))
       .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7"));
-    Mockito.when(p5.getReferences()).thenReturn(Arrays.asList());
+    Mockito.when(paperService.getCitations("5")).thenReturn(Arrays.asList());
     IResearcher r = mock(IResearcher.class);
     r.setId("rid");
     Mockito
@@ -120,20 +136,28 @@ public class TaskImpactAnalysisServiceTest {
   public void testGetPaperImpact() {
     IPaper p1 = mock(IPaper.class);
     p1.setId("1");
+    Mockito.when(p1.getId()).thenReturn("1");
     IPaper p2 = mock(IPaper.class);
     p2.setId("2");
+    Mockito.when(p2.getId()).thenReturn("2");
     IPaper p3 = mock(IPaper.class);
     p3.setId("3");
+    Mockito.when(p3.getId()).thenReturn("3");
     IPaper p4 = mock(IPaper.class);
     p4.setId("4");
+    Mockito.when(p4.getId()).thenReturn("4");
     IPaper p5 = mock(IPaper.class);
     p5.setId("5");
+    Mockito.when(p5.getId()).thenReturn("5");
     IPaper p6 = mock(IPaper.class);
     p6.setId("6");
+    Mockito.when(p6.getId()).thenReturn("6");
     IPaper p7 = mock(IPaper.class);
     p7.setId("7");
+    Mockito.when(p7.getId()).thenReturn("7");
     IPaper p8 = mock(IPaper.class);
     p8.setId("8");
+    Mockito.when(p8.getId()).thenReturn("8");
     Mockito.when(paperService.getPaper("1")).thenReturn(p1);
     Mockito.when(paperService.getPaper("2")).thenReturn(p2);
     Mockito.when(paperService.getPaper("3")).thenReturn(p3);
@@ -143,35 +167,31 @@ public class TaskImpactAnalysisServiceTest {
     Mockito.when(paperService.getPaper("7")).thenReturn(p7);
     Mockito.when(paperService.getPaper("8")).thenReturn(p8);
     Mockito
-      .when(citationService.getPaperCitations("1", "quoting"))
+      .when(paperService.getCitations("1"))
       .thenReturn(Arrays.asList("1", "2", "3", "4"));
     Mockito.when(p1.getPublication()).thenReturn("");
     Mockito
-      .when(citationService.getPaperCitations("2", "quoting"))
+      .when(paperService.getCitations("2"))
       .thenReturn(Arrays.asList("1", "2", "3"));
     Mockito.when(p2.getPublication()).thenReturn("");
-    Mockito
-      .when(citationService.getPaperCitations("3", "quoting"))
-      .thenReturn(Arrays.asList("1"));
+    Mockito.when(paperService.getCitations("3")).thenReturn(Arrays.asList("1"));
     Mockito.when(p3.getPublication()).thenReturn("");
     Mockito
-      .when(citationService.getPaperCitations("4", "quoting"))
+      .when(paperService.getCitations("4"))
       .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7"));
     Mockito.when(p4.getPublication()).thenReturn("");
-    Mockito
-      .when(citationService.getPaperCitations("5", "quoting"))
-      .thenReturn(Arrays.asList());
+    Mockito.when(paperService.getCitations("5")).thenReturn(Arrays.asList());
     Mockito.when(p5.getPublication()).thenReturn("");
     Mockito
-      .when(citationService.getPaperCitations("6", "quoting"))
+      .when(paperService.getCitations("6"))
       .thenReturn(Arrays.asList("1", "2", "3"));
     Mockito.when(p6.getPublication()).thenReturn("");
     Mockito
-      .when(citationService.getPaperCitations("7", "quoting"))
+      .when(paperService.getCitations("7"))
       .thenReturn(Arrays.asList("1", "2", "3", "4", "5"));
     Mockito.when(p7.getPublication()).thenReturn("");
     Mockito
-      .when(citationService.getPaperCitations("8", "quoting"))
+      .when(paperService.getCitations("8"))
       .thenReturn(Arrays.asList("1", "2", "3", "4"));
     Mockito.when(p8.getPublication()).thenReturn("");
 

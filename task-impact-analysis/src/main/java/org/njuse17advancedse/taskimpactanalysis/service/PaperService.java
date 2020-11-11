@@ -12,4 +12,7 @@ public interface PaperService {
   @GetMapping("/papers/{id}")
   // 根据ID获取论文
   IPaper getPaper(@PathVariable String id);
+
+  @GetMapping("papers/{id}/citations")
+  List<String> getCitations(@PathVariable String id);
 }
