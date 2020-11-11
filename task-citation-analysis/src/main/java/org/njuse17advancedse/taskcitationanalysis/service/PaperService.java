@@ -21,4 +21,7 @@ public interface PaperService {
     @RequestParam(required = false) String publication,
     @RequestParam(required = false) String date
   );
+
+  @GetMapping("papers/{id}/citations")
+  List<String> getCitations(@PathVariable String id);
 }
