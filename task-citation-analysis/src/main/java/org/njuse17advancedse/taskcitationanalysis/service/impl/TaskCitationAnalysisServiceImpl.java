@@ -21,14 +21,12 @@ public class TaskCitationAnalysisServiceImpl
   @Autowired
   private PaperService paperService;
 
-  private boolean inited = false;
-
   @Autowired
   private ResearcherService researcherService;
 
-  private Map<String, List<String>> quoted = new HashMap<>(); //被它引用的论文
-
-  private Map<String, List<String>> quoting = new HashMap<>(); //引用它的论文
+  //  private Map<String, List<String>> quoted = new HashMap<>(); //被它引用的论文
+  //
+  //  private Map<String, List<String>> quoting = new HashMap<>(); //引用它的论文
 
   // private Map<String, String> string2String;
 
@@ -43,10 +41,6 @@ public class TaskCitationAnalysisServiceImpl
   public Map<String, List<String>> getQuotingPapersByResearcherId(
     String researcherId
   ) {
-    if (!inited) {
-      init();
-      inited = true;
-    }
     Map<String, List<String>> res = new HashMap<>();
     IResearcher r = researcherService.getResearcherById(researcherId);
     if (isEmptyResearcher(r)) return res;
@@ -63,10 +57,6 @@ public class TaskCitationAnalysisServiceImpl
   public Map<String, List<String>> getQuotedPapersByResearcherId(
     String researcherId
   ) {
-    if (!inited) {
-      init();
-      inited = true;
-    }
     Map<String, List<String>> res = new HashMap<>();
     IResearcher r = researcherService.getResearcherById(researcherId);
     if (isEmptyResearcher(r)) return res;
@@ -81,11 +71,7 @@ public class TaskCitationAnalysisServiceImpl
    */
   @Override
   public List<String> getQuotingPapersByPaperId(String paperId) {
-    if (!inited) {
-      init();
-      inited = true;
-    }
-    return quoting.getOrDefault(paperId, new ArrayList<>());
+    return paperService.getCitations(paperId);
   }
 
   /**
@@ -93,21 +79,15 @@ public class TaskCitationAnalysisServiceImpl
    */
   @Override
   public List<String> getQuotedPapersByPaperId(String paperId) {
-    if (!inited) {
-      init();
-      inited = true;
-    }
-    return quoted.getOrDefault(paperId, new ArrayList<>());
+    IPaper p = paperService.getPaper(paperId);
+    if (isEmptyPaper(p)) return new ArrayList<>();
+    return p.getReferences();
   }
 
   @Override
   public Map<String, List<String>> getResearcherPaperQuotedResearcher(
     String researcherId
   ) {
-    if (!inited) {
-      init();
-      inited = true;
-    }
     Map<String, List<String>> res = new HashMap<>();
     Set<String> set;
     IResearcher r = researcherService.getResearcherById(researcherId);
@@ -132,10 +112,6 @@ public class TaskCitationAnalysisServiceImpl
   public Map<String, List<String>> getResearcherPaperQuotingResearcher(
     String researcherId
   ) {
-    if (!inited) {
-      init();
-      inited = true;
-    }
     Map<String, List<String>> res = new HashMap<>();
     Set<String> set;
     IResearcher r = researcherService.getResearcherById(researcherId);
@@ -158,10 +134,6 @@ public class TaskCitationAnalysisServiceImpl
 
   @Override
   public List<String> getResearcherQuotedResearcher(String researcherId) {
-    if (!inited) {
-      init();
-      inited = true;
-    }
     Set<String> set = new HashSet<>();
     IResearcher r = researcherService.getResearcherById(researcherId);
     if (isEmptyResearcher(r)) return new ArrayList<>();
@@ -182,10 +154,6 @@ public class TaskCitationAnalysisServiceImpl
 
   @Override
   public List<String> getResearcherQuotingResearcher(String researcherId) {
-    if (!inited) {
-      init();
-      inited = true;
-    }
     Set<String> set = new HashSet<>();
     IResearcher r = researcherService.getResearcherById(researcherId);
     if (isEmptyResearcher(r)) return new ArrayList<>();
@@ -207,10 +175,6 @@ public class TaskCitationAnalysisServiceImpl
   //某论文引用了哪些学者
   @Override
   public List<String> getPaperQuotedResearcher(String paperId) {
-    if (!inited) {
-      init();
-      inited = true;
-    }
     Set<String> set = new HashSet<>();
     IPaper p = paperService.getPaper(paperId);
     if (isEmptyPaper(p)) return new ArrayList<>();
@@ -225,10 +189,6 @@ public class TaskCitationAnalysisServiceImpl
 
   //某论文被哪些学者引用
   public List<String> getPaperQuotingResearcher(String paperId) {
-    if (!inited) {
-      init();
-      inited = true;
-    }
     Set<String> set = new HashSet<>();
     IPaper p = paperService.getPaper(paperId);
     if (isEmptyPaper(p)) return new ArrayList<>();
@@ -246,10 +206,6 @@ public class TaskCitationAnalysisServiceImpl
     String researcherId1,
     String researcherId2
   ) {
-    if (!inited) {
-      init();
-      inited = true;
-    }
     IResearcher researcher1 = researcherService.getResearcherById(
       researcherId1
     );
@@ -276,42 +232,43 @@ public class TaskCitationAnalysisServiceImpl
     return res;
   }
 
-  @Override
-  public void init() {
-    List<String> paperids = paperService.getPapers(null, null, null);
-    //String cnt=0;
-    quoted = new HashMap<>();
-    quoting = new HashMap<>();
-    int count = 0;
-    for (String id : paperids) {
-      //            string2String.put(id,cnt);
-      //            String2String.put(cnt,id);
-      System.out.println(count++);
-      IPaper paper = paperService.getPaper(id);
-      if (!isEmptyPaper(paper)) {
-        List<String> quotedIds = paper.getReferences();
-        for (String s : quotedIds) {
-          put(quoted, id, s);
-          put(quoting, s, id);
-        }
-      } else {
-        System.out.println(id);
-      }
-    }
-    inited = true;
-    //        var tmp=ScalaObject.getQuotingIDS((scala.collection.immutable.List<Paper>) papers);
-    //        var tmpQuoted=(Map<String,List<String>>)tmp._1;
-  }
-
-  void put(Map<String, List<String>> map, String id, String s) {
-    if (!map.containsKey(id)) {
-      List<String> tmp = new ArrayList<>();
-      tmp.add(s);
-      map.put(id, tmp);
-    } else {
-      map.get(id).add(s);
-    }
-  }
+  //
+  //  @Override
+  //  public void init() {
+  //    List<String> paperids = paperService.getPapers(null, null, null);
+  //    //String cnt=0;
+  //    quoted = new HashMap<>();
+  //    quoting = new HashMap<>();
+  //    int count = 0;
+  //    for (String id : paperids) {
+  //      //            string2String.put(id,cnt);
+  //      //            String2String.put(cnt,id);
+  //      System.out.println(count++);
+  //      IPaper paper = paperService.getPaper(id);
+  //      if (!isEmptyPaper(paper)) {
+  //        List<String> quotedIds = paper.getReferences();
+  //        for (String s : quotedIds) {
+  //          put(quoted, id, s);
+  //          put(quoting, s, id);
+  //        }
+  //      } else {
+  //        System.out.println(id);
+  //      }
+  //    }
+  //    inited = true;
+  //    //        var tmp=ScalaObject.getQuotingIDS((scala.collection.immutable.List<Paper>) papers);
+  //    //        var tmpQuoted=(Map<String,List<String>>)tmp._1;
+  //  }
+  //
+  //  void put(Map<String, List<String>> map, String id, String s) {
+  //    if (!map.containsKey(id)) {
+  //      List<String> tmp = new ArrayList<>();
+  //      tmp.add(s);
+  //      map.put(id, tmp);
+  //    } else {
+  //      map.get(id).add(s);
+  //    }
+  //  }
 
   //    @Override
   //    public String test(){
