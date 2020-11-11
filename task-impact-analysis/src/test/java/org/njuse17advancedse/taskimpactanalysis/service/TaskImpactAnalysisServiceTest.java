@@ -75,6 +75,7 @@ public class TaskImpactAnalysisServiceTest {
       .thenReturn(Arrays.asList("1", "2", "3", "4"));
     IResearcher r = mock(IResearcher.class);
     r.setId("rid");
+    Mockito.when(r.getId()).thenReturn("rid");
     Mockito
       .when(r.getPapers())
       .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8"));
@@ -120,6 +121,7 @@ public class TaskImpactAnalysisServiceTest {
     Mockito.when(paperService.getCitations("5")).thenReturn(Arrays.asList());
     IResearcher r = mock(IResearcher.class);
     r.setId("rid");
+    Mockito.when(r.getId()).thenReturn("rid");
     Mockito
       .when(r.getPapers())
       .thenReturn(Arrays.asList("1", "2", "3", "4", "5"));
