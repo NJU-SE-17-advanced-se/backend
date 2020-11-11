@@ -1,6 +1,7 @@
 package org.njuse17advancedse.taskreviewerrecommendation.serviceImp;
 
 import java.util.*;
+import org.apache.tomcat.jni.Time;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.*;
 import org.njuse17advancedse.taskreviewerrecommendation.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,6 @@ public class TaskReviewerRecommendationServiceImp
     if (iPaperUpload != null) {
       /* 第一步，获得引用文献的作者 */
       List<String> references = iPaperUpload.getReferenceIds(); //默认获得的引用文献中所有的作者实体均已处理完成
-
       List<String> referenceResearcherIds = getResearcherIdsByPaperIds(
         references
       );
@@ -116,8 +116,10 @@ public class TaskReviewerRecommendationServiceImp
    * @param researcherIds 作者列表
    */
   private List<String> sortResearchersByImpact(List<String> researcherIds) {
-    List<Double> impacts = new ArrayList<>();
+    List<Integer> impacts = new ArrayList<>();
     try {
+      //impacts = taskImpactAnalysisService.getImpactsByRids(researcherIds);
+      //System.out.println(impacts);
       for (String researcherId : researcherIds) {
         impacts.add(
           taskImpactAnalysisService.getImpactByResearcherId(researcherId)
@@ -126,11 +128,11 @@ public class TaskReviewerRecommendationServiceImp
     } catch (Exception e) {
       e.printStackTrace();
     }
-    HashMap<String, Double> map = new HashMap<>();
+    HashMap<String, Integer> map = new HashMap<>();
     for (int i = 0; i < researcherIds.size(); i++) {
       map.put(researcherIds.get(i), impacts.get(i));
     }
-    researcherIds.sort((o1, o2) -> (int) (map.get(o2) - map.get(o1)));
+    researcherIds.sort((o1, o2) -> (map.get(o2) - map.get(o1)));
     if (researcherIds.size() > 5) {
       researcherIds = researcherIds.subList(0, 5);
     }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "task-partnership-analysis")
 public interface PartnershipAnalysisService {
   // 合作关系分析
-  @GetMapping(value = "/partnership/partners-net/{id}")
+  @GetMapping(value = "/partnership/{id}/partners-net")
   IResearcherNet getPartnership(
     @PathVariable String id,
     @RequestParam String start,
@@ -18,6 +18,6 @@ public interface PartnershipAnalysisService {
   );
 
   // 合作关系分析预测
-  @GetMapping(value = "/partnership/potential-partners/{id}")
+  @GetMapping(value = "/partnership/{id}/potential-partners")
   Map<String, Double> getPotentialPartners(@PathVariable String id);
 }
