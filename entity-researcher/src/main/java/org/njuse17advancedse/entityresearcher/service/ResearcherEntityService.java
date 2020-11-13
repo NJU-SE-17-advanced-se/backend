@@ -2,15 +2,10 @@ package org.njuse17advancedse.entityresearcher.service;
 
 import com.sun.istack.Nullable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
-import org.njuse17advancedse.entityresearcher.entity.JpaAffiliation;
-import org.njuse17advancedse.entityresearcher.entity.JpaDomain;
 import org.njuse17advancedse.entityresearcher.entity.JpaPaper;
-import org.njuse17advancedse.entityresearcher.entity.JpaResearcher;
 import org.njuse17advancedse.entityresearcher.repository.ResearcherRepository;
 import org.springframework.stereotype.Service;
 
@@ -30,28 +25,7 @@ public class ResearcherEntityService {
   public IResearcher getResearcherById(String id) {
     IResearcher iResearcher = new IResearcher();
     try {
-      JpaResearcher jpaResearcher = researcherRepository.findResearcherById(id);
-      if (jpaResearcher.getPapers() != null) {
-        List<String> papers = jpaResearcher
-          .getPapers()
-          .stream()
-          .map(JpaPaper::getId)
-          .collect(Collectors.toList());
-        List<String> domains = getDomains(jpaResearcher);
-        iResearcher.setId(jpaResearcher.getId());
-        iResearcher.setName(jpaResearcher.getName());
-        if (jpaResearcher.getAffiliations() != null) {
-          iResearcher.setAffiliation(
-            jpaResearcher
-              .getAffiliations()
-              .stream()
-              .map(JpaAffiliation::getId)
-              .collect(Collectors.toList())
-          );
-        }
-        iResearcher.setPapers(papers);
-        iResearcher.setDomains(domains);
-      }
+      iResearcher = researcherRepository.getResearcherById(id);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -72,18 +46,7 @@ public class ResearcherEntityService {
   ) {
     List<String> papers = new ArrayList<>();
     try {
-      JpaResearcher jpaResearcher = researcherRepository.findResearcherById(
-        rid
-      );
-      if (jpaResearcher != null) {
-        List<JpaPaper> paperList = jpaResearcher.getPapers();
-
-        for (JpaPaper paper : paperList) {
-          if (isInTime(start, end, paper)) {
-            papers.add(paper.getId());
-          }
-        }
-      }
+      papers = researcherRepository.findPapers(rid, start, end);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -104,26 +67,7 @@ public class ResearcherEntityService {
   ) {
     List<String> domains = new ArrayList<>();
     try {
-      JpaResearcher jpaResearcher = researcherRepository.findResearcherById(
-        rid
-      );
-      if (jpaResearcher != null) {
-        List<JpaPaper> paperList = jpaResearcher.getPapers();
-        for (JpaPaper paper : paperList) {
-          if (isInTime(start, end, paper)) {
-            domains.addAll(
-              paper
-                .getDomains()
-                .stream()
-                .map(JpaDomain::getId)
-                .collect(Collectors.toList())
-            );
-          }
-        }
-      }
-      HashSet<String> hashSet = new HashSet<>(domains);
-      domains.clear();
-      domains.addAll(hashSet);
+      domains = researcherRepository.findDomains(rid, start, end);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -159,61 +103,11 @@ public class ResearcherEntityService {
   public IResearcherBasic getResearcherBasicById(String id) {
     IResearcherBasic iResearcherBasic = new IResearcherBasic();
     try {
-      JpaResearcher jpaResearcher = researcherRepository.findResearcherById(id);
-      if (jpaResearcher.getPapers() != null) {
-        List<JpaPaper> jpaPapers = jpaResearcher.getPapers();
-        List<String> papers = new ArrayList<>();
-        jpaPapers.sort((o1, o2) -> o2.getCitation() - o1.getCitation());
-        if (jpaPapers.size() <= 5) {
-          for (JpaPaper jpaPaper : jpaPapers) {
-            papers.add(jpaPaper.getId());
-          }
-        } else {
-          for (int i = 0; i < 5; i++) {
-            papers.add(jpaPapers.get(i).getId());
-          }
-        }
-        List<String> domains = getDomains(jpaResearcher);
-        iResearcherBasic.setId(jpaResearcher.getId());
-        iResearcherBasic.setName(jpaResearcher.getName());
-        if (jpaResearcher.getAffiliations() != null) {
-          iResearcherBasic.setAffiliation(
-            jpaResearcher
-              .getAffiliations()
-              .stream()
-              .map(JpaAffiliation::getId)
-              .collect(Collectors.toList())
-          );
-        }
-        iResearcherBasic.setPapers(papers);
-        iResearcherBasic.setDomains(domains);
-      }
+      iResearcherBasic = researcherRepository.getResearcherBasic(id);
     } catch (Exception e) {
       e.printStackTrace();
     }
     return iResearcherBasic;
-  }
-
-  /**
-   * 获得领域列表
-   * @param jpaResearcher 作者实体
-   * @return 领域id列表
-   */
-  private List<String> getDomains(JpaResearcher jpaResearcher) {
-    List<String> domains = new ArrayList<>();
-    for (JpaPaper jpaPaper : jpaResearcher.getPapers()) {
-      domains.addAll(
-        jpaPaper
-          .getDomains()
-          .stream()
-          .map(JpaDomain::getId)
-          .collect(Collectors.toList())
-      );
-    }
-    HashSet<String> hashSet = new HashSet<>(domains);
-    domains.clear();
-    domains.addAll(hashSet);
-    return domains;
   }
 
   /**
