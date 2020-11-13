@@ -10,14 +10,19 @@ import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
 import org.njuse17advancedse.entityresearcher.service.ResearcherEntityService;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = { "学者实体" })
+@Api(tags = { "学者" })
 @RequestMapping("/researchers")
 @RestController
 public class ResearcherController {
   private final ResearcherEntityService researcherEntityService;
 
-  public ResearcherController(ResearcherEntityService researcherEntityService) {
-    this.researcherEntityService = researcherEntityService;
+  @ApiOperation("根据查询条件查询满足条件的学者 id")
+  @GetMapping("")
+  public List<String> getResearchersByCond(
+    @ApiParam(value = "查询关键词") @RequestParam String keyword,
+    @ApiParam(value = "页数") @RequestParam int page
+  ) {
+    return new ArrayList<>();
   }
 
   @ApiOperation("根据 id 获取学者详细信息")
@@ -79,5 +84,9 @@ public class ResearcherController {
     ) String end
   ) {
     return researcherEntityService.getAffiliationByRid(id, start, end);
+  }
+
+  public ResearcherController(ResearcherEntityService researcherEntityService) {
+    this.researcherEntityService = researcherEntityService;
   }
 }

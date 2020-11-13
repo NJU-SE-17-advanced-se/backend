@@ -3,21 +3,28 @@ package org.njuse17advancedse.entitydomain.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entitydomain.dto.IDomain;
 import org.njuse17advancedse.entitydomain.dto.IDomainBasic;
 import org.njuse17advancedse.entitydomain.service.DomainService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api(tags = { "领域" })
 @RequestMapping("/domains")
 @RestController
 public class DomainController {
   private final DomainService service;
+
+  @ApiOperation("根据查询条件查询满足条件的领域 id")
+  @GetMapping("")
+  public List<String> getDomainsByCond(
+    @ApiParam(value = "查询关键词") @RequestParam String keyword,
+    @ApiParam(value = "页数") @RequestParam int page
+  ) {
+    return new ArrayList<>();
+  }
 
   @ApiOperation("根据 id 获取某领域信息")
   @GetMapping("/{id}")

@@ -3,20 +3,27 @@ package org.njuse17advancedse.entityaffiliation.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliation;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliationBasic;
 import org.njuse17advancedse.entityaffiliation.service.AffiliationService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api(tags = { "机构" })
 @RequestMapping("/affiliations")
 @RestController
 public class AffiliationController {
   private final AffiliationService service;
+
+  @ApiOperation("根据查询条件查询满足条件的机构 id")
+  @GetMapping("")
+  public List<String> getAffiliationsByCond(
+    @ApiParam(value = "查询关键词") @RequestParam String keyword,
+    @ApiParam(value = "页数") @RequestParam int page
+  ) {
+    return new ArrayList<>();
+  }
 
   @ApiOperation("根据机构 id 获取机构详细信息")
   @GetMapping("/{id}")

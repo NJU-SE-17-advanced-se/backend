@@ -1,17 +1,35 @@
 package org.njuse17advancedse.entitypaper.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entitypaper.dto.IPaper;
 import org.njuse17advancedse.entitypaper.dto.IPaperBasic;
 import org.njuse17advancedse.entitypaper.service.PaperService;
 import org.springframework.web.bind.annotation.*;
 
+@Api(tags = { "论文" })
 @RequestMapping("/papers")
 @RestController
 public class PaperController {
   private final PaperService service;
+
+  @ApiOperation("根据查询条件查询满足条件的论文 id")
+  @GetMapping("")
+  public List<String> getPapersByCond(
+    @ApiParam(value = "查询关键词") @RequestParam String keyword,
+    @ApiParam("开始年份，形如'2020'") @RequestParam(
+      required = false
+    ) String start,
+    @ApiParam("结束年份，形如'2020'") @RequestParam(
+      required = false
+    ) String end,
+    @ApiParam(value = "页数") @RequestParam int page
+  ) {
+    return new ArrayList<>();
+  }
 
   @ApiOperation("根据 id 获取论文详细信息")
   @GetMapping("/{id}")
@@ -25,20 +43,6 @@ public class PaperController {
     @ApiParam("论文 id") @PathVariable String id
   ) {
     return service.getPaperBasicInfo(id);
-  }
-
-  @ApiOperation(
-    value = "根据其他查询条件获取论文 id",
-    notes = "如果没有任何查询条件，返回全部论文 id"
-  )
-  @GetMapping("")
-  // TODO: 分页
-  public List<String> getPapers(
-    @ApiParam("学者信息") @RequestParam(required = false) String researcher,
-    @ApiParam("出版物信息") @RequestParam(required = false) String publication,
-    @ApiParam("年份") @RequestParam(required = false) String date
-  ) {
-    return service.getPapers(researcher, publication, date);
   }
 
   @ApiOperation("根据 id 获取论文所属领域")
