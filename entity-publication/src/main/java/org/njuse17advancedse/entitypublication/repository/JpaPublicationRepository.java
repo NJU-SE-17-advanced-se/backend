@@ -1,9 +1,11 @@
 package org.njuse17advancedse.entitypublication.repository;
 
 import com.sun.istack.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import org.njuse17advancedse.entitypublication.entity.JpaPublication;
+import org.njuse17advancedse.entitypublication.dto.IPublication;
+import org.njuse17advancedse.entitypublication.dto.IPublicationBasic;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -15,8 +17,91 @@ public class JpaPublicationRepository implements PublicationRepository {
   }
 
   @Override
-  public JpaPublication findPublicationById(String id) {
-    return entityManager.find(JpaPublication.class, id);
+  public IPublication findPublication(String id) {
+    IPublication iPublication = new IPublication();
+    String sql;
+    try {
+      sql = "select p.name from publication p where p.id=:id";
+      String name = entityManager
+        .createQuery(sql, String.class)
+        .setParameter("id", id)
+        .getSingleResult();
+      sql = "select p.publicationDate from publication p where p.id=:id";
+      Integer publicationDate = entityManager
+        .createQuery(sql, Integer.class)
+        .setParameter("id", id)
+        .getSingleResult();
+      sql = "select p.impact from publication p where p.id=:id";
+      Double impact = entityManager
+        .createQuery(sql, Double.class)
+        .setParameter("id", id)
+        .getSingleResult();
+      iPublication.setId(id);
+      iPublication.setName(name);
+      iPublication.setPublicationDate(publicationDate + "");
+      iPublication.setImpact(impact);
+      sql = "select p.id from paper p where p.publication.id = :id";
+      List<String> papers = entityManager
+        .createQuery(sql, String.class)
+        .setParameter("id", id)
+        .getResultList();
+      if (papers != null) iPublication.setPapers(papers);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return iPublication;
+  }
+
+  @Override
+  public IPublicationBasic findPublicationBasic(String id) {
+    IPublicationBasic iPublicationBasic = new IPublicationBasic();
+    String sql;
+    try {
+      sql = "select p.name from publication p where p.id=:id";
+      String name = entityManager
+        .createQuery(sql, String.class)
+        .setParameter("id", id)
+        .getSingleResult();
+      sql = "select p.publicationDate from publication p where p.id=:id";
+      Integer publicationDate = entityManager
+        .createQuery(sql, Integer.class)
+        .setParameter("id", id)
+        .getSingleResult();
+      iPublicationBasic.setId(id);
+      iPublicationBasic.setName(name);
+      iPublicationBasic.setPublicationDate(publicationDate + "");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return iPublicationBasic;
+  }
+
+  @Override
+  public List<String> getPapers(String id, String start, String end) {
+    int startDate = 0;
+    int endDate = 9999;
+    String sql;
+    List<String> papers = new ArrayList<>();
+    try {
+      if (start != null) {
+        startDate = Integer.parseInt(start);
+      }
+      if (end != null) {
+        endDate = Integer.parseInt(end);
+      }
+      sql =
+        "select p.id from paper p where p.publication.id = :id and p.publicationDate between :start and :end";
+      papers =
+        entityManager
+          .createQuery(sql, String.class)
+          .setParameter("id", id)
+          .setParameter("start", startDate)
+          .setParameter("end", endDate)
+          .getResultList();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return papers;
   }
 
   @Override

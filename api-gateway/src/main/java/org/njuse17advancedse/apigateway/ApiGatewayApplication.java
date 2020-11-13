@@ -3,12 +3,10 @@ package org.njuse17advancedse.apigateway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
-import springfox.documentation.oas.annotations.EnableOpenApi;
+import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 
 @EnableEurekaClient
-@EnableFeignClients
-@EnableOpenApi
+@EnableZuulProxy
 @SpringBootApplication
 public class ApiGatewayApplication {
 
