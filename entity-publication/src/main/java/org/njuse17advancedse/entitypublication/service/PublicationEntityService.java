@@ -3,11 +3,8 @@ package org.njuse17advancedse.entitypublication.service;
 import com.sun.istack.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.njuse17advancedse.entitypublication.dto.IPublication;
 import org.njuse17advancedse.entitypublication.dto.IPublicationBasic;
-import org.njuse17advancedse.entitypublication.entity.JpaPaper;
-import org.njuse17advancedse.entitypublication.entity.JpaPublication;
 import org.njuse17advancedse.entitypublication.repository.PublicationRepository;
 import org.springframework.stereotype.Service;
 
@@ -27,22 +24,7 @@ public class PublicationEntityService {
   public IPublication getPublicationById(String id) {
     IPublication iPublication = new IPublication();
     try {
-      JpaPublication jpaPublication = publicationRepository.findPublicationById(
-        id
-      );
-      iPublication.setId(jpaPublication.getId());
-      iPublication.setName(jpaPublication.getName());
-      iPublication.setImpact(jpaPublication.getImpact());
-      iPublication.setPublicationDate(jpaPublication.getPublicationDate() + "");
-      if (jpaPublication.getPapers() != null) {
-        iPublication.setPapers(
-          jpaPublication
-            .getPapers()
-            .stream()
-            .map(JpaPaper::getId)
-            .collect(Collectors.toList())
-        );
-      }
+      iPublication = publicationRepository.findPublication(id);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -78,28 +60,7 @@ public class PublicationEntityService {
   ) {
     List<String> papers = new ArrayList<>();
     try {
-      int startTime = 0;
-      int endTime = 9999;
-      if (start != null) {
-        startTime = Integer.parseInt(start);
-      }
-      if (end != null) {
-        endTime = Integer.parseInt(end);
-      }
-      JpaPublication jpaPublication = publicationRepository.findPublicationById(
-        id
-      );
-      List<JpaPaper> jpaPapers = jpaPublication.getPapers();
-      if (jpaPapers != null) {
-        for (JpaPaper jpaPaper : jpaPapers) {
-          if (
-            jpaPaper.getPublicationDate() >= startTime &&
-            jpaPaper.getPublicationDate() <= endTime
-          ) {
-            papers.add(jpaPaper.getId());
-          }
-        }
-      }
+      papers = publicationRepository.getPapers(id, start, end);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -114,16 +75,7 @@ public class PublicationEntityService {
   public IPublicationBasic getIPublicationBasic(String id) {
     IPublicationBasic iPublicationBasic = new IPublicationBasic();
     try {
-      JpaPublication jpaPublication = publicationRepository.findPublicationById(
-        id
-      );
-      if (jpaPublication != null) {
-        iPublicationBasic.setId(jpaPublication.getId());
-        iPublicationBasic.setName(jpaPublication.getName());
-        iPublicationBasic.setPublicationDate(
-          jpaPublication.getPublicationDate() + ""
-        );
-      }
+      iPublicationBasic = publicationRepository.findPublicationBasic(id);
     } catch (Exception e) {
       e.printStackTrace();
     }
