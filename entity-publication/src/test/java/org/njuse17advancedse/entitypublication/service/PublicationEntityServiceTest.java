@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.njuse17advancedse.entitypublication.dto.IPublication;
+import org.njuse17advancedse.entitypublication.dto.IPublicationBasic;
 import org.njuse17advancedse.entitypublication.entity.JpaDomain;
 import org.njuse17advancedse.entitypublication.entity.JpaPaper;
 import org.njuse17advancedse.entitypublication.entity.JpaPublication;
@@ -28,8 +30,8 @@ class PublicationEntityServiceTest {
 
   @Test
   void getPublicationById() {
-    JpaPublication jpaPublication = new JpaPublication();
-    jpaPublication.setName("test");
+    IPublication iPublication = new IPublication();
+    iPublication.setName("test");
     JpaPaper jpaPaper1 = new JpaPaper();
     jpaPaper1.setId("test1");
     JpaDomain jpaDomain1 = new JpaDomain();
@@ -43,11 +45,11 @@ class PublicationEntityServiceTest {
     jpaDomain2.setName("domain2");
     jpaPaper2.setDomains(Lists.newArrayList(jpaDomain2));
     jpaPaper2.setPublicationDate(2020);
-    jpaPublication.setPapers(Lists.newArrayList(jpaPaper1, jpaPaper2));
+    iPublication.setPapers(Lists.newArrayList("test1", "test2"));
 
     Mockito
-      .when(publicationRepository.findPublicationById("test"))
-      .thenReturn(jpaPublication);
+      .when(publicationRepository.findPublication("test"))
+      .thenReturn(iPublication);
     assertEquals(
       publicationEntityService.getPublicationById("test").getName(),
       "test"
@@ -73,8 +75,8 @@ class PublicationEntityServiceTest {
 
   @Test
   void getPapersByIdOrTimeRange() {
-    JpaPublication jpaPublication = new JpaPublication();
-    jpaPublication.setName("test");
+    IPublication iPublication = new IPublication();
+    iPublication.setName("test");
     JpaPaper jpaPaper1 = new JpaPaper();
     jpaPaper1.setId("test1");
     JpaDomain jpaDomain1 = new JpaDomain();
@@ -88,10 +90,10 @@ class PublicationEntityServiceTest {
     jpaDomain2.setName("domain2");
     jpaPaper2.setDomains(Lists.newArrayList(jpaDomain2));
     jpaPaper2.setPublicationDate(2020);
-    jpaPublication.setPapers(Lists.newArrayList(jpaPaper1, jpaPaper2));
+    iPublication.setPapers(Lists.newArrayList("test1", "test2"));
     Mockito
-      .when(publicationRepository.findPublicationById("test"))
-      .thenReturn(jpaPublication);
+      .when(publicationRepository.getPapers("test", "2019", "2022"))
+      .thenReturn(Lists.newArrayList("test2"));
     assertEquals(
       publicationEntityService.getPapersByIdOrTimeRange("test", "2019", "2022"),
       Lists.newArrayList("test2")
@@ -100,19 +102,11 @@ class PublicationEntityServiceTest {
 
   @Test
   void getIPublicationBasic() {
-    JpaPublication jpaPublication = new JpaPublication();
-    jpaPublication.setName("test3");
-    JpaPaper jpaPaper1 = new JpaPaper();
-    jpaPaper1.setId("test1");
-    JpaDomain jpaDomain1 = new JpaDomain();
-    jpaDomain1.setName("domain1");
-    jpaPaper1.setDomains(Lists.newArrayList(jpaDomain1));
-    jpaPaper1.setPublicationDate(2018);
-    jpaPublication.setPapers(Lists.newArrayList(jpaPaper1));
-
+    IPublicationBasic iPublicationBasic = new IPublicationBasic();
+    iPublicationBasic.setName("test3");
     Mockito
-      .when(publicationRepository.findPublicationById("test"))
-      .thenReturn(jpaPublication);
+      .when(publicationRepository.findPublicationBasic("test"))
+      .thenReturn(iPublicationBasic);
     assertEquals(
       publicationEntityService.getIPublicationBasic("test").getName(),
       "test3"
