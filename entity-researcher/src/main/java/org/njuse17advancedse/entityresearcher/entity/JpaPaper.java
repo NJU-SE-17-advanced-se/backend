@@ -24,7 +24,7 @@ public class JpaPaper {
   private String publicationId;
 
   @Column(name = "publication_date")
-  private String publicationDate;
+  private int publicationDate;
 
   @Column(name = "link")
   private String link;

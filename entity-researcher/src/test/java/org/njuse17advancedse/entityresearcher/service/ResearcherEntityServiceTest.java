@@ -55,14 +55,14 @@ class ResearcherEntityServiceTest {
     JpaDomain jpaDomain1 = new JpaDomain();
     jpaDomain1.setId("domain1");
     jpaPaper1.setDomains(Lists.newArrayList(jpaDomain1));
-    jpaPaper1.setPublicationDate("2018");
+    jpaPaper1.setPublicationDate(2018);
 
     JpaPaper jpaPaper2 = new JpaPaper();
     jpaPaper2.setId("test1");
     JpaDomain jpaDomain2 = new JpaDomain();
     jpaDomain2.setId("domain2");
     jpaPaper2.setDomains(Lists.newArrayList(jpaDomain2));
-    jpaPaper2.setPublicationDate("2020");
+    jpaPaper2.setPublicationDate(2020);
 
     jpaResearcher.setPapers(Lists.newArrayList(jpaPaper1, jpaPaper2));
     jpaResearcher.setName("ycj");
@@ -84,14 +84,14 @@ class ResearcherEntityServiceTest {
     JpaDomain jpaDomain1 = new JpaDomain();
     jpaDomain1.setId("domain1");
     jpaPaper1.setDomains(Lists.newArrayList(jpaDomain1));
-    jpaPaper1.setPublicationDate("2018");
+    jpaPaper1.setPublicationDate(2018);
 
     JpaPaper jpaPaper2 = new JpaPaper();
     jpaPaper2.setId("test1");
     JpaDomain jpaDomain2 = new JpaDomain();
     jpaDomain2.setId("domain2");
     jpaPaper2.setDomains(Lists.newArrayList(jpaDomain2));
-    jpaPaper2.setPublicationDate("2020");
+    jpaPaper2.setPublicationDate(2020);
 
     jpaResearcher.setPapers(Lists.newArrayList(jpaPaper1, jpaPaper2));
     Mockito

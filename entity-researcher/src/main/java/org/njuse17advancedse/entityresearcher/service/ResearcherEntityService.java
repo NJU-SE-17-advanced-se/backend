@@ -109,34 +109,4 @@ public class ResearcherEntityService {
     }
     return iResearcherBasic;
   }
-
-  /**
-   * 判断是否在时间内
-   * @param start 开始时间
-   * @param end 结束时间
-   * @param paper 论文实体
-   * @return true or false
-   */
-  private boolean isInTime(
-    @Nullable String start,
-    @Nullable String end,
-    JpaPaper paper
-  ) {
-    boolean betweenDate = true;
-    if (start != null) {
-      if (
-        Integer.parseInt(paper.getPublicationDate()) < Integer.parseInt(start)
-      ) {
-        betweenDate = false;
-      }
-    }
-    if (end != null) {
-      if (
-        Integer.parseInt(paper.getPublicationDate()) > Integer.parseInt(end)
-      ) {
-        betweenDate = false;
-      }
-    }
-    return betweenDate;
-  }
 }
