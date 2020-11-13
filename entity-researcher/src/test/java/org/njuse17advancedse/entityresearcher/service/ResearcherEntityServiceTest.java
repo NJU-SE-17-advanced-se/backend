@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.njuse17advancedse.entityresearcher.dto.IResearcher;
+import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
 import org.njuse17advancedse.entityresearcher.entity.JpaDomain;
 import org.njuse17advancedse.entityresearcher.entity.JpaPaper;
 import org.njuse17advancedse.entityresearcher.entity.JpaResearcher;
@@ -27,18 +29,18 @@ class ResearcherEntityServiceTest {
 
   @Test
   void getResearcherById() {
-    JpaResearcher jpaResearcher = new JpaResearcher();
+    IResearcher iResearcher = new IResearcher();
     JpaPaper jpaPaper = new JpaPaper();
     jpaPaper.setId("test");
     JpaDomain jpaDomain = new JpaDomain();
     jpaDomain.setId("domain1");
     jpaPaper.setDomains(Lists.newArrayList(jpaDomain));
-    jpaResearcher.setPapers(Lists.newArrayList(jpaPaper));
-    jpaResearcher.setName("ycj");
-    jpaResearcher.setId("IEEE_37085391626");
+    iResearcher.setPapers(Lists.newArrayList("test"));
+    iResearcher.setName("ycj");
+    iResearcher.setId("IEEE_37085391626");
     Mockito
-      .when(researcherRepository.findResearcherById("test"))
-      .thenReturn(jpaResearcher);
+      .when(researcherRepository.getResearcherById("test"))
+      .thenReturn(iResearcher);
     assertEquals(
       researcherEntityService.getResearcherById("test").getName(),
       "ycj"
@@ -66,8 +68,8 @@ class ResearcherEntityServiceTest {
     jpaResearcher.setName("ycj");
     jpaResearcher.setId("IEEE_37085391626");
     Mockito
-      .when(researcherRepository.findResearcherById("test"))
-      .thenReturn(jpaResearcher);
+      .when(researcherRepository.findPapers("test", "2017", "2019"))
+      .thenReturn(Lists.newArrayList("test1"));
     assertEquals(
       researcherEntityService.getPapersByRid("test", "2017", "2019"),
       Lists.newArrayList("test1")
@@ -93,8 +95,8 @@ class ResearcherEntityServiceTest {
 
     jpaResearcher.setPapers(Lists.newArrayList(jpaPaper1, jpaPaper2));
     Mockito
-      .when(researcherRepository.findResearcherById("test"))
-      .thenReturn(jpaResearcher);
+      .when(researcherRepository.findDomains("test", "2017", null))
+      .thenReturn(Lists.newArrayList("domain2", "domain1"));
     assertEquals(
       researcherEntityService.getDomainByRid("test", "2017", null),
       Lists.newArrayList("domain2", "domain1")
@@ -114,19 +116,19 @@ class ResearcherEntityServiceTest {
 
   @Test
   void getResearcherBasicById() {
-    JpaResearcher jpaResearcher = new JpaResearcher();
+    IResearcherBasic iResearcherBasic = new IResearcherBasic();
     JpaPaper jpaPaper = new JpaPaper();
     jpaPaper.setId("test");
     JpaDomain jpaDomain = new JpaDomain();
     jpaDomain.setId("domain1");
     jpaPaper.setDomains(Lists.newArrayList(jpaDomain));
     jpaPaper.setCitation(15);
-    jpaResearcher.setPapers(Lists.newArrayList(jpaPaper));
-    jpaResearcher.setName("ycj");
-    jpaResearcher.setId("IEEE_37085391626");
+    iResearcherBasic.setPapers(Lists.newArrayList("test"));
+    iResearcherBasic.setName("ycj");
+    iResearcherBasic.setId("IEEE_37085391626");
     Mockito
-      .when(researcherRepository.findResearcherById("test"))
-      .thenReturn(jpaResearcher);
+      .when(researcherRepository.getResearcherBasic("test"))
+      .thenReturn(iResearcherBasic);
     assertEquals(
       researcherEntityService.getResearcherBasicById("test").getName(),
       "ycj"
