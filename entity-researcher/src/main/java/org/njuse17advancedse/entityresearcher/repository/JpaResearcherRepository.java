@@ -187,7 +187,7 @@ public class JpaResearcherRepository implements ResearcherRepository {
   }
 
   @Override
-  public ISearchResult searcherByCond(String keyword, int page) {
+  public ISearchResult searchByCond(String keyword, int page) {
     ISearchResult iSearchResult = new ISearchResult();
     String sql;
     keyword = keyword.toLowerCase();

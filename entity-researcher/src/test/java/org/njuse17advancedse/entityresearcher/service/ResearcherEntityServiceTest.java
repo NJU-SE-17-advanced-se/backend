@@ -142,11 +142,8 @@ class ResearcherEntityServiceTest {
     iSearchResult.setCount(5);
     iSearchResult.setResult(Lists.newArrayList("1", "2", "3"));
     Mockito
-      .when(researcherRepository.searcherByCond("yang", 2))
+      .when(researcherRepository.searchByCond("yang", 2))
       .thenReturn(iSearchResult);
-    assertEquals(
-      5,
-      researcherEntityService.searcherByCond("yang", 2).getCount()
-    );
+    assertEquals(5, researcherEntityService.searchByCond("yang", 2).getCount());
   }
 }

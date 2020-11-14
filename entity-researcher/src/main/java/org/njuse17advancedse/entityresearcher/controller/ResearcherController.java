@@ -3,7 +3,6 @@ package org.njuse17advancedse.entityresearcher.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
@@ -23,7 +22,7 @@ public class ResearcherController {
     @ApiParam(value = "查询关键词") @RequestParam String keyword,
     @ApiParam(value = "页数") @RequestParam int page
   ) {
-    return researcherEntityService.searcherByCond(keyword, page);
+    return researcherEntityService.searchByCond(keyword, page);
   }
 
   @ApiOperation("根据 id 获取学者详细信息")

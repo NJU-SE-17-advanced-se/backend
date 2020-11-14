@@ -29,5 +29,5 @@ public interface ResearcherRepository {
     @Nullable String end
   );
 
-  ISearchResult searcherByCond(String keyword, int page);
+  ISearchResult searchByCond(String keyword, int page);
 }

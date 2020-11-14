@@ -116,10 +116,10 @@ public class ResearcherEntityService {
    * @param page 页码
    * @return 搜索总条数和列表
    */
-  public ISearchResult searcherByCond(String keyword, int page) {
+  public ISearchResult searchByCond(String keyword, int page) {
     ISearchResult iSearchResult = new ISearchResult();
     try {
-      iSearchResult = researcherRepository.searcherByCond(keyword, page);
+      iSearchResult = researcherRepository.searchByCond(keyword, page);
     } catch (Exception e) {
       e.printStackTrace();
     }
