@@ -4,6 +4,7 @@ import com.sun.istack.Nullable;
 import java.util.List;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
+import org.njuse17advancedse.entityresearcher.dto.ISearchResult;
 
 public interface ResearcherRepository {
   IResearcher getResearcherById(String id);
@@ -22,9 +23,11 @@ public interface ResearcherRepository {
     @Nullable String end
   );
 
-  List<String> findById(
+  List<String> findAffiliations(
     String rid,
     @Nullable String start,
     @Nullable String end
   );
+
+  ISearchResult searcherByCond(String keyword, int page);
 }

@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
+import org.njuse17advancedse.entityresearcher.dto.ISearchResult;
 import org.njuse17advancedse.entityresearcher.entity.JpaDomain;
 import org.njuse17advancedse.entityresearcher.entity.JpaPaper;
 import org.njuse17advancedse.entityresearcher.entity.JpaResearcher;
@@ -106,7 +107,7 @@ class ResearcherEntityServiceTest {
   @Test
   void getAffiliationByRid() {
     Mockito
-      .when(researcherRepository.findById("test", "2015", "2018"))
+      .when(researcherRepository.findAffiliations("test", "2015", "2018"))
       .thenReturn(Lists.newArrayList("a1"));
     assertEquals(
       researcherEntityService.getAffiliationByRid("test", "2015", "2018"),
@@ -132,6 +133,20 @@ class ResearcherEntityServiceTest {
     assertEquals(
       researcherEntityService.getResearcherBasicById("test").getName(),
       "ycj"
+    );
+  }
+
+  @Test
+  void searcherByCond() {
+    ISearchResult iSearchResult = new ISearchResult();
+    iSearchResult.setCount(5);
+    iSearchResult.setResult(Lists.newArrayList("1", "2", "3"));
+    Mockito
+      .when(researcherRepository.searcherByCond("yang", 2))
+      .thenReturn(iSearchResult);
+    assertEquals(
+      5,
+      researcherEntityService.searcherByCond("yang", 2).getCount()
     );
   }
 }

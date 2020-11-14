@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
+import org.njuse17advancedse.entityresearcher.dto.ISearchResult;
 import org.njuse17advancedse.entityresearcher.service.ResearcherEntityService;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,11 +19,11 @@ public class ResearcherController {
 
   @ApiOperation("根据查询条件查询满足条件的学者 id")
   @GetMapping("")
-  public List<String> getResearchersByCond(
+  public ISearchResult getResearchersByCond(
     @ApiParam(value = "查询关键词") @RequestParam String keyword,
     @ApiParam(value = "页数") @RequestParam int page
   ) {
-    return new ArrayList<>();
+    return researcherEntityService.searcherByCond(keyword, page);
   }
 
   @ApiOperation("根据 id 获取学者详细信息")
