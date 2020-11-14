@@ -15,7 +15,7 @@ spring:
       server:
         git:
           uri: https://github.com/NJU-SE-17-advanced-se/config.git
-          username: ${CONFIG_SERVER_GIT_USER:Tdycwym}
-          password: ${CONFIG_SERVER_GIT_PASS:1412510114As}
+          username: ${CONFIG_SERVER_GIT_USER:HermitSun}
+          password: ${CONFIG_SERVER_GIT_PASS:syl20051109}
           default-label: master
           search-paths: '*'
