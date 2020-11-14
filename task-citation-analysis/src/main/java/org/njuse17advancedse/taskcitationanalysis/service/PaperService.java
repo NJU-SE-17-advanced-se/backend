@@ -13,7 +13,7 @@ public interface PaperService {
   // 根据ID获取论文
   IPaper getPaper(@PathVariable String id);
 
-  @GetMapping("/papers")
+  @GetMapping("/papers/selection")
   // 根据其他指标获取论文
   // 如果都没填，返回全部论文
   List<String> getPapers(

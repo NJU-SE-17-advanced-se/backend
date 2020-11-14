@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.njuse17advancedse.entitypaper.dto.IPaper;
 import org.njuse17advancedse.entitypaper.dto.IPaperBasic;
+import org.njuse17advancedse.entitypaper.dto.IResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class AllRepository {
   @Autowired
   private JdbcTemplate jdbcTemplate;
+
+  private static final int PAGE_SIZE = 10;
 
   @Transactional(readOnly = true)
   public List<String> getAllPapers() {
@@ -151,6 +154,124 @@ public class AllRepository {
     String sql =
       "select distinct pid from paper_reference where rid='" + paperId + "';";
     return jdbcTemplate.queryForList(sql, String.class);
+  }
+
+  @Transactional(readOnly = true)
+  public IResult getPaperByCond(String keyword, int page) {
+    String countSQL =
+      "select count(id) from paper where locate('" +
+      keyword +
+      "',title)!=0 or locate('" +
+      keyword +
+      "',abs)!=0;";
+    int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
+    String startIndex = Integer.toString(PAGE_SIZE * (page - 1));
+    String sql =
+      "select id from paper where locate('" +
+      keyword +
+      "',title)!=0 or locate('" +
+      keyword +
+      "',abs)!=0" +
+      " limit " +
+      startIndex +
+      "," +
+      PAGE_SIZE;
+    return new IResult(jdbcTemplate.queryForList(sql, String.class), count);
+  }
+
+  @Transactional(readOnly = true)
+  public IResult getPaperByCond(
+    String keyword,
+    String year,
+    boolean type,
+    int page
+  ) {
+    if (type) {
+      String countSQL =
+        "select count(id) from paper where publication_date>='" +
+        year +
+        "' and locate('" +
+        keyword +
+        "',title)!=0 or locate('" +
+        keyword +
+        "',abs)!=0";
+      int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
+      String startIndex = Integer.toString(PAGE_SIZE * (page - 1));
+      String sql =
+        "select id from paper where publication_date>='" +
+        year +
+        "' and locate('" +
+        keyword +
+        "',title)!=0 or locate('" +
+        keyword +
+        "',abs)!=0" +
+        " limit " +
+        startIndex +
+        "," +
+        PAGE_SIZE;
+      return new IResult(jdbcTemplate.queryForList(sql, String.class), count);
+    } else {
+      String countSQL =
+        "select count(id) from paper where publication_date<='" +
+        year +
+        "' and locate('" +
+        keyword +
+        "',title)!=0 or locate('" +
+        keyword +
+        "',abs)!=0";
+      int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
+      String startIndex = Integer.toString(PAGE_SIZE * (page - 1));
+      String sql =
+        "select id from paper where publication_date<='" +
+        year +
+        "' and locate('" +
+        keyword +
+        "',title)!=0 or locate('" +
+        keyword +
+        "',abs)!=0" +
+        " limit " +
+        startIndex +
+        "," +
+        PAGE_SIZE;
+      return new IResult(jdbcTemplate.queryForList(sql, String.class), count);
+    }
+  }
+
+  @Transactional(readOnly = true)
+  public IResult getPaperByCond(
+    String keyword,
+    String startYear,
+    String endYear,
+    int page
+  ) {
+    String countSQL =
+      "select count(id) from paper where publication_date>='" +
+      startYear +
+      "' and publication_date<='" +
+      endYear +
+      "'" +
+      "and locate('" +
+      keyword +
+      "',title)!=0 or locate('" +
+      keyword +
+      "',abs)!=0";
+    int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
+    String startIndex = Integer.toString(PAGE_SIZE * (page - 1));
+    String sql =
+      "select id from paper where publication_date>='" +
+      startYear +
+      "' and publication_date<='" +
+      endYear +
+      "' and locate('" +
+      keyword +
+      "',title)!=0 or locate('" +
+      keyword +
+      "',abs)!=0" +
+      " limit " +
+      startIndex +
+      "," +
+      PAGE_SIZE;
+    return new IResult(jdbcTemplate.queryForList(sql, String.class), count);
   }
 }
 

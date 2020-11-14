@@ -5,6 +5,7 @@ import java.util.List;
 import org.njuse17advancedse.entitypaper.data.AllRepository;
 import org.njuse17advancedse.entitypaper.dto.IPaper;
 import org.njuse17advancedse.entitypaper.dto.IPaperBasic;
+import org.njuse17advancedse.entitypaper.dto.IResult;
 import org.njuse17advancedse.entitypaper.service.PaperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -97,5 +98,23 @@ public class PaperServiceImpl implements PaperService {
     } catch (Exception e) {
       return new ArrayList<>();
     }
+  }
+
+  public IResult getPapersByCond(
+    String keyword,
+    String start,
+    String end,
+    int page
+  ) {
+    if (start == null && end == null) {
+      return repository.getPaperByCond(keyword, page);
+    }
+    if (start == null) {
+      return repository.getPaperByCond(keyword, end, false, page);
+    }
+    if (end == null) {
+      return repository.getPaperByCond(keyword, start, true, page);
+    }
+    return repository.getPaperByCond(keyword, start, end, page);
   }
 }
