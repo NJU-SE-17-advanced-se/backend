@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
-import org.njuse17advancedse.entityresearcher.entity.JpaPaper;
+import org.njuse17advancedse.entityresearcher.dto.ISearchResult;
 import org.njuse17advancedse.entityresearcher.repository.ResearcherRepository;
 import org.springframework.stereotype.Service;
 
@@ -88,7 +88,7 @@ public class ResearcherEntityService {
   ) {
     List<String> affiliations = new ArrayList<>();
     try {
-      affiliations = researcherRepository.findById(rid, start, end);
+      affiliations = researcherRepository.findAffiliations(rid, start, end);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -108,5 +108,21 @@ public class ResearcherEntityService {
       e.printStackTrace();
     }
     return iResearcherBasic;
+  }
+
+  /**
+   * 根据条件搜索作者
+   * @param keyword 关键词
+   * @param page 页码
+   * @return 搜索总条数和列表
+   */
+  public ISearchResult searchByCond(String keyword, int page) {
+    ISearchResult iSearchResult = new ISearchResult();
+    try {
+      iSearchResult = researcherRepository.searchByCond(keyword, page);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return iSearchResult;
   }
 }

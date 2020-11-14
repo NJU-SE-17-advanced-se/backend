@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import org.njuse17advancedse.entitypublication.dto.IPublication;
 import org.njuse17advancedse.entitypublication.dto.IPublicationBasic;
+import org.njuse17advancedse.entitypublication.dto.ISearchResult;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -147,5 +148,59 @@ public class JpaPublicationRepository implements PublicationRepository {
           .getResultList();
     }
     return publications;
+  }
+
+  @Override
+  public ISearchResult searchByCond(
+    String keyword,
+    @Nullable String start,
+    @Nullable String end,
+    int page
+  ) {
+    ISearchResult iSearchResult = new ISearchResult();
+    String sql;
+    keyword = keyword.toLowerCase();
+    int count = 0;
+    List<String> result = new ArrayList<>();
+    if (page >= 1) {
+      int startDate = 0;
+      int endDate = 9999;
+      if (start != null) {
+        startDate = Integer.parseInt(start);
+      }
+      if (end != null) {
+        endDate = Integer.parseInt(end);
+      }
+      try {
+        sql =
+          "select p.id from publication p where lower(p.name) like :keyword and p.publicationDate between :start and :end";
+        result =
+          entityManager
+            .createQuery(sql, String.class)
+            .setParameter("keyword", "%" + keyword + "%")
+            .setParameter("start", startDate)
+            .setParameter("end", endDate)
+            .setFirstResult((page - 1) * 10)
+            .setMaxResults(10)
+            .getResultList();
+        sql =
+          "select count(p) from publication p where lower(p.name) like :keyword and p.publicationDate between :start and :end";
+        count =
+          Integer.parseInt(
+            entityManager
+              .createQuery(sql)
+              .setParameter("keyword", "%" + keyword + "%")
+              .setParameter("start", startDate)
+              .setParameter("end", endDate)
+              .getSingleResult()
+              .toString()
+          );
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    iSearchResult.setCount(count);
+    iSearchResult.setResult(result);
+    return iSearchResult;
   }
 }
