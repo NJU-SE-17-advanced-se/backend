@@ -75,29 +75,7 @@ yarn install
 
 由于使用了 spring cloud，需要首先启动 service-registry，然后启动 config-server，才能确保正确运行。
 
-先修改`config-server/src/main/resources/application.yml`中的内容：
-
-```yml
-spring:
-  profiles:
-    active: dev
-
-  cloud:
-    config:
-      server:
-        git:
-          uri: https://github.com/NJU-SE-17-advanced-se/config.git
-          username: ${CONFIG_SERVER_GIT_USER:github_username}       # here
-          password: ${CONFIG_SERVER_GIT_PASS:github_password}		# here
-          default-label: master
-          search-paths: '*'
-```
-
-将这里的`github_username`和`github_password`替换成**自己**的github账号和密码。
-
-一定要注意，不要 push 自己的账号和密码。
-
-然后在命令行运行以下命令，以启动上述服务：
+在命令行运行以下命令，以启动上述服务：
 
 ```shell script
 yarn run predev
