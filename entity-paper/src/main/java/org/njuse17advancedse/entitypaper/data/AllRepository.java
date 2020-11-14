@@ -159,19 +159,19 @@ public class AllRepository {
   @Transactional(readOnly = true)
   public IResult getPaperByCond(String keyword, int page) {
     String countSQL =
-      "select count(id) from paper where locate('" +
+      "select count(id) from paper where (locate('" +
       keyword +
       "',lower(title))!=0 or locate('" +
       keyword +
-      "',abs)!=0;";
+      "',lower(abs))!=0);";
     int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
     String startIndex = Integer.toString(PAGE_SIZE * (page - 1));
     String sql =
-      "select id from paper where locate('" +
+      "select id from paper where (locate('" +
       keyword +
       "',lower(title))!=0 or locate('" +
       keyword +
-      "',abs)!=0" +
+      "',lower(abs))!=0)" +
       " limit " +
       startIndex +
       "," +
@@ -190,21 +190,21 @@ public class AllRepository {
       String countSQL =
         "select count(id) from paper where publication_date>='" +
         year +
-        "' and locate('" +
+        "' and (locate('" +
         keyword +
         "',lower(title))!=0 or locate('" +
         keyword +
-        "',abs)!=0";
+        "',lower(abs))!=0)";
       int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
       String startIndex = Integer.toString(PAGE_SIZE * (page - 1));
       String sql =
         "select id from paper where publication_date>='" +
         year +
-        "' and locate('" +
+        "' and (locate('" +
         keyword +
         "',lower(title))!=0 or locate('" +
         keyword +
-        "',abs)!=0" +
+        "',lower(abs))!=0)" +
         " limit " +
         startIndex +
         "," +
@@ -214,21 +214,21 @@ public class AllRepository {
       String countSQL =
         "select count(id) from paper where publication_date<='" +
         year +
-        "' and locate('" +
+        "' and (locate('" +
         keyword +
         "',lower(title))!=0 or locate('" +
         keyword +
-        "',abs)!=0";
+        "',lower(abs))!=0)";
       int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
       String startIndex = Integer.toString(PAGE_SIZE * (page - 1));
       String sql =
         "select id from paper where publication_date<='" +
         year +
-        "' and locate('" +
+        "' and (locate('" +
         keyword +
         "',lower(title))!=0 or locate('" +
         keyword +
-        "',abs)!=0" +
+        "',lower(abs))!=0)" +
         " limit " +
         startIndex +
         "," +
@@ -250,11 +250,11 @@ public class AllRepository {
       "' and publication_date<='" +
       endYear +
       "'" +
-      "and locate('" +
+      "and (locate('" +
       keyword +
       "',lower(title))!=0 or locate('" +
       keyword +
-      "',abs)!=0";
+      "',lower(abs))!=0)";
     int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
     String startIndex = Integer.toString(PAGE_SIZE * (page - 1));
     String sql =
@@ -262,15 +262,17 @@ public class AllRepository {
       startYear +
       "' and publication_date<='" +
       endYear +
-      "' and locate('" +
+      "' and (locate('" +
       keyword +
       "',lower(title))!=0 or locate('" +
       keyword +
-      "',abs)!=0" +
+      "',lower(abs))!=0)" +
       " limit " +
       startIndex +
       "," +
       PAGE_SIZE;
+    //    System.out.println(countSQL);
+    //    System.out.println(sql);
     return new IResult(jdbcTemplate.queryForList(sql, String.class), count);
   }
 }
