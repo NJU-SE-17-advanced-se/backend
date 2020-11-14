@@ -20,7 +20,7 @@ public class EntityPaperServiceTest {
   PaperService service;
 
   @MockBean
-  //    @Autowired
+  //  @Autowired
   AllRepository repository;
 
   IPaper p1;
@@ -153,13 +153,13 @@ public class EntityPaperServiceTest {
     assertEquals(service.getPapersByCond("skt", null, "miss", 3), r3);
     assertEquals(service.getPapersByCond("skt", "1", "2", 4), r4);
   }
-  //    @Test
-  //    public void testSQL(){
-  //      IResult r1=service.getPapersByCond("work","2010","2020",1);
-  //      IResult r2=service.getPapersByCond("work","2010",null,2);
-  //      IResult r3=service.getPapersByCond("work",null,"2019",1);
-  //      IResult r4=service.getPapersByCond("work",null, null,3);
-  //      System.out.println();
+  //      @Test
+  //      public void testSQL(){
+  //        IResult r1=service.getPapersByCond("work","2010","2020",1);
+  //        IResult r2=service.getPapersByCond("work","2010",null,2);
+  //        IResult r3=service.getPapersByCond("work",null,"2019",1);
+  //        IResult r4=service.getPapersByCond("Work",null, null,3);
+  //        System.out.println();
   //
-  //    }
+  //      }
 }

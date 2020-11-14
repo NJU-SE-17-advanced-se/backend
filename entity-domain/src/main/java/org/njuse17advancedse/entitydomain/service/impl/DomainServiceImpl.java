@@ -54,6 +54,7 @@ public class DomainServiceImpl implements DomainService {
   @Override
   public IResult getDomainsByCond(String keyword, int page) {
     if (page <= 0) return new IResult();
+    keyword = keyword.toLowerCase();
     return repository.getDomainsByCond(keyword, page);
   }
 }

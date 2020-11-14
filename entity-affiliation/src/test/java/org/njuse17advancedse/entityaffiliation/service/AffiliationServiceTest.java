@@ -94,15 +94,16 @@ public class AffiliationServiceTest {
     Mockito.when(repository.getAffiliationsByCond("s", 2)).thenReturn(r);
     assertEquals(r, service.getAffiliationsByCond("s", 2));
   }
-  //      @Test
-  //      public void testSQL(){
-  //          IAffiliation ia=service.getAffiliationById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //          IAffiliationBasic ib=service.getAffiliationBasicInfoById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //          List<String> rs=service.getAffiliationResearchersById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //          List<String> ps=service.getAffiliationPapersById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //          List<String> ds=service.getAffiliationDomainsById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //          IResult r=service.getAffiliationsByCond("China",3);
-  //          System.out.println();
-  //      }
+  //        @Test
+  //        public void testSQL(){
+  //            IAffiliation ia=service.getAffiliationById("1a10e4a1fa06c9bfaf40da95026163a0");
+  //            IAffiliationBasic ib=service.getAffiliationBasicInfoById("1a10e4a1fa06c9bfaf40da95026163a0");
+  //            List<String> rs=service.getAffiliationResearchersById("1a10e4a1fa06c9bfaf40da95026163a0");
+  //            List<String> ps=service.getAffiliationPapersById("1a10e4a1fa06c9bfaf40da95026163a0");
+  //            List<String> ds=service.getAffiliationDomainsById("1a10e4a1fa06c9bfaf40da95026163a0");
+  //            IResult r=service.getAffiliationsByCond("China",3);
+  //            IResult r1=service.getAffiliationsByCond("china",3);
+  //            System.out.println();
+  //        }
 
 }

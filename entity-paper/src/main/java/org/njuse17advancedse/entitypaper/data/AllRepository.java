@@ -161,7 +161,7 @@ public class AllRepository {
     String countSQL =
       "select count(id) from paper where locate('" +
       keyword +
-      "',title)!=0 or locate('" +
+      "',lower(title))!=0 or locate('" +
       keyword +
       "',abs)!=0;";
     int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
@@ -169,7 +169,7 @@ public class AllRepository {
     String sql =
       "select id from paper where locate('" +
       keyword +
-      "',title)!=0 or locate('" +
+      "',lower(title))!=0 or locate('" +
       keyword +
       "',abs)!=0" +
       " limit " +
@@ -192,7 +192,7 @@ public class AllRepository {
         year +
         "' and locate('" +
         keyword +
-        "',title)!=0 or locate('" +
+        "',lower(title))!=0 or locate('" +
         keyword +
         "',abs)!=0";
       int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
@@ -202,7 +202,7 @@ public class AllRepository {
         year +
         "' and locate('" +
         keyword +
-        "',title)!=0 or locate('" +
+        "',lower(title))!=0 or locate('" +
         keyword +
         "',abs)!=0" +
         " limit " +
@@ -216,7 +216,7 @@ public class AllRepository {
         year +
         "' and locate('" +
         keyword +
-        "',title)!=0 or locate('" +
+        "',lower(title))!=0 or locate('" +
         keyword +
         "',abs)!=0";
       int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
@@ -226,7 +226,7 @@ public class AllRepository {
         year +
         "' and locate('" +
         keyword +
-        "',title)!=0 or locate('" +
+        "',lower(title))!=0 or locate('" +
         keyword +
         "',abs)!=0" +
         " limit " +
@@ -252,7 +252,7 @@ public class AllRepository {
       "'" +
       "and locate('" +
       keyword +
-      "',title)!=0 or locate('" +
+      "',lower(title))!=0 or locate('" +
       keyword +
       "',abs)!=0";
     int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
@@ -264,7 +264,7 @@ public class AllRepository {
       endYear +
       "' and locate('" +
       keyword +
-      "',title)!=0 or locate('" +
+      "',lower(title))!=0 or locate('" +
       keyword +
       "',abs)!=0" +
       " limit " +

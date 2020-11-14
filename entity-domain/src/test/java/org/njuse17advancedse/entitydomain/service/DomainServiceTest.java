@@ -20,7 +20,7 @@ public class DomainServiceTest {
   DomainService service;
 
   @MockBean
-  //          @Autowired
+  //  @Autowired
   AllRepository repository;
 
   IDomain p1;
@@ -78,11 +78,11 @@ public class DomainServiceTest {
     Mockito.when(repository.getDomainsByCond("software", 1)).thenReturn(r);
     assertEquals(r, service.getDomainsByCond("software", 1));
   }
-  //  @Test
-  //  public void testSQL(){
-  //    IResult r=service.getDomainsByCond("software",2);
-  //    IResult r1=service.getDomainsByCond("test",1);
-  //    IResult r2=service.getDomainsByCond("test",2);
-  //    System.out.println();
-  //  }
+  //    @Test
+  //    public void testSQL(){
+  //      IResult r=service.getDomainsByCond("software",2);
+  //      IResult r1=service.getDomainsByCond("test",1);
+  //      IResult r2=service.getDomainsByCond("Test",1);
+  //      System.out.println();
+  //    }
 }

@@ -73,13 +73,13 @@ public class AllRepository {
     String countSQL =
       "select count(id) from affiliation where locate('" +
       keyword +
-      "',`name`)!=0;";
+      "',lower(`name`))!=0;";
     int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
     String startIndex = Integer.toString(PAGE_SIZE * (page - 1));
     String sql =
       "select id from affiliation where locate('" +
       keyword +
-      "',`name`)!=0 limit " +
+      "',lower(`name`))!=0 limit " +
       startIndex +
       "," +
       PAGE_SIZE;
