@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entitydomain.dto.IDomain;
 import org.njuse17advancedse.entitydomain.dto.IDomainBasic;
+import org.njuse17advancedse.entitydomain.dto.IResult;
 import org.njuse17advancedse.entitydomain.service.DomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +20,11 @@ public class DomainController {
 
   @ApiOperation("根据查询条件查询满足条件的领域 id")
   @GetMapping("")
-  public List<String> getDomainsByCond(
+  public IResult getDomainsByCond(
     @ApiParam(value = "查询关键词") @RequestParam String keyword,
     @ApiParam(value = "页数") @RequestParam int page
   ) {
-    return new ArrayList<>();
+    return service.getDomainsByCond(keyword, page);
   }
 
   @ApiOperation("根据 id 获取某领域信息")
