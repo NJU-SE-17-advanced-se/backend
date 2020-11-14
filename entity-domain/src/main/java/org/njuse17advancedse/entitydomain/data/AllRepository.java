@@ -7,7 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 import org.njuse17advancedse.entitydomain.dto.IDomain;
 import org.njuse17advancedse.entitydomain.dto.IDomainBasic;
+import org.njuse17advancedse.entitydomain.dto.IResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -17,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class AllRepository {
   @Autowired
   private JdbcTemplate jdbcTemplate;
+
+  private static final int PAGE_SIZE = 10;
 
   @Transactional(readOnly = true)
   public List<String> getPapers(String id) {
@@ -52,6 +56,24 @@ public class AllRepository {
     }
     String sql = "select * from `domain` where id='" + id + "'";
     return jdbcTemplate.queryForObject(sql, new DomainBasicRowMapper());
+  }
+
+  @Transactional(readOnly = true)
+  public IResult getDomainsByCond(String keyword, int page) {
+    String countSQL =
+      "select count(id) from `domain` where locate('" +
+      keyword +
+      "',`name`)!=0;";
+    int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
+    String startIndex = Integer.toString(PAGE_SIZE * (page - 1));
+    String sql =
+      "select id from `domain` where locate('" +
+      keyword +
+      "',`name`)!=0 limit " +
+      startIndex +
+      "," +
+      PAGE_SIZE;
+    return new IResult(jdbcTemplate.queryForList(sql, String.class), count);
   }
 }
 

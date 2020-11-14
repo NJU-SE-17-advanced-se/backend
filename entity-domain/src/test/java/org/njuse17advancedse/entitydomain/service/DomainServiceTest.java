@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.njuse17advancedse.entitydomain.data.AllRepository;
 import org.njuse17advancedse.entitydomain.dto.IDomain;
 import org.njuse17advancedse.entitydomain.dto.IDomainBasic;
+import org.njuse17advancedse.entitydomain.dto.IResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,6 +20,7 @@ public class DomainServiceTest {
   DomainService service;
 
   @MockBean
+  //          @Autowired
   AllRepository repository;
 
   IDomain p1;
@@ -69,4 +71,18 @@ public class DomainServiceTest {
     Mockito.when(repository.getDomainBasic("sktfaker")).thenReturn(pb1);
     assertEquals(pb1, service.getDomainBasicInfoById("sktfaker"));
   }
+
+  @Test
+  public void testGetDomainsByCond() {
+    IResult r = new IResult(Arrays.asList("SS", "S", "SSSS"), 5);
+    Mockito.when(repository.getDomainsByCond("software", 1)).thenReturn(r);
+    assertEquals(r, service.getDomainsByCond("software", 1));
+  }
+  //  @Test
+  //  public void testSQL(){
+  //    IResult r=service.getDomainsByCond("software",2);
+  //    IResult r1=service.getDomainsByCond("test",1);
+  //    IResult r2=service.getDomainsByCond("test",2);
+  //    System.out.println();
+  //  }
 }

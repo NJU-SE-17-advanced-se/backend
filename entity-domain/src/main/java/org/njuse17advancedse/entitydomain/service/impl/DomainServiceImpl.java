@@ -5,6 +5,7 @@ import java.util.List;
 import org.njuse17advancedse.entitydomain.data.AllRepository;
 import org.njuse17advancedse.entitydomain.dto.IDomain;
 import org.njuse17advancedse.entitydomain.dto.IDomainBasic;
+import org.njuse17advancedse.entitydomain.dto.IResult;
 import org.njuse17advancedse.entitydomain.service.DomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,5 +49,10 @@ public class DomainServiceImpl implements DomainService {
     } catch (Exception e) {
       return new ArrayList<>();
     }
+  }
+
+  @Override
+  public IResult getDomainsByCond(String keyword, int page) {
+    return repository.getDomainsByCond(keyword, page);
   }
 }
