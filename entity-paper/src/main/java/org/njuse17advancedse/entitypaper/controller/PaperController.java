@@ -64,7 +64,7 @@ public class PaperController {
     this.service = service;
   }
 
-  @GetMapping("/papers/selection")
+  @GetMapping("/selection")
   // 根据其他指标获取论文
   // 如果都没填，返回全部论文
   List<String> getPapers(
