@@ -22,7 +22,8 @@ public class Swagger3Config {
       .select()
       .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
       .paths(PathSelectors.any())
-      .build();
+      .build()
+      .pathMapping("/entity-publication");
   }
 
   private ApiInfo apiInfo() {

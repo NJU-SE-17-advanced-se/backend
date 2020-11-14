@@ -1,13 +1,15 @@
 package org.njuse17advancedse.taskimpactanalysis.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
 import org.springframework.web.bind.annotation.*;
 
+@Api(tags = { "学者" })
 @RestController
 @RequestMapping(value = "/researchers")
-public class Researcher {
+public class ResearcherController {
   TaskImpactAnalysisService service;
 
   @ApiOperation(
@@ -26,7 +28,7 @@ public class Researcher {
     return -1;
   }
 
-  public Researcher(TaskImpactAnalysisService service) {
+  public ResearcherController(TaskImpactAnalysisService service) {
     this.service = service;
   }
 }

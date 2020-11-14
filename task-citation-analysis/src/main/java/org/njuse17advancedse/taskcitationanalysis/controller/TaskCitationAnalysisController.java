@@ -5,7 +5,9 @@ import java.util.Map;
 import org.njuse17advancedse.taskcitationanalysis.service.TaskCitationAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
+@ApiIgnore
 @RestController
 @RequestMapping(value = "/citations")
 public class TaskCitationAnalysisController {
