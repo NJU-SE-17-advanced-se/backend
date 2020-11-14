@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 import org.njuse17advancedse.entityaffiliation.data.AllRepository;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliation;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliationBasic;
+import org.njuse17advancedse.entityaffiliation.dto.IResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,7 +21,7 @@ public class AffiliationServiceTest {
   AffiliationService service;
 
   @MockBean
-  //    @Autowired
+  //  @Autowired
   AllRepository repository;
 
   IAffiliation a1;
@@ -86,13 +87,22 @@ public class AffiliationServiceTest {
       Arrays.asList("d1", "d2")
     );
   }
-  //    @Test
-  //    public void testSQL(){
-  //        IAffiliation ia=service.getAffiliationById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //        IAffiliationBasic ib=service.getAffiliationBasicInfoById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //        List<String> rs=service.getAffiliationResearchersById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //        List<String> ps=service.getAffiliationPapersById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //        List<String> ds=service.getAffiliationDomainsById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //        System.out.println();
-  //    }
+
+  @Test
+  public void testGetAffiliationByCond() {
+    IResult r = new IResult(Arrays.asList("ASD", "JKL"), 4);
+    Mockito.when(repository.getAffiliationsByCond("s", 2)).thenReturn(r);
+    assertEquals(r, service.getAffiliationsByCond("s", 2));
+  }
+  //      @Test
+  //      public void testSQL(){
+  //          IAffiliation ia=service.getAffiliationById("1a10e4a1fa06c9bfaf40da95026163a0");
+  //          IAffiliationBasic ib=service.getAffiliationBasicInfoById("1a10e4a1fa06c9bfaf40da95026163a0");
+  //          List<String> rs=service.getAffiliationResearchersById("1a10e4a1fa06c9bfaf40da95026163a0");
+  //          List<String> ps=service.getAffiliationPapersById("1a10e4a1fa06c9bfaf40da95026163a0");
+  //          List<String> ds=service.getAffiliationDomainsById("1a10e4a1fa06c9bfaf40da95026163a0");
+  //          IResult r=service.getAffiliationsByCond("China",3);
+  //          System.out.println();
+  //      }
+
 }
