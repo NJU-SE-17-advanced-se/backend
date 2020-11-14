@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.njuse17advancedse.entitypublication.dto.IPublication;
 import org.njuse17advancedse.entitypublication.dto.IPublicationBasic;
+import org.njuse17advancedse.entitypublication.dto.ISearchResult;
 import org.njuse17advancedse.entitypublication.entity.JpaDomain;
 import org.njuse17advancedse.entitypublication.entity.JpaPaper;
 import org.njuse17advancedse.entitypublication.entity.JpaPublication;
@@ -110,6 +111,22 @@ class PublicationEntityServiceTest {
     assertEquals(
       publicationEntityService.getIPublicationBasic("test").getName(),
       "test3"
+    );
+  }
+
+  @Test
+  void searchByCond() {
+    ISearchResult iSearchResult = new ISearchResult();
+    iSearchResult.setCount(5);
+    iSearchResult.setResult(Lists.newArrayList("1", "2", "3"));
+    Mockito
+      .when(publicationRepository.searchByCond("yang", "2010", "2020", 2))
+      .thenReturn(iSearchResult);
+    assertEquals(
+      5,
+      publicationEntityService
+        .searchByCond("yang", "2010", "2020", 2)
+        .getCount()
     );
   }
 }
