@@ -106,6 +106,7 @@ public class PaperServiceImpl implements PaperService {
     String end,
     int page
   ) {
+    if (page <= 0) return new IResult();
     if (start == null && end == null) {
       return repository.getPaperByCond(keyword, page);
     }

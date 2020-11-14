@@ -62,6 +62,7 @@ public class AffiliationServiceImpl implements AffiliationService {
 
   @Override
   public IResult getAffiliationsByCond(String keyword, int page) {
+    if (page <= 0) return new IResult();
     return repository.getAffiliationsByCond(keyword, page);
   }
 }
