@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.njuse17advancedse.entitypaper.data.AllRepository;
 import org.njuse17advancedse.entitypaper.dto.IPaper;
 import org.njuse17advancedse.entitypaper.dto.IPaperBasic;
+import org.njuse17advancedse.entitypaper.dto.IResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,7 +20,7 @@ public class EntityPaperServiceTest {
   PaperService service;
 
   @MockBean
-  //  @Autowired
+  //    @Autowired
   AllRepository repository;
 
   IPaper p1;
@@ -128,9 +129,37 @@ public class EntityPaperServiceTest {
       Arrays.asList("test1", "test8")
     );
   }
-  //  @Test
-  //  public void testSQL(){
-  //    IPaper p=service.getIPaper("b03006043294cab6b03f9ed0faa511db");
-  //    System.out.println();
-  //  }
+
+  @Test
+  public void testGetPaperCond() {
+    IResult r1 = new IResult(Arrays.asList("SKTOTTO", "SKTFaker"), 14);
+    Mockito.when(repository.getPaperByCond("skt", 0)).thenReturn(r1);
+    IResult r2 = new IResult(
+      Arrays.asList("LeeXianghook", "Leevlan", "Ryze", "Zed"),
+      23
+    );
+    Mockito
+      .when(repository.getPaperByCond("skt", "shit", true, 2))
+      .thenReturn(r2);
+    IResult r3 = new IResult(Arrays.asList("SKTOTTOOTTO", "SKTFakerBengi"), 11);
+    Mockito
+      .when(repository.getPaperByCond("skt", "miss", false, 3))
+      .thenReturn(r3);
+    IResult r4 = new IResult(Arrays.asList("OTTO", "SKT"), 9);
+    Mockito.when(repository.getPaperByCond("skt", "1", "2", 4)).thenReturn(r4);
+
+    assertEquals(service.getPapersByCond("skt", null, null, 0), r1);
+    assertEquals(service.getPapersByCond("skt", "shit", null, 2), r2);
+    assertEquals(service.getPapersByCond("skt", null, "miss", 3), r3);
+    assertEquals(service.getPapersByCond("skt", "1", "2", 4), r4);
+  }
+  //        @Test
+  //        public void testSQL(){
+  //          IResult r1=service.getPapersByCond("work","2020","2010",1);
+  //          IResult r2=service.getPapersByCond("work","2010",null,2);
+  //          IResult r3=service.getPapersByCond("work",null,"2019",1);
+  //          IResult r4=service.getPapersByCond("Work",null, null,3);
+  //          System.out.println();
+  //
+  //        }
 }

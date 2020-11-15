@@ -5,6 +5,7 @@ import java.util.List;
 import org.njuse17advancedse.entityaffiliation.data.AllRepository;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliation;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliationBasic;
+import org.njuse17advancedse.entityaffiliation.dto.IResult;
 import org.njuse17advancedse.entityaffiliation.service.AffiliationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,5 +58,12 @@ public class AffiliationServiceImpl implements AffiliationService {
     } catch (Exception e) {
       return new ArrayList<>();
     }
+  }
+
+  @Override
+  public IResult getAffiliationsByCond(String keyword, int page) {
+    if (page <= 0) return new IResult();
+    keyword = keyword.toLowerCase();
+    return repository.getAffiliationsByCond(keyword, page);
   }
 }

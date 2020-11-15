@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliation;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliationBasic;
+import org.njuse17advancedse.entityaffiliation.dto.IResult;
 import org.njuse17advancedse.entityaffiliation.service.AffiliationService;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,11 +19,11 @@ public class AffiliationController {
 
   @ApiOperation("根据查询条件查询满足条件的机构 id")
   @GetMapping("")
-  public List<String> getAffiliationsByCond(
+  public IResult getAffiliationsByCond(
     @ApiParam(value = "查询关键词") @RequestParam String keyword,
     @ApiParam(value = "页数") @RequestParam int page
   ) {
-    return new ArrayList<>();
+    return service.getAffiliationsByCond(keyword, page);
   }
 
   @ApiOperation("根据机构 id 获取机构详细信息")

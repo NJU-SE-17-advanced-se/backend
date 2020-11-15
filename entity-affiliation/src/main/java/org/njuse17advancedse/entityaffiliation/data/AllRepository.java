@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliation;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliationBasic;
+import org.njuse17advancedse.entityaffiliation.dto.IResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class AllRepository {
   @Autowired
   private JdbcTemplate jdbcTemplate;
+
+  private static final int PAGE_SIZE = 10;
 
   @Transactional(readOnly = true)
   public IAffiliation getAffiliationById(String id) {
@@ -63,6 +66,24 @@ public class AllRepository {
       "' and researcher_affiliation.rid=paper_researcher.rid" +
       " and paper_researcher.pid=paper_domain.pid;";
     return jdbcTemplate.queryForList(sql, String.class);
+  }
+
+  @Transactional(readOnly = true)
+  public IResult getAffiliationsByCond(String keyword, int page) {
+    String countSQL =
+      "select count(id) from affiliation where locate('" +
+      keyword +
+      "',lower(`name`))!=0;";
+    int count = jdbcTemplate.queryForObject(countSQL, Integer.class);
+    String startIndex = Integer.toString(PAGE_SIZE * (page - 1));
+    String sql =
+      "select id from affiliation where locate('" +
+      keyword +
+      "',lower(`name`))!=0 limit " +
+      startIndex +
+      "," +
+      PAGE_SIZE;
+    return new IResult(jdbcTemplate.queryForList(sql, String.class), count);
   }
 }
 
