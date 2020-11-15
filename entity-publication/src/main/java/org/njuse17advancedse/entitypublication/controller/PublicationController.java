@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entitypublication.dto.IPublication;
 import org.njuse17advancedse.entitypublication.dto.IPublicationBasic;
+import org.njuse17advancedse.entitypublication.dto.ISearchResult;
 import org.njuse17advancedse.entitypublication.service.PublicationEntityService;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ public class PublicationController {
 
   @ApiOperation("根据查询条件查询满足条件的出版物 id")
   @GetMapping("")
-  public List<String> getPublicationsByCond(
+  public ISearchResult getPublicationsByCond(
     @ApiParam(value = "查询关键词") @RequestParam String keyword,
     @ApiParam("开始年份，形如'2020'") @RequestParam(
       required = false
@@ -28,7 +29,7 @@ public class PublicationController {
     ) String end,
     @ApiParam(value = "页数") @RequestParam int page
   ) {
-    return new ArrayList<>();
+    return publicationEntityService.searchByCond(keyword, start, end, page);
   }
 
   @ApiOperation("根据 id 获取出版物详细信息")

@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
+import org.njuse17advancedse.entityresearcher.dto.ISearchResult;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -36,7 +37,8 @@ public class JpaResearcherRepository implements ResearcherRepository {
       .createQuery(sql, String.class)
       .setParameter("rid", id)
       .getResultList();
-    List<String> domains = getDomains(papers);
+    List<String> domains = new ArrayList<>();
+    domains = getDomains(papers);
     iResearcher.setId(id);
     iResearcher.setName(name);
     iResearcher.setPapers(papers);
@@ -52,6 +54,7 @@ public class JpaResearcherRepository implements ResearcherRepository {
    */
   private List<String> getDomains(List<String> papers) {
     List<String> domains = new ArrayList<>();
+    HashSet<String> hashSet = new HashSet<>();
     String sql;
     if (papers != null) {
       for (String pid : papers) {
@@ -61,11 +64,9 @@ public class JpaResearcherRepository implements ResearcherRepository {
           .createQuery(sql, String.class)
           .setParameter("pid", pid)
           .getResultList();
-        domains.addAll(domain);
+        hashSet.addAll(domain);
       }
-      HashSet<String> hashSet = new HashSet<>(domains);
-      domains.clear();
-      domains.addAll(hashSet);
+      domains = new ArrayList<>(hashSet);
     }
     return domains;
   }
@@ -158,7 +159,7 @@ public class JpaResearcherRepository implements ResearcherRepository {
   }
 
   @Override
-  public List<String> findById(
+  public List<String> findAffiliations(
     String rid,
     @Nullable String start,
     @Nullable String end
@@ -183,5 +184,41 @@ public class JpaResearcherRepository implements ResearcherRepository {
         .setParameter("b", endDate)
         .getResultList();
     return affiliations;
+  }
+
+  @Override
+  public ISearchResult searchByCond(String keyword, int page) {
+    ISearchResult iSearchResult = new ISearchResult();
+    String sql;
+    keyword = keyword.toLowerCase();
+    int count = 0;
+    List<String> result = new ArrayList<>();
+    if (page >= 1) {
+      try {
+        sql = "select r.id from researcher r where lower(r.name) like :keyword";
+        result =
+          entityManager
+            .createQuery(sql, String.class)
+            .setParameter("keyword", "%" + keyword + "%")
+            .setFirstResult((page - 1) * 10)
+            .setMaxResults(10)
+            .getResultList();
+        sql =
+          "select count(r) from researcher r where lower(r.name) like :keyword";
+        count =
+          Integer.parseInt(
+            entityManager
+              .createQuery(sql)
+              .setParameter("keyword", "%" + keyword + "%")
+              .getSingleResult()
+              .toString()
+          );
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    iSearchResult.setCount(count);
+    iSearchResult.setResult(result);
+    return iSearchResult;
   }
 }

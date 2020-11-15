@@ -1,11 +1,13 @@
 package org.njuse17advancedse.taskcitationanalysis.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import org.njuse17advancedse.taskcitationanalysis.service.TaskCitationAnalysisService;
 import org.springframework.web.bind.annotation.*;
 
+@Api(tags = { "论文" })
 @RequestMapping("/papers")
 @RestController
 public class PaperController {

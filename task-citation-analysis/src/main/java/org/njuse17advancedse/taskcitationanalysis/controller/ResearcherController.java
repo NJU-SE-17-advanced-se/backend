@@ -1,5 +1,6 @@
 package org.njuse17advancedse.taskcitationanalysis.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 import org.njuse17advancedse.taskcitationanalysis.service.TaskCitationAnalysisService;
 import org.springframework.web.bind.annotation.*;
 
+@Api(tags = { "学者" })
 @RequestMapping("/researchers")
 @RestController
 public class ResearcherController {

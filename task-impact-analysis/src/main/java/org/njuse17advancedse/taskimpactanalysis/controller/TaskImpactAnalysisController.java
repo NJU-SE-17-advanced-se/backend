@@ -3,7 +3,9 @@ package org.njuse17advancedse.taskimpactanalysis.controller;
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
+@ApiIgnore
 @RestController
 @RequestMapping(value = "/impact")
 public class TaskImpactAnalysisController {
