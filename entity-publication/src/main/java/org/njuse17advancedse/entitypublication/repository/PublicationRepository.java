@@ -4,6 +4,7 @@ import com.sun.istack.Nullable;
 import java.util.List;
 import org.njuse17advancedse.entitypublication.dto.IPublication;
 import org.njuse17advancedse.entitypublication.dto.IPublicationBasic;
+import org.njuse17advancedse.entitypublication.dto.ISearchResult;
 
 public interface PublicationRepository {
   IPublication findPublication(String id);
@@ -20,5 +21,12 @@ public interface PublicationRepository {
     @Nullable String name,
     @Nullable String start,
     @Nullable String end
+  );
+
+  ISearchResult searchByCond(
+    String keyword,
+    @Nullable String start,
+    @Nullable String end,
+    int page
   );
 }

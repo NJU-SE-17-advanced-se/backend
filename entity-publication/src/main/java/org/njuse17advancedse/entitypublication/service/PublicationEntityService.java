@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entitypublication.dto.IPublication;
 import org.njuse17advancedse.entitypublication.dto.IPublicationBasic;
+import org.njuse17advancedse.entitypublication.dto.ISearchResult;
 import org.njuse17advancedse.entitypublication.repository.PublicationRepository;
 import org.springframework.stereotype.Service;
 
@@ -80,5 +81,29 @@ public class PublicationEntityService {
       e.printStackTrace();
     }
     return iPublicationBasic;
+  }
+
+  /**
+   * 根据条件搜索结果
+   * @param keyword 关键词
+   * @param start 开始时间
+   * @param end 结束时间
+   * @param page 页码
+   * @return 搜索结果，包含count和列表
+   */
+  public ISearchResult searchByCond(
+    String keyword,
+    @Nullable String start,
+    @Nullable String end,
+    int page
+  ) {
+    ISearchResult iSearchResult = new ISearchResult();
+    try {
+      iSearchResult =
+        publicationRepository.searchByCond(keyword, start, end, page);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return iSearchResult;
   }
 }

@@ -1,5 +1,6 @@
 package org.njuse17advancedse.taskreviewerrecommendation.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
@@ -8,6 +9,7 @@ import org.njuse17advancedse.taskreviewerrecommendation.service.TaskReviewerReco
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Api(tags = { "论文" })
 @RestController
 @RequestMapping(value = "/papers")
 public class TaskReviewerRecommendationController {
