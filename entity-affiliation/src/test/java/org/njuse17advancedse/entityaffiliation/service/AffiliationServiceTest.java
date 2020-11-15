@@ -93,6 +93,8 @@ public class AffiliationServiceTest {
     IResult r = new IResult(Arrays.asList("ASD", "JKL"), 4);
     Mockito.when(repository.getAffiliationsByCond("s", 2)).thenReturn(r);
     assertEquals(r, service.getAffiliationsByCond("s", 2));
+
+    assertEquals(service.getAffiliationsByCond("testAf", -12), new IResult());
   }
   //        @Test
   //        public void testSQL(){

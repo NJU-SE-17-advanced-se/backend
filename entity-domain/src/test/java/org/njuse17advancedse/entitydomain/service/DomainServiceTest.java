@@ -77,6 +77,8 @@ public class DomainServiceTest {
     IResult r = new IResult(Arrays.asList("SS", "S", "SSSS"), 5);
     Mockito.when(repository.getDomainsByCond("software", 1)).thenReturn(r);
     assertEquals(r, service.getDomainsByCond("software", 1));
+
+    assertEquals(service.getDomainsByCond("SKTelecom", -12), new IResult());
   }
   //    @Test
   //    public void testSQL(){

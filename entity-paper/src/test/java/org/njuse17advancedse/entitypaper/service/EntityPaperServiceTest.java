@@ -133,7 +133,7 @@ public class EntityPaperServiceTest {
   @Test
   public void testGetPaperCond() {
     IResult r1 = new IResult(Arrays.asList("SKTOTTO", "SKTFaker"), 14);
-    Mockito.when(repository.getPaperByCond("skt", 0)).thenReturn(r1);
+    Mockito.when(repository.getPaperByCond("skt", 4)).thenReturn(r1);
     IResult r2 = new IResult(
       Arrays.asList("LeeXianghook", "Leevlan", "Ryze", "Zed"),
       23
@@ -148,10 +148,32 @@ public class EntityPaperServiceTest {
     IResult r4 = new IResult(Arrays.asList("OTTO", "SKT"), 9);
     Mockito.when(repository.getPaperByCond("skt", "1", "2", 4)).thenReturn(r4);
 
-    assertEquals(service.getPapersByCond("skt", null, null, 0), r1);
+    assertEquals(service.getPapersByCond("skt", null, null, 4), r1);
     assertEquals(service.getPapersByCond("skt", "shit", null, 2), r2);
     assertEquals(service.getPapersByCond("skt", null, "miss", 3), r3);
     assertEquals(service.getPapersByCond("skt", "1", "2", 4), r4);
+    assertEquals(service.getPapersByCond("SKT", null, null, 4), r1);
+    assertEquals(service.getPapersByCond("sKT", "shit", null, 2), r2);
+    assertEquals(service.getPapersByCond("SkT", null, "miss", 3), r3);
+    assertEquals(service.getPapersByCond("SKt", "1", "2", 4), r4);
+
+    //边界情况
+    IResult emptyIResult = new IResult();
+    Mockito
+      .when(repository.getPaperByCond("skt", "2020", "2010", 3))
+      .thenReturn(emptyIResult);
+
+    assertEquals(
+      service.getPapersByCond("skt", "2020", "2010", 3),
+      emptyIResult
+    );
+    assertEquals(service.getPapersByCond("skt", null, null, -1), emptyIResult);
+    assertEquals(service.getPapersByCond("skt", "1", "2", -1), emptyIResult);
+    assertEquals(service.getPapersByCond("skt", null, "12", -1), emptyIResult);
+    assertEquals(
+      service.getPapersByCond("skt", "2019", null, -1),
+      emptyIResult
+    );
   }
   //        @Test
   //        public void testSQL(){
