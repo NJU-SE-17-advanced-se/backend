@@ -7,6 +7,8 @@ import java.util.List;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
 import org.njuse17advancedse.entityresearcher.dto.ISearchResult;
+import org.njuse17advancedse.entityresearcher.problem.BadRequestProblem;
+import org.njuse17advancedse.entityresearcher.problem.ResearcherNotFoundProblem;
 import org.njuse17advancedse.entityresearcher.service.ResearcherEntityService;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,9 @@ public class ResearcherController {
     @ApiParam(value = "查询关键词") @RequestParam String keyword,
     @ApiParam(value = "页数") @RequestParam int page
   ) {
+    if (page <= 0) {
+      throw new BadRequestProblem(page + "", "page should >= 1");
+    }
     return researcherEntityService.searchByCond(keyword, page);
   }
 
@@ -30,7 +35,11 @@ public class ResearcherController {
   public IResearcher getResearcherById(
     @ApiParam(value = "学者 id") @PathVariable String id
   ) {
-    return researcherEntityService.getResearcherById(id);
+    IResearcher iResearcher = researcherEntityService.getResearcherById(id);
+    if (iResearcher.getName() == null) {
+      throw new ResearcherNotFoundProblem(id);
+    }
+    return iResearcher;
   }
 
   @ApiOperation("根据学者 id 获取学者简略信息")
@@ -38,7 +47,13 @@ public class ResearcherController {
   public IResearcherBasic getResearcherBasicInfoById(
     @ApiParam(value = "学者 id") @PathVariable String id
   ) {
-    return researcherEntityService.getResearcherBasicById(id);
+    IResearcherBasic iResearcherBasic = researcherEntityService.getResearcherBasicById(
+      id
+    );
+    if (iResearcherBasic.getName() == null) {
+      throw new ResearcherNotFoundProblem(id);
+    }
+    return iResearcherBasic;
   }
 
   @ApiOperation("获取某作者的论文 id")
@@ -52,7 +67,28 @@ public class ResearcherController {
       required = false
     ) String end
   ) {
-    return researcherEntityService.getPapersByRid(id, start, end);
+    int startDate = 0;
+    int endDate = Integer.MAX_VALUE;
+    if (start != null) {
+      startDate = checkArgument(start);
+    }
+    if (end != null) {
+      endDate = checkArgument(end);
+    }
+    if (startDate < 0 || startDate > endDate) {
+      throw new BadRequestProblem(startDate + "," + endDate, "Date error");
+    }
+    List<String> papers = researcherEntityService.getPapersByRid(
+      id,
+      startDate,
+      endDate
+    );
+    if (papers.size() == 1) {
+      if (papers.get(0).equals("no such researcher")) {
+        throw new ResearcherNotFoundProblem(id);
+      }
+    }
+    return papers;
   }
 
   @ApiOperation(
@@ -66,7 +102,28 @@ public class ResearcherController {
     @ApiParam(value = "开始年份，形如'2020'") String start,
     @ApiParam(value = "结束年份，形如'2020'") String end
   ) {
-    return researcherEntityService.getDomainByRid(id, start, end);
+    int startDate = 0;
+    int endDate = Integer.MAX_VALUE;
+    if (start != null) {
+      startDate = checkArgument(start);
+    }
+    if (end != null) {
+      endDate = checkArgument(end);
+    }
+    if (startDate < 0 || startDate > endDate) {
+      throw new BadRequestProblem(startDate + "," + endDate, "Date error");
+    }
+    List<String> domains = researcherEntityService.getDomainByRid(
+      id,
+      startDate,
+      endDate
+    );
+    if (domains.size() == 1) {
+      if (domains.get(0).equals("no such researcher")) {
+        throw new ResearcherNotFoundProblem(id);
+      }
+    }
+    return domains;
   }
 
   @ApiOperation(
@@ -83,7 +140,43 @@ public class ResearcherController {
       required = false
     ) String end
   ) {
-    return researcherEntityService.getAffiliationByRid(id, start, end);
+    int startDate = 0;
+    int endDate = Integer.MAX_VALUE;
+    if (start != null) {
+      startDate = checkArgument(start);
+    }
+    if (end != null) {
+      endDate = checkArgument(end);
+    }
+    if (startDate < 0 || startDate > endDate) {
+      throw new BadRequestProblem(startDate + "," + endDate, "Date error");
+    }
+    List<String> affiliations = researcherEntityService.getAffiliationByRid(
+      id,
+      startDate,
+      endDate
+    );
+    if (affiliations.size() == 1) {
+      if (affiliations.get(0).equals("no such researcher")) {
+        throw new ResearcherNotFoundProblem(id);
+      }
+    }
+    return affiliations;
+  }
+
+  /**
+   * 检查参数是否合法
+   * @param arg 参数
+   * @return 参数值
+   */
+  private int checkArgument(String arg) {
+    int value;
+    try {
+      value = Integer.parseInt(arg);
+      return value;
+    } catch (NumberFormatException e) {
+      throw new BadRequestProblem(arg, "can not parseInt");
+    }
   }
 
   public ResearcherController(ResearcherEntityService researcherEntityService) {
