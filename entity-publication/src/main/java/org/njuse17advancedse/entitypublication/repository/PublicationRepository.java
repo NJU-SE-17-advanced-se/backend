@@ -1,6 +1,5 @@
 package org.njuse17advancedse.entitypublication.repository;
 
-import com.sun.istack.Nullable;
 import java.util.List;
 import org.njuse17advancedse.entitypublication.dto.IPublication;
 import org.njuse17advancedse.entitypublication.dto.IPublicationBasic;
@@ -11,22 +10,7 @@ public interface PublicationRepository {
 
   IPublicationBasic findPublicationBasic(String id);
 
-  List<String> getPapers(
-    String id,
-    @Nullable String start,
-    @Nullable String end
-  );
+  List<String> getPapers(String id, int start, int end);
 
-  List<String> findPublications(
-    @Nullable String name,
-    @Nullable String start,
-    @Nullable String end
-  );
-
-  ISearchResult searchByCond(
-    String keyword,
-    @Nullable String start,
-    @Nullable String end,
-    int page
-  );
+  ISearchResult searchByCond(String keyword, int start, int end, int page);
 }

@@ -1,7 +1,5 @@
 package org.njuse17advancedse.entityresearcher.service;
 
-import com.sun.istack.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
@@ -23,13 +21,7 @@ public class ResearcherEntityService {
    * @return 作者实体
    */
   public IResearcher getResearcherById(String id) {
-    IResearcher iResearcher = new IResearcher();
-    try {
-      iResearcher = researcherRepository.getResearcherById(id);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return iResearcher;
+    return researcherRepository.getResearcherById(id);
   }
 
   /**
@@ -39,18 +31,8 @@ public class ResearcherEntityService {
    * @param end 结束时间
    * @return 论文id列表
    */
-  public List<String> getPapersByRid(
-    String rid,
-    @Nullable String start,
-    @Nullable String end
-  ) {
-    List<String> papers = new ArrayList<>();
-    try {
-      papers = researcherRepository.findPapers(rid, start, end);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return papers;
+  public List<String> getPapersByRid(String rid, int start, int end) {
+    return researcherRepository.findPapers(rid, start, end);
   }
 
   /**
@@ -60,18 +42,8 @@ public class ResearcherEntityService {
    * @param end 结束时间
    * @return 领域列表
    */
-  public List<String> getDomainByRid(
-    String rid,
-    @Nullable String start,
-    @Nullable String end
-  ) {
-    List<String> domains = new ArrayList<>();
-    try {
-      domains = researcherRepository.findDomains(rid, start, end);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return domains;
+  public List<String> getDomainByRid(String rid, int start, int end) {
+    return researcherRepository.findDomains(rid, start, end);
   }
 
   /**
@@ -81,18 +53,8 @@ public class ResearcherEntityService {
    * @param end 结束时间
    * @return 作者机构
    */
-  public List<String> getAffiliationByRid(
-    String rid,
-    @Nullable String start,
-    @Nullable String end
-  ) {
-    List<String> affiliations = new ArrayList<>();
-    try {
-      affiliations = researcherRepository.findAffiliations(rid, start, end);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return affiliations;
+  public List<String> getAffiliationByRid(String rid, int start, int end) {
+    return researcherRepository.findAffiliations(rid, start, end);
   }
 
   /**
@@ -101,13 +63,7 @@ public class ResearcherEntityService {
    * @return 作者简要实体
    */
   public IResearcherBasic getResearcherBasicById(String id) {
-    IResearcherBasic iResearcherBasic = new IResearcherBasic();
-    try {
-      iResearcherBasic = researcherRepository.getResearcherBasic(id);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return iResearcherBasic;
+    return researcherRepository.getResearcherBasic(id);
   }
 
   /**
@@ -117,12 +73,6 @@ public class ResearcherEntityService {
    * @return 搜索总条数和列表
    */
   public ISearchResult searchByCond(String keyword, int page) {
-    ISearchResult iSearchResult = new ISearchResult();
-    try {
-      iSearchResult = researcherRepository.searchByCond(keyword, page);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return iSearchResult;
+    return researcherRepository.searchByCond(keyword, page);
   }
 }
