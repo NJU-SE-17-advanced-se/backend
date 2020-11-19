@@ -327,6 +327,7 @@ class PaperBasicRowMapper implements RowMapper<IPaperBasic> {
     res.setTitle(rs.getString("title"));
     res.setPublication(rs.getString("publication_id"));
     res.setPublicationDate(rs.getString("publication_date"));
+    res.setCitations(rs.getInt("citation"));
     try {
       String researchers = rs.getString("researchers");
       res.setResearchers(string2List(researchers));
