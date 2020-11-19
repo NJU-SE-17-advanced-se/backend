@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IPaper;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IPaperBasic;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IResearcherNet;
+import org.njuse17advancedse.taskpartnershipanalysis.repository.ResearcherRepository;
 import org.njuse17advancedse.taskpartnershipanalysis.service.DomainEntityService;
 import org.njuse17advancedse.taskpartnershipanalysis.service.PaperEntityService;
 import org.njuse17advancedse.taskpartnershipanalysis.service.ResearcherEntityService;
@@ -21,6 +22,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 class TaskPartnershipAnalysisServiceImpTest {
+  @MockBean
+  private ResearcherRepository researcherRepository;
+
   @MockBean
   private DomainEntityService domainEntityService;
 
@@ -39,6 +43,7 @@ class TaskPartnershipAnalysisServiceImpTest {
   public void init() {
     taskPartnershipAnalysisService =
       new TaskPartnershipAnalysisServiceImp(
+        researcherRepository,
         researcherEntityService,
         paperEntityService,
         domainEntityService,
@@ -67,7 +72,7 @@ class TaskPartnershipAnalysisServiceImpTest {
         .thenReturn(iPaperBasic);
     }
     assertEquals(
-      taskPartnershipAnalysisService.getPartners(testResearcherId).getBody(),
+      taskPartnershipAnalysisService.getPartners(testResearcherId),
       Lists.newArrayList("0", "1", "2", "3", "4", "5")
     );
   }
@@ -143,9 +148,11 @@ class TaskPartnershipAnalysisServiceImpTest {
       )
     );
 
-    IResearcherNet result = taskPartnershipAnalysisService
-      .getPartnership(testRid, startDate, endDate)
-      .getBody();
+    IResearcherNet result = taskPartnershipAnalysisService.getPartnership(
+      testRid,
+      startDate,
+      endDate
+    );
     assert result != null;
     assertEquals(result.getPartners(), iResearcherNet.getPartners());
     for (int i = 0; i < result.getWeight().size(); i++) {
@@ -238,7 +245,7 @@ class TaskPartnershipAnalysisServiceImpTest {
       result.put(i + "", values.get(i));
     }
     assertEquals(
-      taskPartnershipAnalysisService.getPotentialPartners(testRid).getBody(),
+      taskPartnershipAnalysisService.getPotentialPartners(testRid),
       result
     );
   }

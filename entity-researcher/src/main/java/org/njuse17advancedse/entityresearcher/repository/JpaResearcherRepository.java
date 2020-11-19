@@ -1,10 +1,11 @@
 package org.njuse17advancedse.entityresearcher.repository;
 
-import com.sun.istack.Nullable;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
@@ -19,12 +20,18 @@ public class JpaResearcherRepository implements ResearcherRepository {
   @Override
   public IResearcher getResearcherById(String id) {
     String sql;
+    String name;
     sql = "select r.name from researcher r where r.id = :rid";
     IResearcher iResearcher = new IResearcher();
-    String name = entityManager
-      .createQuery(sql, String.class)
-      .setParameter("rid", id)
-      .getSingleResult();
+    try {
+      name =
+        entityManager
+          .createQuery(sql, String.class)
+          .setParameter("rid", id)
+          .getSingleResult();
+    } catch (NoResultException e) {
+      return iResearcher;
+    }
     sql =
       "select ra.affiliation.id from researcher_affiliation ra where ra.researcher.id = :rid";
     List<String> affiliations = entityManager
@@ -37,7 +44,7 @@ public class JpaResearcherRepository implements ResearcherRepository {
       .createQuery(sql, String.class)
       .setParameter("rid", id)
       .getResultList();
-    List<String> domains = new ArrayList<>();
+    List<String> domains;
     domains = getDomains(papers);
     iResearcher.setId(id);
     iResearcher.setName(name);
@@ -56,16 +63,14 @@ public class JpaResearcherRepository implements ResearcherRepository {
     List<String> domains = new ArrayList<>();
     HashSet<String> hashSet = new HashSet<>();
     String sql;
-    if (papers != null) {
-      for (String pid : papers) {
-        sql =
-          "select pd.domain.id from paper_domain pd where pd.paper.id = :pid";
-        List<String> domain = entityManager
-          .createQuery(sql, String.class)
-          .setParameter("pid", pid)
-          .getResultList();
-        hashSet.addAll(domain);
-      }
+    if (papers.size() > 0) {
+      sql =
+        "select pd.domain.id from paper_domain pd where pd.paper.id in :papers";
+      List<String> domain = entityManager
+        .createQuery(sql, String.class)
+        .setParameter("papers", papers)
+        .getResultList();
+      hashSet.addAll(domain);
       domains = new ArrayList<>(hashSet);
     }
     return domains;
@@ -74,12 +79,19 @@ public class JpaResearcherRepository implements ResearcherRepository {
   @Override
   public IResearcherBasic getResearcherBasic(String id) {
     String sql;
-    sql = "select r.name from researcher r where r.id = :rid";
+    String name;
     IResearcherBasic iResearcherBasic = new IResearcherBasic();
-    String name = entityManager
-      .createQuery(sql, String.class)
-      .setParameter("rid", id)
-      .getSingleResult();
+
+    sql = "select r.name from researcher r where r.id = :rid";
+    try {
+      name =
+        entityManager
+          .createQuery(sql, String.class)
+          .setParameter("rid", id)
+          .getSingleResult();
+    } catch (NoResultException e) {
+      return iResearcherBasic;
+    }
     sql =
       "select ra.affiliation.id from researcher_affiliation ra where ra.researcher.id = :rid";
     List<String> affiliations = entityManager
@@ -103,76 +115,74 @@ public class JpaResearcherRepository implements ResearcherRepository {
   }
 
   @Override
-  public List<String> findPapers(String id, String start, String end) {
-    int startDate = 0;
-    int endDate = 9999;
+  public List<String> findPapers(String id, int startDate, int endDate) {
     String sql;
-    List<String> papers = new ArrayList<>();
-    if (start != null) {
-      startDate = Integer.parseInt(start);
+    List<String> papers;
+    sql = "select count(r) from researcher r where r.id = :id";
+    int count = Integer.parseInt(
+      entityManager
+        .createQuery(sql)
+        .setParameter("id", id)
+        .getSingleResult()
+        .toString()
+    );
+    if (count == 0) {
+      return Lists.newArrayList("no such researcher");
     }
-    if (end != null) {
-      endDate = Integer.parseInt(end);
-    }
-    try {
-      sql =
-        "select pr.paper.id from paper_researcher pr where pr.researcher.id = :rid and pr.paper.publicationDate between :start and :end";
-      papers =
-        entityManager
-          .createQuery(sql, String.class)
-          .setParameter("rid", id)
-          .setParameter("start", startDate)
-          .setParameter("end", endDate)
-          .getResultList();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return papers;
-  }
-
-  @Override
-  public List<String> findDomains(String id, String start, String end) {
-    int startDate = 0;
-    int endDate = 9999;
-    String sql;
-    List<String> domains = new ArrayList<>();
-    if (start != null) {
-      startDate = Integer.parseInt(start);
-    }
-    if (end != null) {
-      endDate = Integer.parseInt(end);
-    }
-    try {
-      sql =
-        "select pr.paper.id from paper_researcher pr where pr.researcher.id = :rid and pr.paper.publicationDate between :start and :end";
-      List<String> papers = entityManager
+    sql =
+      "select pr.paper.id from paper_researcher pr where pr.researcher.id = :rid and pr.paper.publicationDate between :start and :end";
+    papers =
+      entityManager
         .createQuery(sql, String.class)
         .setParameter("rid", id)
         .setParameter("start", startDate)
         .setParameter("end", endDate)
         .getResultList();
-      domains = getDomains(papers);
-    } catch (Exception e) {
-      e.printStackTrace();
+    return papers;
+  }
+
+  @Override
+  public List<String> findDomains(String id, int startDate, int endDate) {
+    String sql;
+    List<String> domains;
+    sql = "select count(r) from researcher r where r.id = :id";
+    int count = Integer.parseInt(
+      entityManager
+        .createQuery(sql)
+        .setParameter("id", id)
+        .getSingleResult()
+        .toString()
+    );
+    if (count == 0) {
+      return Lists.newArrayList("no such researcher");
     }
+    sql =
+      "select pr.paper.id from paper_researcher pr where pr.researcher.id = :rid and pr.paper.publicationDate between :start and :end";
+    List<String> papers = entityManager
+      .createQuery(sql, String.class)
+      .setParameter("rid", id)
+      .setParameter("start", startDate)
+      .setParameter("end", endDate)
+      .getResultList();
+    domains = getDomains(papers);
+
     return domains;
   }
 
   @Override
-  public List<String> findAffiliations(
-    String rid,
-    @Nullable String start,
-    @Nullable String end
-  ) {
-    int startDate = 0;
-    int endDate = 9999;
+  public List<String> findAffiliations(String rid, int startDate, int endDate) {
     String sql;
     List<String> affiliations;
-    if (start != null) {
-      startDate = Integer.parseInt(start);
-    }
-    if (end != null) {
-      endDate = Integer.parseInt(end);
+    sql = "select count(r) from researcher r where r.id = :id";
+    int count = Integer.parseInt(
+      entityManager
+        .createQuery(sql)
+        .setParameter("id", rid)
+        .getSingleResult()
+        .toString()
+    );
+    if (count == 0) {
+      return Lists.newArrayList("no such researcher");
     }
     sql =
       "select ra.affiliation.id from researcher_affiliation ra where ra.researcher.id = :rid and ra.year between :a and :b";

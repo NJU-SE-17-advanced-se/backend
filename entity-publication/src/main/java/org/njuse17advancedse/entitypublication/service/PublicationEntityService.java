@@ -1,7 +1,5 @@
 package org.njuse17advancedse.entitypublication.service;
 
-import com.sun.istack.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entitypublication.dto.IPublication;
 import org.njuse17advancedse.entitypublication.dto.IPublicationBasic;
@@ -23,28 +21,7 @@ public class PublicationEntityService {
    * @return 出版物实体
    */
   public IPublication getPublicationById(String id) {
-    IPublication iPublication = new IPublication();
-    try {
-      iPublication = publicationRepository.findPublication(id);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return iPublication;
-  }
-
-  /**
-   * 根据相关信息查找机构
-   * @param name 名称
-   * @param start 开始时间
-   * @param end 结束时间
-   * @return 机构id列表
-   */
-  public List<String> getPublications(
-    @Nullable String name,
-    @Nullable String start,
-    @Nullable String end
-  ) {
-    return publicationRepository.findPublications(name, start, end);
+    return publicationRepository.findPublication(id);
   }
 
   /**
@@ -54,18 +31,8 @@ public class PublicationEntityService {
    * @param end 结束时间
    * @return 论文id列表
    */
-  public List<String> getPapersByIdOrTimeRange(
-    String id,
-    @Nullable String start,
-    @Nullable String end
-  ) {
-    List<String> papers = new ArrayList<>();
-    try {
-      papers = publicationRepository.getPapers(id, start, end);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return papers;
+  public List<String> getPapersByIdOrTimeRange(String id, int start, int end) {
+    return publicationRepository.getPapers(id, start, end);
   }
 
   /**
@@ -74,13 +41,7 @@ public class PublicationEntityService {
    * @return 出版物简要信息实体
    */
   public IPublicationBasic getIPublicationBasic(String id) {
-    IPublicationBasic iPublicationBasic = new IPublicationBasic();
-    try {
-      iPublicationBasic = publicationRepository.findPublicationBasic(id);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return iPublicationBasic;
+    return publicationRepository.findPublicationBasic(id);
   }
 
   /**
@@ -93,17 +54,10 @@ public class PublicationEntityService {
    */
   public ISearchResult searchByCond(
     String keyword,
-    @Nullable String start,
-    @Nullable String end,
+    int start,
+    int end,
     int page
   ) {
-    ISearchResult iSearchResult = new ISearchResult();
-    try {
-      iSearchResult =
-        publicationRepository.searchByCond(keyword, start, end, page);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return iSearchResult;
+    return publicationRepository.searchByCond(keyword, start, end, page);
   }
 }

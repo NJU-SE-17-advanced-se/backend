@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
@@ -15,10 +14,11 @@ import org.njuse17advancedse.entityresearcher.entity.JpaPaper;
 import org.njuse17advancedse.entityresearcher.entity.JpaResearcher;
 import org.njuse17advancedse.entityresearcher.repository.ResearcherRepository;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 class ResearcherEntityServiceTest {
-  @Mock
+  @MockBean
   private ResearcherRepository researcherRepository;
 
   private ResearcherEntityService researcherEntityService;
@@ -69,10 +69,10 @@ class ResearcherEntityServiceTest {
     jpaResearcher.setName("ycj");
     jpaResearcher.setId("IEEE_37085391626");
     Mockito
-      .when(researcherRepository.findPapers("test", "2017", "2019"))
+      .when(researcherRepository.findPapers("test", 2017, 2019))
       .thenReturn(Lists.newArrayList("test1"));
     assertEquals(
-      researcherEntityService.getPapersByRid("test", "2017", "2019"),
+      researcherEntityService.getPapersByRid("test", 2017, 2019),
       Lists.newArrayList("test1")
     );
   }
@@ -96,10 +96,10 @@ class ResearcherEntityServiceTest {
 
     jpaResearcher.setPapers(Lists.newArrayList(jpaPaper1, jpaPaper2));
     Mockito
-      .when(researcherRepository.findDomains("test", "2017", null))
+      .when(researcherRepository.findDomains("test", 2017, 9999))
       .thenReturn(Lists.newArrayList("domain2", "domain1"));
     assertEquals(
-      researcherEntityService.getDomainByRid("test", "2017", null),
+      researcherEntityService.getDomainByRid("test", 2017, 9999),
       Lists.newArrayList("domain2", "domain1")
     );
   }
@@ -107,10 +107,10 @@ class ResearcherEntityServiceTest {
   @Test
   void getAffiliationByRid() {
     Mockito
-      .when(researcherRepository.findAffiliations("test", "2015", "2018"))
+      .when(researcherRepository.findAffiliations("test", 2015, 2018))
       .thenReturn(Lists.newArrayList("a1"));
     assertEquals(
-      researcherEntityService.getAffiliationByRid("test", "2015", "2018"),
+      researcherEntityService.getAffiliationByRid("test", 2015, 2018),
       Lists.newArrayList("a1")
     );
   }
