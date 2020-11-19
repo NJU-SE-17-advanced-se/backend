@@ -3,6 +3,7 @@ package org.njuse17advancedse.taskimpactanalysis.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.njuse17advancedse.taskimpactanalysis.exception.NotFoundProblem;
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,9 @@ public class PaperController {
   public double getPaperImpact(
     @ApiParam(value = "论文 id") @PathVariable String id
   ) {
-    return service.getPaperImpact(id);
+    double res = service.getPaperImpact(id);
+    if (res < 0) throw new NotFoundProblem("Paper", id);
+    return res;
   }
 
   public PaperController(TaskImpactAnalysisService service) {
