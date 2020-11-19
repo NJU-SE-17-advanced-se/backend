@@ -21,6 +21,8 @@ public class IPaper {
 
   private String link;
 
+  private int citations;
+
   private List<String> researchers;
 
   private List<String> domains;
