@@ -41,6 +41,7 @@ public class AllRepository {
   public IDomain getDomain(String id) {
     IDomain res = new IDomain();
     IDomainBasic idb = getDomainBasic(id);
+    if (idb.getId() == null) return new IDomain();
     res.setName(idb.getName());
     res.setId(id);
     res.setPapers(getPapers(id));

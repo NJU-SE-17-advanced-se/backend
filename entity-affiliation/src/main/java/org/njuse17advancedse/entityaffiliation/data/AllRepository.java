@@ -23,7 +23,9 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IAffiliation getAffiliationById(String id) {
-    IAffiliation res = new IAffiliation(getAffiliationBasicInfoById(id));
+    IAffiliationBasic iab = getAffiliationBasicInfoById(id);
+    if (iab.getId() == null) return new IAffiliation();
+    IAffiliation res = new IAffiliation();
     res.setResearchers(getAffiliationResearchersById(id));
     res.setDomains(getAffiliationDomainsById(id));
     res.setPapers(getAffiliationPapersById(id));
