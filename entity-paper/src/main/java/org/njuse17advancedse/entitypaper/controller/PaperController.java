@@ -8,6 +8,8 @@ import java.util.List;
 import org.njuse17advancedse.entitypaper.dto.IPaper;
 import org.njuse17advancedse.entitypaper.dto.IPaperBasic;
 import org.njuse17advancedse.entitypaper.dto.IResult;
+import org.njuse17advancedse.entitypaper.exception.BadRequestProblem;
+import org.njuse17advancedse.entitypaper.exception.NotFoundProblem;
 import org.njuse17advancedse.entitypaper.service.PaperService;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,13 +31,26 @@ public class PaperController {
     ) String end,
     @ApiParam(value = "页数") @RequestParam int page
   ) {
+    int startYear = 0;
+    if (start != null) startYear = checkArgument(start);
+    int endYear = 0;
+    if (end != null) endYear = checkArgument(end);
+    if (startYear < 0 || startYear > endYear) {
+      throw new BadRequestProblem(startYear + "," + endYear, "Date error");
+    }
+    if (page <= 0) throw new BadRequestProblem(
+      Integer.toString(page),
+      "Invalid page"
+    );
     return service.getPapersByCond(keyword, start, end, page);
   }
 
   @ApiOperation("根据 id 获取论文详细信息")
   @GetMapping("/{id}")
   public IPaper getPaper(@ApiParam("论文 id") @PathVariable String id) {
-    return service.getIPaper(id);
+    IPaper paper = service.getIPaper(id);
+    if (paper.getId() == null) throw new NotFoundProblem(id);
+    return paper;
   }
 
   @ApiOperation("根据 id 获取论文简略信息")
@@ -43,7 +58,9 @@ public class PaperController {
   public IPaperBasic getPaperBasicInfo(
     @ApiParam("论文 id") @PathVariable String id
   ) {
-    return service.getPaperBasicInfo(id);
+    IPaperBasic paperBasic = service.getPaperBasicInfo(id);
+    if (paperBasic.getId() == null) throw new NotFoundProblem(id);
+    return paperBasic;
   }
 
   @ApiOperation("根据 id 获取论文所属领域")
@@ -73,5 +90,15 @@ public class PaperController {
     @RequestParam(required = false) String date
   ) {
     return service.getPapers(researcher, publication, date);
+  }
+
+  private int checkArgument(String arg) {
+    int value;
+    try {
+      value = Integer.parseInt(arg);
+      return value;
+    } catch (NumberFormatException e) {
+      throw new BadRequestProblem(arg, "can not parseInt");
+    }
   }
 }
