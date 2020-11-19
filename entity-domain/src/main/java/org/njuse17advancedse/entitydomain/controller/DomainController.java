@@ -8,6 +8,8 @@ import java.util.List;
 import org.njuse17advancedse.entitydomain.dto.IDomain;
 import org.njuse17advancedse.entitydomain.dto.IDomainBasic;
 import org.njuse17advancedse.entitydomain.dto.IResult;
+import org.njuse17advancedse.entitydomain.exception.BadRequestProblem;
+import org.njuse17advancedse.entitydomain.exception.NotFoundProblem;
 import org.njuse17advancedse.entitydomain.service.DomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,10 @@ public class DomainController {
     @ApiParam(value = "查询关键词") @RequestParam String keyword,
     @ApiParam(value = "页数") @RequestParam int page
   ) {
+    if (page <= 0) throw new BadRequestProblem(
+      Integer.toString(page),
+      "Invalid page"
+    );
     return service.getDomainsByCond(keyword, page);
   }
 
@@ -32,7 +38,9 @@ public class DomainController {
   public IDomain getDomainById(
     @ApiParam(value = "领域 id") @PathVariable String id
   ) {
-    return service.getDomainById(id);
+    IDomain domain = service.getDomainById(id);
+    if (domain.getId() == null) throw new NotFoundProblem(id);
+    return domain;
   }
 
   @ApiOperation("根据 id 获取某领域简略信息")
@@ -40,7 +48,9 @@ public class DomainController {
   public IDomainBasic getDomainBasicInfoById(
     @ApiParam(value = "领域 id") @PathVariable String id
   ) {
-    return service.getDomainBasicInfoById(id);
+    IDomainBasic domainBasic = service.getDomainBasicInfoById(id);
+    if (domainBasic.getId() == null) throw new NotFoundProblem(id);
+    return domainBasic;
   }
 
   @ApiOperation("根据领域 id 获取某领域下的论文 id")
