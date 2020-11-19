@@ -1,4 +1,4 @@
-package org.njuse17advancedse.entityresearcher.problem;
+package org.njuse17advancedse.taskpartnershipanalysis.problem;
 
 import java.net.URI;
 import org.zalando.problem.AbstractThrowableProblem;

@@ -7,10 +7,10 @@ import java.util.List;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
 import org.njuse17advancedse.entityresearcher.dto.ISearchResult;
-import org.njuse17advancedse.entityresearcher.problem.BadRequestProblem;
-import org.njuse17advancedse.entityresearcher.problem.ResearcherNotFoundProblem;
 import org.njuse17advancedse.entityresearcher.service.ResearcherEntityService;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 
 @Api(tags = { "学者" })
 @RequestMapping("/researchers")
@@ -25,7 +25,10 @@ public class ResearcherController {
     @ApiParam(value = "页数") @RequestParam int page
   ) {
     if (page <= 0) {
-      throw new BadRequestProblem(page + "", "page should >= 1");
+      throw Problem.valueOf(
+        Status.BAD_REQUEST,
+        String.format("Argument '%s' illegal, Page should >= 1", page)
+      );
     }
     return researcherEntityService.searchByCond(keyword, page);
   }
@@ -37,7 +40,10 @@ public class ResearcherController {
   ) {
     IResearcher iResearcher = researcherEntityService.getResearcherById(id);
     if (iResearcher.getName() == null) {
-      throw new ResearcherNotFoundProblem(id);
+      throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Researcher '%s' not found", id)
+      );
     }
     return iResearcher;
   }
@@ -51,7 +57,10 @@ public class ResearcherController {
       id
     );
     if (iResearcherBasic.getName() == null) {
-      throw new ResearcherNotFoundProblem(id);
+      throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Researcher '%s' not found", id)
+      );
     }
     return iResearcherBasic;
   }
@@ -76,7 +85,13 @@ public class ResearcherController {
       endDate = checkArgument(end);
     }
     if (startDate < 0 || startDate > endDate) {
-      throw new BadRequestProblem(startDate + "," + endDate, "Date error");
+      throw Problem.valueOf(
+        Status.BAD_REQUEST,
+        String.format(
+          "Argument '%s' illegal, Date error",
+          startDate + "," + endDate
+        )
+      );
     }
     List<String> papers = researcherEntityService.getPapersByRid(
       id,
@@ -85,7 +100,10 @@ public class ResearcherController {
     );
     if (papers.size() == 1) {
       if (papers.get(0).equals("no such researcher")) {
-        throw new ResearcherNotFoundProblem(id);
+        throw Problem.valueOf(
+          Status.NOT_FOUND,
+          String.format("Researcher '%s' not found", id)
+        );
       }
     }
     return papers;
@@ -111,7 +129,13 @@ public class ResearcherController {
       endDate = checkArgument(end);
     }
     if (startDate < 0 || startDate > endDate) {
-      throw new BadRequestProblem(startDate + "," + endDate, "Date error");
+      throw Problem.valueOf(
+        Status.BAD_REQUEST,
+        String.format(
+          "Argument '%s' illegal, Date error",
+          startDate + "," + endDate
+        )
+      );
     }
     List<String> domains = researcherEntityService.getDomainByRid(
       id,
@@ -120,7 +144,10 @@ public class ResearcherController {
     );
     if (domains.size() == 1) {
       if (domains.get(0).equals("no such researcher")) {
-        throw new ResearcherNotFoundProblem(id);
+        throw Problem.valueOf(
+          Status.NOT_FOUND,
+          String.format("Researcher '%s' not found", id)
+        );
       }
     }
     return domains;
@@ -149,7 +176,13 @@ public class ResearcherController {
       endDate = checkArgument(end);
     }
     if (startDate < 0 || startDate > endDate) {
-      throw new BadRequestProblem(startDate + "," + endDate, "Date error");
+      throw Problem.valueOf(
+        Status.BAD_REQUEST,
+        String.format(
+          "Argument '%s' illegal, Date error",
+          startDate + "," + endDate
+        )
+      );
     }
     List<String> affiliations = researcherEntityService.getAffiliationByRid(
       id,
@@ -158,7 +191,10 @@ public class ResearcherController {
     );
     if (affiliations.size() == 1) {
       if (affiliations.get(0).equals("no such researcher")) {
-        throw new ResearcherNotFoundProblem(id);
+        throw Problem.valueOf(
+          Status.NOT_FOUND,
+          String.format("Researcher '%s' not found", id)
+        );
       }
     }
     return affiliations;
@@ -175,7 +211,10 @@ public class ResearcherController {
       value = Integer.parseInt(arg);
       return value;
     } catch (NumberFormatException e) {
-      throw new BadRequestProblem(arg, "can not parseInt");
+      throw Problem.valueOf(
+        Status.BAD_REQUEST,
+        String.format("Argument '%s' illegal, can not parseInt", arg)
+      );
     }
   }
 

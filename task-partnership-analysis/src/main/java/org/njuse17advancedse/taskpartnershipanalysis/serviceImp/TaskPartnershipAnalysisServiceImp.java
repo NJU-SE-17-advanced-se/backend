@@ -6,14 +6,15 @@ import org.assertj.core.util.Lists;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IPaper;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IPaperBasic;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IResearcherNet;
+import org.njuse17advancedse.taskpartnershipanalysis.repository.ResearcherRepository;
 import org.njuse17advancedse.taskpartnershipanalysis.service.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TaskPartnershipAnalysisServiceImp
   implements TaskPartnershipAnalysisService {
+  private final ResearcherRepository researcherRepository;
+
   private final ResearcherEntityService researcherEntityService;
 
   private final PaperEntityService paperEntityService;
@@ -23,11 +24,13 @@ public class TaskPartnershipAnalysisServiceImp
   private final TaskImpactAnalysisService taskImpactAnalysisService;
 
   public TaskPartnershipAnalysisServiceImp(
+    ResearcherRepository researcherRepository,
     ResearcherEntityService researcherEntityService,
     PaperEntityService paperEntityService,
     DomainEntityService domainEntityService,
     TaskImpactAnalysisService taskImpactAnalysisService
   ) {
+    this.researcherRepository = researcherRepository;
     this.researcherEntityService = researcherEntityService;
     this.paperEntityService = paperEntityService;
     this.domainEntityService = domainEntityService;
@@ -35,56 +38,12 @@ public class TaskPartnershipAnalysisServiceImp
   }
 
   @Override
-  public ResponseEntity<List<String>> getPartners(String researcherId) {
-    List<String> partners = new ArrayList<>();
-    try {
-      partners = getPartnersById(researcherId);
-      return new ResponseEntity<>(partners, HttpStatus.OK);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return new ResponseEntity<>(partners, HttpStatus.EXPECTATION_FAILED);
-  }
-
-  /**
-   * 根据作者id获得论文列表
-   * @param researcherId 作者id
-   * @return 论文id列表
-   */
-  private List<String> getPartnersById(String researcherId) {
-    List<String> partners = new ArrayList<>();
-    List<String> papers = new ArrayList<>();
-    //获得作者的所有论文
-    try {
-      papers =
-        researcherEntityService.getPaperByResearcherId(
-          researcherId,
-          null,
-          null
-        );
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    for (String paperId : papers) {
-      //根据获得的论文id获得论文的简要信息
-      IPaperBasic iPaperBasic = new IPaperBasic();
-      try {
-        iPaperBasic = paperEntityService.getPaperBasicInfo(paperId);
-        if (iPaperBasic.getResearchers() != null) {
-          partners.addAll(iPaperBasic.getResearchers());
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-    HashSet<String> hashSet = new HashSet<>(partners);
-    partners.clear();
-    partners.addAll(hashSet);
-    return partners;
+  public List<String> getPartners(String researcherId) {
+    return researcherRepository.getPartnersByRid(researcherId);
   }
 
   @Override
-  public ResponseEntity<IResearcherNet> getPartnership(
+  public IResearcherNet getPartnership(
     String researcherId,
     String startDate,
     String endDate
@@ -112,6 +71,7 @@ public class TaskPartnershipAnalysisServiceImp
         }
       }
     }
+
     HashSet<String> set = new HashSet<>(referenceIds);
     referenceIds.clear();
     referenceIds.addAll(set);
@@ -129,7 +89,7 @@ public class TaskPartnershipAnalysisServiceImp
     //    for(Double[] doubles:iResearcherNet.getWeight()){
     //      System.out.println(doubles[0]+","+doubles[1]);
     //    }
-    return new ResponseEntity<>(iResearcherNet, HttpStatus.OK);
+    return iResearcherNet;
   }
 
   /**
@@ -222,30 +182,24 @@ public class TaskPartnershipAnalysisServiceImp
     String endDate
   ) {
     List<IPaper> papers = new ArrayList<>();
-    try {
-      List<String> paperIds = researcherEntityService.getPaperByResearcherId(
-        researcherId,
-        startDate,
-        endDate
-      );
-      if (paperIds != null) {
-        for (String pid : paperIds) {
-          IPaper iPaper = paperEntityService.getPaper(pid);
-          if (iPaper != null) {
-            papers.add(iPaper);
-          }
+    List<String> paperIds = researcherEntityService.getPaperByResearcherId(
+      researcherId,
+      startDate,
+      endDate
+    );
+    if (paperIds != null) {
+      for (String pid : paperIds) {
+        IPaper iPaper = paperEntityService.getPaper(pid);
+        if (iPaper != null) {
+          papers.add(iPaper);
         }
       }
-    } catch (Exception e) {
-      e.printStackTrace();
     }
     return papers;
   }
 
   @Override
-  public ResponseEntity<Map<String, Double>> getPotentialPartners(
-    String researchId
-  ) {
+  public Map<String, Double> getPotentialPartners(String researchId) {
     Map<String, Double> potentialPartnerNet = new HashMap<>();
 
     //通过相似的研究领域获得推荐合作者候选
@@ -253,35 +207,34 @@ public class TaskPartnershipAnalysisServiceImp
       researchId
     );
 
-    List<String> domains = new ArrayList<>();
-    try {
-      domains = researcherEntityService.getDomainsByResearcherId(researchId);
-      List<IPaperBasic> iPaperBasics = getPaperBasicsById(researchId);
+    List<String> domains = researcherEntityService.getDomainsByResearcherId(
+      researchId
+    );
+    List<IPaperBasic> iPaperBasics = getPaperBasicsById(researchId);
 
-      //通过合作关系网络获得推荐合作者候选
-      List<String> candidate_cooperation = getPartnersById(researchId);
+    //通过合作关系网络获得推荐合作者候选
+    List<String> candidate_cooperation = researcherRepository.getPartnersByRid(
+      researchId
+    );
 
-      candidate_domain.addAll(candidate_cooperation);
-      //取并集
-      List<String> candidate = candidate_domain
-        .stream()
-        .distinct()
-        .collect(Collectors.toList());
-      for (String partner : candidate) {
-        List<IPaperBasic> iPaperBasics2 = getPaperBasicsById(partner);
-        //计算三个评估方向的得分加权和
-        //TODO 权值待确定
-        Double score =
-          countByImpact(partner) + //影响力数值评分
-          countByDomain(domains, partner) + //领域契合度数值评分
-          countByCooperation(iPaperBasics, iPaperBasics2); //合作程度量化数值评分
-        potentialPartnerNet.put(
-          partner,
-          Double.parseDouble(String.format("%.2f", score))
-        );
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+    candidate_domain.addAll(candidate_cooperation);
+    //取并集
+    List<String> candidate = candidate_domain
+      .stream()
+      .distinct()
+      .collect(Collectors.toList());
+    for (String partner : candidate) {
+      List<IPaperBasic> iPaperBasics2 = getPaperBasicsById(partner);
+      //计算三个评估方向的得分加权和
+      //TODO 权值待确定
+      Double score =
+        countByImpact(partner) + //影响力数值评分
+        countByDomain(domains, partner) + //领域契合度数值评分
+        countByCooperation(iPaperBasics, iPaperBasics2); //合作程度量化数值评分
+      potentialPartnerNet.put(
+        partner,
+        Double.parseDouble(String.format("%.2f", score))
+      );
     }
 
     //保留得分最高的前十个数据
@@ -299,7 +252,7 @@ public class TaskPartnershipAnalysisServiceImp
         }
       }
     }
-    return new ResponseEntity<>(potentialPartnerNet, HttpStatus.OK);
+    return potentialPartnerNet;
   }
 
   /**
@@ -308,16 +261,12 @@ public class TaskPartnershipAnalysisServiceImp
    * @return 论文列表
    */
   private List<IPaperBasic> getPaperBasicsById(String researchId) {
-    List<String> papers = new ArrayList<>();
+    List<String> papers;
     List<IPaperBasic> iPaperBasics = new ArrayList<>();
-    try {
-      papers =
-        researcherEntityService.getPaperByResearcherId(researchId, null, null);
-      for (String pid : papers) {
-        iPaperBasics.add(paperEntityService.getPaperBasicInfo(pid));
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+    papers =
+      researcherEntityService.getPaperByResearcherId(researchId, null, null);
+    for (String pid : papers) {
+      iPaperBasics.add(paperEntityService.getPaperBasicInfo(pid));
     }
 
     return iPaperBasics;
@@ -336,57 +285,54 @@ public class TaskPartnershipAnalysisServiceImp
     double score = 0.0;
     Calendar cal = Calendar.getInstance();
     int nowYear = cal.get(Calendar.YEAR) + 1;
-    try {
-      //通过论文简要信息获得year-num的map
-      HashMap<String, Integer> mapOfYearAndCoNumber = new HashMap<>();
-      HashMap<String, Integer> mapOfYearAndSum1 = new HashMap<>();
-      HashMap<String, Integer> mapOfYearAndSum2 = new HashMap<>();
-      for (IPaperBasic iPaperBasic : iPaperBasics1) {
-        Integer count = mapOfYearAndSum1.get(iPaperBasic.getPublicationDate());
-        mapOfYearAndSum1.put(
-          iPaperBasic.getPublicationDate(),
-          (count == null) ? 1 : count + 1
-        );
-      }
-      for (IPaperBasic iPaperBasic : iPaperBasics2) {
-        Integer count = mapOfYearAndSum2.get(iPaperBasic.getPublicationDate());
-        mapOfYearAndSum2.put(
-          iPaperBasic.getPublicationDate(),
-          (count == null) ? 1 : count + 1
-        );
-      }
-      for (String year : mapOfYearAndSum1.keySet()) {
-        List<String> p1 = new ArrayList<>();
-        for (IPaperBasic iPaperBasic : iPaperBasics1) {
-          if (iPaperBasic.getPublicationDate() != null) {
-            if (iPaperBasic.getPublicationDate().equals(year)) {
-              p1.add(iPaperBasic.getId());
-            }
-          }
-        }
-        List<String> p2 = new ArrayList<>();
-        for (IPaperBasic iPaperBasic : iPaperBasics2) {
-          if (iPaperBasic.getPublicationDate().equals(year)) {
-            p2.add(iPaperBasic.getId());
-          }
-        }
-        p1.retainAll(p2);
-        if (p1.size() >= 1) {
-          mapOfYearAndCoNumber.put(year, p1.size());
-        }
-      }
 
-      for (String year : mapOfYearAndCoNumber.keySet()) {
-        double co_num = mapOfYearAndCoNumber.get(year);
-        double sum1 = mapOfYearAndSum1.get(year);
-        double sum2 = mapOfYearAndSum2.get(year);
-        //计算公式为e的（当前年份-合作发生年份）分之一次方*(当前年份合作发表论文数/（当前年份两者发表论文总数）)
-        score +=
-          Math.pow(Math.E, (double) 1 / (nowYear - Integer.parseInt(year))) *
-          (co_num / (sum1 + sum2));
+    //通过论文简要信息获得year-num的map
+    HashMap<String, Integer> mapOfYearAndCoNumber = new HashMap<>();
+    HashMap<String, Integer> mapOfYearAndSum1 = new HashMap<>();
+    HashMap<String, Integer> mapOfYearAndSum2 = new HashMap<>();
+    for (IPaperBasic iPaperBasic : iPaperBasics1) {
+      Integer count = mapOfYearAndSum1.get(iPaperBasic.getPublicationDate());
+      mapOfYearAndSum1.put(
+        iPaperBasic.getPublicationDate(),
+        (count == null) ? 1 : count + 1
+      );
+    }
+    for (IPaperBasic iPaperBasic : iPaperBasics2) {
+      Integer count = mapOfYearAndSum2.get(iPaperBasic.getPublicationDate());
+      mapOfYearAndSum2.put(
+        iPaperBasic.getPublicationDate(),
+        (count == null) ? 1 : count + 1
+      );
+    }
+    for (String year : mapOfYearAndSum1.keySet()) {
+      List<String> p1 = new ArrayList<>();
+      for (IPaperBasic iPaperBasic : iPaperBasics1) {
+        if (iPaperBasic.getPublicationDate() != null) {
+          if (iPaperBasic.getPublicationDate().equals(year)) {
+            p1.add(iPaperBasic.getId());
+          }
+        }
       }
-    } catch (Exception e) {
-      e.printStackTrace();
+      List<String> p2 = new ArrayList<>();
+      for (IPaperBasic iPaperBasic : iPaperBasics2) {
+        if (iPaperBasic.getPublicationDate().equals(year)) {
+          p2.add(iPaperBasic.getId());
+        }
+      }
+      p1.retainAll(p2);
+      if (p1.size() >= 1) {
+        mapOfYearAndCoNumber.put(year, p1.size());
+      }
+    }
+
+    for (String year : mapOfYearAndCoNumber.keySet()) {
+      double co_num = mapOfYearAndCoNumber.get(year);
+      double sum1 = mapOfYearAndSum1.get(year);
+      double sum2 = mapOfYearAndSum2.get(year);
+      //计算公式为e的（当前年份-合作发生年份）分之一次方*(当前年份合作发表论文数/（当前年份两者发表论文总数）)
+      score +=
+        Math.pow(Math.E, (double) 1 / (nowYear - Integer.parseInt(year))) *
+        (co_num / (sum1 + sum2));
     }
     score = Double.parseDouble(String.format("%.2f", score));
     return score;
@@ -399,18 +345,15 @@ public class TaskPartnershipAnalysisServiceImp
    * @return 量化数值
    */
   private Double countByDomain(List<String> domains, String partnerId) {
-    double score = 0.0;
-    try {
-      List<String> partnerDomains = researcherEntityService.getDomainsByResearcherId(
-        partnerId
-      );
-      List<String> intersection = new ArrayList<>(domains);
-      intersection.retainAll(partnerDomains);
-      score =
-        (double) intersection.size() / (domains.size() + partnerDomains.size());
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    double score;
+
+    List<String> partnerDomains = researcherEntityService.getDomainsByResearcherId(
+      partnerId
+    );
+    List<String> intersection = new ArrayList<>(domains);
+    intersection.retainAll(partnerDomains);
+    score =
+      (double) intersection.size() / (domains.size() + partnerDomains.size());
     return score;
   }
 
@@ -420,12 +363,8 @@ public class TaskPartnershipAnalysisServiceImp
    * @return 影响力数值
    */
   private Double countByImpact(String partnerId) {
-    Double impact = 0.0;
-    try {
-      impact = taskImpactAnalysisService.getImpactByResearcherId(partnerId);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    Double impact;
+    impact = taskImpactAnalysisService.getImpactByResearcherId(partnerId);
     return impact;
   }
 
@@ -436,22 +375,18 @@ public class TaskPartnershipAnalysisServiceImp
    */
   private List<String> getResearchersOfSimilarDomainById(String researchId) {
     List<String> researcherOfSimilarDomain = new ArrayList<>();
-    try {
-      List<String> domains = researcherEntityService.getDomainsByResearcherId(
-        researchId
+    List<String> domains = researcherEntityService.getDomainsByResearcherId(
+      researchId
+    );
+    for (String domainId : domains) {
+      List<String> researchers = domainEntityService.getResearcherByDomain(
+        domainId
       );
-      for (String domainId : domains) {
-        List<String> researchers = domainEntityService.getResearcherByDomain(
-          domainId
-        );
-        researcherOfSimilarDomain.addAll(researchers);
-      }
-      HashSet<String> hashSet = new HashSet<>(researcherOfSimilarDomain);
-      researcherOfSimilarDomain.clear();
-      researcherOfSimilarDomain.addAll(hashSet);
-    } catch (Exception e) {
-      e.printStackTrace();
+      researcherOfSimilarDomain.addAll(researchers);
     }
+    HashSet<String> hashSet = new HashSet<>(researcherOfSimilarDomain);
+    researcherOfSimilarDomain.clear();
+    researcherOfSimilarDomain.addAll(hashSet);
     return researcherOfSimilarDomain;
   }
 }
