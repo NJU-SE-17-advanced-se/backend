@@ -64,15 +64,13 @@ public class JpaResearcherRepository implements ResearcherRepository {
     HashSet<String> hashSet = new HashSet<>();
     String sql;
     if (papers.size() > 0) {
-      for (String pid : papers) {
-        sql =
-          "select pd.domain.id from paper_domain pd where pd.paper.id = :pid";
-        List<String> domain = entityManager
-          .createQuery(sql, String.class)
-          .setParameter("pid", pid)
-          .getResultList();
-        hashSet.addAll(domain);
-      }
+      sql =
+        "select pd.domain.id from paper_domain pd where pd.paper.id in :papers";
+      List<String> domain = entityManager
+        .createQuery(sql, String.class)
+        .setParameter("papers", papers)
+        .getResultList();
+      hashSet.addAll(domain);
       domains = new ArrayList<>(hashSet);
     }
     return domains;

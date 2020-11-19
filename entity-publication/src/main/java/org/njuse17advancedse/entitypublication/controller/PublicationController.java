@@ -7,10 +7,10 @@ import java.util.List;
 import org.njuse17advancedse.entitypublication.dto.IPublication;
 import org.njuse17advancedse.entitypublication.dto.IPublicationBasic;
 import org.njuse17advancedse.entitypublication.dto.ISearchResult;
-import org.njuse17advancedse.entitypublication.problem.BadRequestProblem;
-import org.njuse17advancedse.entitypublication.problem.PublicationNotFoundProblem;
 import org.njuse17advancedse.entitypublication.service.PublicationEntityService;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 
 @Api(tags = { "出版物" })
 @RequestMapping("/publications")
@@ -39,10 +39,19 @@ public class PublicationController {
       endDate = checkArgument(end);
     }
     if (startDate < 0 || startDate > endDate) {
-      throw new BadRequestProblem(startDate + "," + endDate, "Date error");
+      throw Problem.valueOf(
+        Status.BAD_REQUEST,
+        String.format(
+          "Argument '%s' illegal, Date error",
+          startDate + "," + endDate
+        )
+      );
     }
     if (page <= 0) {
-      throw new BadRequestProblem(page + "", "page should >= 1");
+      throw Problem.valueOf(
+        Status.BAD_REQUEST,
+        String.format("Argument '%s' illegal, Page should >= 1", page)
+      );
     }
     return publicationEntityService.searchByCond(
       keyword,
@@ -59,7 +68,10 @@ public class PublicationController {
   ) {
     IPublication iPublication = publicationEntityService.getPublicationById(id);
     if (iPublication.getName() == null) {
-      throw new PublicationNotFoundProblem(id);
+      throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Publication '%s' not found", id)
+      );
     }
     return iPublication;
   }
@@ -73,7 +85,10 @@ public class PublicationController {
       id
     );
     if (iPublicationBasic.getName() == null) {
-      throw new PublicationNotFoundProblem(id);
+      throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Publication '%s' not found", id)
+      );
     }
     return iPublicationBasic;
   }
@@ -96,7 +111,13 @@ public class PublicationController {
       endDate = checkArgument(end);
     }
     if (startDate < 0 || startDate > endDate) {
-      throw new BadRequestProblem(startDate + "," + endDate, "Date error");
+      throw Problem.valueOf(
+        Status.BAD_REQUEST,
+        String.format(
+          "Argument '%s' illegal, Date error",
+          startDate + "," + endDate
+        )
+      );
     }
     List<String> papers = publicationEntityService.getPapersByIdOrTimeRange(
       id,
@@ -105,7 +126,10 @@ public class PublicationController {
     );
     if (papers.size() == 1) {
       if (papers.get(0).equals("no such publication")) {
-        throw new PublicationNotFoundProblem(id);
+        throw Problem.valueOf(
+          Status.NOT_FOUND,
+          String.format("Publication '%s' not found", id)
+        );
       }
     }
     return papers;
@@ -122,7 +146,10 @@ public class PublicationController {
       value = Integer.parseInt(arg);
       return value;
     } catch (NumberFormatException e) {
-      throw new BadRequestProblem(arg, "can not parseInt");
+      throw Problem.valueOf(
+        Status.BAD_REQUEST,
+        String.format("Argument '%s' illegal, can not parseInt", arg)
+      );
     }
   }
 

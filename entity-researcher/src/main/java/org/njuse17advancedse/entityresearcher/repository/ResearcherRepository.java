@@ -1,6 +1,5 @@
 package org.njuse17advancedse.entityresearcher.repository;
 
-import com.sun.istack.Nullable;
 import java.util.List;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
