@@ -1,5 +1,6 @@
 package org.njuse17advancedse.taskimpactanalysis.controller;
 
+import org.njuse17advancedse.taskimpactanalysis.exception.NotFoundProblem;
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,12 @@ public class TaskImpactAnalysisController {
     @PathVariable String id,
     @RequestParam(defaultValue = "hIndex", required = false) String type
   ) {
-    if (type.equals("hIndex")) return service.getHIndex(id);
+    if (type.equals("hIndex")) {
+      int res = service.getHIndex(id);
+      if (res == -1) throw new NotFoundProblem("Researcher", id);
+      if (res == -2) throw new NotFoundProblem("Paper", "unknown id");
+      return res;
+    }
     return -1;
   }
 
@@ -29,7 +35,9 @@ public class TaskImpactAnalysisController {
    */
   @GetMapping(value = "/papers/{id}")
   public double getPaperImpact(@PathVariable String id) {
-    return service.getPaperImpact(id);
+    double res = service.getPaperImpact(id);
+    if (res < 0) throw new NotFoundProblem("Paper", id);
+    return res;
   }
 
   @GetMapping(value = "")

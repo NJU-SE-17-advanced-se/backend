@@ -3,6 +3,7 @@ package org.njuse17advancedse.taskimpactanalysis.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.njuse17advancedse.taskimpactanalysis.exception.NotFoundProblem;
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,12 @@ public class ResearcherController {
       required = false
     ) String type
   ) {
-    if (type.equals("hIndex")) return service.getHIndex(id);
+    if (type.equals("hIndex")) {
+      int res = service.getHIndex(id);
+      if (res == -1) throw new NotFoundProblem("Researcher", id);
+      if (res == -2) throw new NotFoundProblem("Paper", "unknown id");
+      return res;
+    }
     return -1;
   }
 
