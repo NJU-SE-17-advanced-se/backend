@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
+import org.njuse17advancedse.taskcitationanalysis.exception.PaperNotFoundProblem;
+import org.njuse17advancedse.taskcitationanalysis.exception.ResearcherNotFoundProblem;
 import org.njuse17advancedse.taskcitationanalysis.service.TaskCitationAnalysisService;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +28,12 @@ public class ResearcherController {
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
     if (type.equals("quoted")) {
-      return service.getResearcherQuotedResearcher(id);
+      List<String> res = service.getResearcherQuotedResearcher(id);
+      if (checkProblem(res)) return res;
     }
     if (type.equals("quoting")) {
-      return service.getResearcherQuotingResearcher(id);
+      List<String> res = service.getResearcherQuotingResearcher(id);
+      if (checkProblem(res)) return res;
     }
     return null;
   }
@@ -46,10 +50,14 @@ public class ResearcherController {
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
     if (type.equals("quoted")) {
-      return service.getQuotedPapersByResearcherId(id);
+      Map<String, List<String>> res = service.getQuotedPapersByResearcherId(id);
+      if (checkProblem(res)) return res;
     }
     if (type.equals("quoting")) {
-      return service.getQuotingPapersByResearcherId(id);
+      Map<String, List<String>> res = service.getQuotingPapersByResearcherId(
+        id
+      );
+      if (checkProblem(res)) return res;
     }
     return null;
   }
@@ -66,15 +74,47 @@ public class ResearcherController {
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
     if (type.equals("quoted")) {
-      return service.getResearcherPaperQuotedResearcher(id);
+      Map<String, List<String>> res = service.getResearcherPaperQuotedResearcher(
+        id
+      );
+      if (checkProblem(res)) return res;
     }
     if (type.equals("quoting")) {
-      return service.getResearcherPaperQuotingResearcher(id);
+      Map<String, List<String>> res = service.getResearcherPaperQuotingResearcher(
+        id
+      );
+      if (checkProblem(res)) return res;
     }
     return null;
   }
 
   public ResearcherController(TaskCitationAnalysisService service) {
     this.service = service;
+  }
+
+  private boolean checkProblem(Map<String, List<String>> res) {
+    if (res.containsKey("Not Found")) {
+      List<String> parms = res.get("Not Found");
+      if (
+        parms.get(0).equals("Researcher")
+      ) throw new ResearcherNotFoundProblem(parms.get(1));
+      if (parms.get(0).equals("Paper")) throw new PaperNotFoundProblem(
+        parms.get(1)
+      );
+    }
+    return true;
+  }
+
+  private boolean checkProblem(List<String> res) {
+    if (res.size() != 3) return true;
+    if (res.get(0).equals("Not Found")) {
+      if (res.get(1).equals("Researcher")) throw new ResearcherNotFoundProblem(
+        res.get(2)
+      );
+      if (res.get(1).equals("Paper")) throw new PaperNotFoundProblem(
+        res.get(2)
+      );
+    }
+    return true;
   }
 }
