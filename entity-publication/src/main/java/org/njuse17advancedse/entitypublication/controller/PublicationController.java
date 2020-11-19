@@ -38,6 +38,7 @@ public class PublicationController {
     if (end != null) {
       endDate = checkArgument(end);
     }
+
     if (startDate < 0 || startDate > endDate) {
       throw Problem.valueOf(
         Status.BAD_REQUEST,
