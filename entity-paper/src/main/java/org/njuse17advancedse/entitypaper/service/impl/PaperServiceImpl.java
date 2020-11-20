@@ -1,6 +1,7 @@
 package org.njuse17advancedse.entitypaper.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.njuse17advancedse.entitypaper.data.AllRepository;
 import org.njuse17advancedse.entitypaper.dto.IPaper;
@@ -17,7 +18,8 @@ public class PaperServiceImpl implements PaperService {
 
   public IPaper getIPaper(String paperId) {
     try {
-      return repository.getIPaper(paperId);
+      if (repository.existsById(paperId)) return repository.getIPaper(paperId);
+      return new IPaper();
     } catch (Exception e) {
       return new IPaper();
     }
@@ -77,7 +79,8 @@ public class PaperServiceImpl implements PaperService {
   //获取
   public IPaperBasic getPaperBasicInfo(String id) {
     try {
-      return repository.getPaperBasic(id);
+      if (repository.existsById(id)) return repository.getPaperBasic(id);
+      return new IPaperBasic();
     } catch (Exception e) {
       return new IPaperBasic();
     }
@@ -85,19 +88,13 @@ public class PaperServiceImpl implements PaperService {
 
   //获取论文所属领域
   public List<String> getDomains(String id) {
-    try {
-      return repository.getDomains(id);
-    } catch (Exception e) {
-      return new ArrayList<>(0);
-    }
+    if (repository.existsById(id)) return repository.getDomains(id);
+    return Collections.singletonList("Not Found");
   }
 
   public List<String> getCitations(String id) {
-    try {
-      return repository.getCitations(id);
-    } catch (Exception e) {
-      return new ArrayList<>();
-    }
+    if (repository.existsById(id)) return repository.getCitations(id);
+    return Collections.singletonList("Not Found");
   }
 
   public IResult getPapersByCond(
