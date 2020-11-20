@@ -34,12 +34,14 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IAffiliationBasic getAffiliationBasicInfoById(String id) {
-    String exist = "select id from affiliation where id='" + id + "'";
-    if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
-      return new IAffiliationBasic();
-    }
     String sql = "select * from affiliation where id='" + id + "'";
     return jdbcTemplate.queryForObject(sql, new AffiliationBasicRowMapper());
+  }
+
+  @Transactional(readOnly = true)
+  public boolean existsById(String id) {
+    String exist = "select id from affiliation where id='" + id + "'";
+    return jdbcTemplate.queryForList(exist, String.class).size() != 0;
   }
 
   @Transactional(readOnly = true)
