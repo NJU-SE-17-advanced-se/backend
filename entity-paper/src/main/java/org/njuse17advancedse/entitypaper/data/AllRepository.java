@@ -115,10 +115,6 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IPaper getIPaper(String paperId) {
-    String exist = "select id from paper where id='" + paperId + "'";
-    if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
-      return new IPaper();
-    }
     IPaperBasic ipb = getPaperBasic(paperId);
     IPaper res = new IPaper(ipb);
     String referenceSQL =
@@ -134,10 +130,6 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IPaperBasic getPaperBasic(String paperId) {
-    String exist = "select id from paper where id='" + paperId + "'";
-    if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
-      return new IPaperBasic();
-    }
     String sql =
       "select paper.*, group_concat(distinct paper_researcher.rid) as researchers" +
       " from `paper`,`publication`,`paper_researcher` " +
@@ -147,6 +139,12 @@ public class AllRepository {
       "and paper.id =paper_researcher.pid " +
       "group by paper.id;";
     return jdbcTemplate.queryForObject(sql, new PaperBasicRowMapper());
+  }
+
+  @Transactional(readOnly = true)
+  public boolean existsById(String paperId) {
+    String exist = "select id from paper where id='" + paperId + "'";
+    return jdbcTemplate.queryForList(exist, String.class).size() != 0;
   }
 
   @Transactional(readOnly = true)
