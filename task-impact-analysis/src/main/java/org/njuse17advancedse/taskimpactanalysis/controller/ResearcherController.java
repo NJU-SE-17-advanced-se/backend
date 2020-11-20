@@ -3,9 +3,10 @@ package org.njuse17advancedse.taskimpactanalysis.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.njuse17advancedse.taskimpactanalysis.exception.NotFoundProblem;
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 
 @Api(tags = { "学者" })
 @RestController
@@ -27,8 +28,14 @@ public class ResearcherController {
   ) {
     if (type.equals("hIndex")) {
       int res = service.getHIndex(id);
-      if (res == -1) throw new NotFoundProblem("Researcher", id);
-      if (res == -2) throw new NotFoundProblem("Paper", "unknown id");
+      if (res == -1) throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Researcher '%s' not found", id)
+      );
+      if (res == -2) throw Problem.valueOf(
+        Status.INTERNAL_SERVER_ERROR,
+        String.format("Author data corrupted", id)
+      );
       return res;
     }
     return -1;

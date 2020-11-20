@@ -47,7 +47,7 @@ public class TaskImpactAnalysisServiceImpl
       }
       return res;
     } catch (Exception e) {
-      if (e.getMessage().contains("id")) return -1;
+      if (e.getMessage().contains("Researcher")) return -1;
       return -2;
     }
   }
