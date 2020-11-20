@@ -5,10 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Map;
-import org.njuse17advancedse.taskcitationanalysis.exception.PaperNotFoundProblem;
-import org.njuse17advancedse.taskcitationanalysis.exception.ResearcherNotFoundProblem;
 import org.njuse17advancedse.taskcitationanalysis.service.TaskCitationAnalysisService;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 
 @Api(tags = { "学者" })
 @RequestMapping("/researchers")
@@ -95,11 +95,9 @@ public class ResearcherController {
   private boolean checkProblem(Map<String, List<String>> res) {
     if (res.containsKey("Not Found")) {
       List<String> parms = res.get("Not Found");
-      if (
-        parms.get(0).equals("Researcher")
-      ) throw new ResearcherNotFoundProblem(parms.get(1));
-      if (parms.get(0).equals("Paper")) throw new PaperNotFoundProblem(
-        parms.get(1)
+      throw Problem.valueOf(
+        Status.INTERNAL_SERVER_ERROR,
+        "Author Data Corrupted"
       );
     }
     return true;
@@ -108,11 +106,9 @@ public class ResearcherController {
   private boolean checkProblem(List<String> res) {
     if (res.size() != 3) return true;
     if (res.get(0).equals("Not Found")) {
-      if (res.get(1).equals("Researcher")) throw new ResearcherNotFoundProblem(
-        res.get(2)
-      );
-      if (res.get(1).equals("Paper")) throw new PaperNotFoundProblem(
-        res.get(2)
+      throw Problem.valueOf(
+        Status.INTERNAL_SERVER_ERROR,
+        "Author Data Corrupted"
       );
     }
     return true;

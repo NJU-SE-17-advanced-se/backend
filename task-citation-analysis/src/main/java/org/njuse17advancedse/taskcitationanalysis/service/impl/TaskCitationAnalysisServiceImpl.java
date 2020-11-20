@@ -170,7 +170,9 @@ public class TaskCitationAnalysisServiceImpl
       List<String> pList = r.getPapers();
       for (String s : pList) {
         List<String> quotedPapers = getQuotedPapersByPaperId(s);
-        if (quotedPapers.get(0).equals("Not Found")) return quotedPapers;
+        if (
+          quotedPapers.size() > 0 && quotedPapers.get(0).equals("Not Found")
+        ) return quotedPapers;
         for (String tp : quotedPapers) {
           try {
             IPaper p = paperService.getPaper(tp);
@@ -193,7 +195,9 @@ public class TaskCitationAnalysisServiceImpl
       List<String> pList = r.getPapers();
       for (String s : pList) {
         List<String> quotingPapers = getQuotingPapersByPaperId(s);
-        if (quotingPapers.get(0).equals("Not Found")) return quotingPapers;
+        if (
+          quotingPapers.size() > 0 && quotingPapers.get(0).equals("Not Found")
+        ) return quotingPapers;
         for (String tp : quotingPapers) {
           IPaper p = paperService.getPaper(tp);
           set.addAll(p.getResearchers());
@@ -336,9 +340,10 @@ public class TaskCitationAnalysisServiceImpl
   private Map<String, List<String>> getProblemMap(String message) {
     Map<String, List<String>> res = new HashMap<>();
     List<String> parms = new ArrayList<>();
-    if (message.contains("Researcher")) parms.add("Researcher");
-    if (message.contains("Paper")) parms.add("Paper");
-    parms.add(getIdFromExceptionMessage(message));
+    //    if (message.contains("Researcher")) parms.add("Researcher");
+    //    else if (message.contains("Paper")) parms.add("Paper");
+    //    else
+    parms.add("Unknown");
     res.put("Not Found", parms);
     return res;
   }
@@ -346,14 +351,11 @@ public class TaskCitationAnalysisServiceImpl
   private List<String> getProblemList(String message) {
     List<String> res = new ArrayList<>();
     res.add("Not Found");
-    if (message.contains("Researcher")) res.add("Researcher");
-    if (message.contains("Paper")) res.add("Paper");
-    res.add(getIdFromExceptionMessage(message));
+    //    if (message.contains("Researcher")) res.add("Researcher");
+    //    else if (message.contains("Paper")) res.add("Paper");
+    //    else
+    res.add("Unknown");
+    res.add("Unknown Id");
     return res;
-  }
-
-  private String getIdFromExceptionMessage(String message) {
-    System.out.println(message);
-    return message.split("\'")[1];
   }
 }
