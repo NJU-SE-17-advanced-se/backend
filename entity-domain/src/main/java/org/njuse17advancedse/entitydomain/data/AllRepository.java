@@ -51,10 +51,6 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IDomainBasic getDomainBasic(String id) {
-    String exist = "select id from `domain` where id='" + id + "'";
-    if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
-      return new IDomainBasic();
-    }
     String sql = "select * from `domain` where id='" + id + "'";
     return jdbcTemplate.queryForObject(sql, new DomainBasicRowMapper());
   }
@@ -75,6 +71,12 @@ public class AllRepository {
       "," +
       PAGE_SIZE;
     return new IResult(jdbcTemplate.queryForList(sql, String.class), count);
+  }
+
+  @Transactional(readOnly = true)
+  public boolean existsById(String id) {
+    String exist = "select id from `domain` where id='" + id + "'";
+    return jdbcTemplate.queryForList(exist, String.class).size() != 0;
   }
 }
 

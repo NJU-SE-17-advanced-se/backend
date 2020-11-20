@@ -8,11 +8,11 @@ import java.util.List;
 import org.njuse17advancedse.entitydomain.dto.IDomain;
 import org.njuse17advancedse.entitydomain.dto.IDomainBasic;
 import org.njuse17advancedse.entitydomain.dto.IResult;
-import org.njuse17advancedse.entitydomain.exception.BadRequestProblem;
-import org.njuse17advancedse.entitydomain.exception.NotFoundProblem;
 import org.njuse17advancedse.entitydomain.service.DomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 
 @Api(tags = { "领域" })
 @RequestMapping("/domains")
@@ -26,9 +26,9 @@ public class DomainController {
     @ApiParam(value = "查询关键词") @RequestParam String keyword,
     @ApiParam(value = "页数") @RequestParam int page
   ) {
-    if (page <= 0) throw new BadRequestProblem(
-      Integer.toString(page),
-      "Invalid page"
+    if (page <= 0) throw Problem.valueOf(
+      Status.BAD_REQUEST,
+      String.format("Argument '%s' illegal, Page should >= 1", page)
     );
     return service.getDomainsByCond(keyword, page);
   }
@@ -39,7 +39,10 @@ public class DomainController {
     @ApiParam(value = "领域 id") @PathVariable String id
   ) {
     IDomain domain = service.getDomainById(id);
-    if (domain.getId() == null) throw new NotFoundProblem(id);
+    if (domain.getId() == null) throw Problem.valueOf(
+      Status.NOT_FOUND,
+      String.format("Domain '%s' not found", id)
+    );
     return domain;
   }
 
@@ -49,7 +52,10 @@ public class DomainController {
     @ApiParam(value = "领域 id") @PathVariable String id
   ) {
     IDomainBasic domainBasic = service.getDomainBasicInfoById(id);
-    if (domainBasic.getId() == null) throw new NotFoundProblem(id);
+    if (domainBasic.getId() == null) throw Problem.valueOf(
+      Status.NOT_FOUND,
+      String.format("Domain '%s' not found", id)
+    );
     return domainBasic;
   }
 
@@ -58,7 +64,14 @@ public class DomainController {
   public List<String> getPapers(
     @ApiParam(value = "领域 id") @PathVariable String id
   ) {
-    return service.getPapers(id);
+    List<String> res = service.getPapers(id);
+    if (res.size() == 1 && res.get(0).equals("Not Found")) {
+      throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Domain '%s' not found", id)
+      );
+    }
+    return res;
   }
 
   @ApiOperation("根据领域 id 获取某领域下的学者 id")
@@ -66,7 +79,14 @@ public class DomainController {
   public List<String> getResearchers(
     @ApiParam(value = "领域 id") @PathVariable String id
   ) {
-    return service.getResearchers(id);
+    List<String> res = service.getResearchers(id);
+    if (res.size() == 1 && res.get(0).equals("Not Found")) {
+      throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Domain '%s' not found", id)
+      );
+    }
+    return res;
   }
 
   public DomainController(DomainService service) {
