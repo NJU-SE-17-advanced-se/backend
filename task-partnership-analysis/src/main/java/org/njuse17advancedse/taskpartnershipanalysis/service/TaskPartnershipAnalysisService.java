@@ -25,8 +25,8 @@ public interface TaskPartnershipAnalysisService {
    */
   IResearcherNet getPartnership(
     String researcherId,
-    String startDate,
-    String endDate
+    int startDate,
+    int endDate
   );
 
   /**
