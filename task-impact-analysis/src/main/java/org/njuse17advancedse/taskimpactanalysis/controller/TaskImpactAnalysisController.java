@@ -3,6 +3,8 @@ package org.njuse17advancedse.taskimpactanalysis.controller;
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 import springfox.documentation.annotations.ApiIgnore;
 
 @ApiIgnore
@@ -20,7 +22,18 @@ public class TaskImpactAnalysisController {
     @PathVariable String id,
     @RequestParam(defaultValue = "hIndex", required = false) String type
   ) {
-    if (type.equals("hIndex")) return service.getHIndex(id);
+    if (type.equals("hIndex")) {
+      int res = service.getHIndex(id);
+      if (res == -1) throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Researcher '%s' not found", id)
+      );
+      if (res == -2) throw Problem.valueOf(
+        Status.INTERNAL_SERVER_ERROR,
+        String.format("Author data corrupted", id)
+      );
+      return res;
+    }
     return -1;
   }
 
@@ -29,7 +42,12 @@ public class TaskImpactAnalysisController {
    */
   @GetMapping(value = "/papers/{id}")
   public double getPaperImpact(@PathVariable String id) {
-    return service.getPaperImpact(id);
+    double res = service.getPaperImpact(id);
+    if (res < 0) throw Problem.valueOf(
+      Status.NOT_FOUND,
+      String.format("Paper '%s' not found", id)
+    );
+    return res;
   }
 
   @GetMapping(value = "")

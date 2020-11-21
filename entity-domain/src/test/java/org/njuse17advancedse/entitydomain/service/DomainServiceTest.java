@@ -36,6 +36,7 @@ public class DomainServiceTest {
     pb1 = new IDomainBasic();
     pb1.setId("sktfaker");
     pb1.setName("asdasda");
+    Mockito.when(repository.existsById("sktfaker")).thenReturn(true);
   }
 
   @Test

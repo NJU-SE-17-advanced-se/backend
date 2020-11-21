@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiParam;
 import java.util.List;
 import org.njuse17advancedse.taskcitationanalysis.service.TaskCitationAnalysisService;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 
 @Api(tags = { "论文" })
 @RequestMapping("/papers")
@@ -25,10 +27,12 @@ public class PaperController {
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
     if (type.equals("quoted")) {
-      return service.getQuotedPapersByPaperId(id);
+      List<String> res = service.getQuotedPapersByPaperId(id);
+      if (checkProblem(res)) return res;
     }
     if (type.equals("quoting")) {
-      return service.getQuotingPapersByPaperId(id);
+      List<String> res = service.getQuotingPapersByPaperId(id);
+      if (checkProblem(res)) return res;
     }
     return null;
   }
@@ -45,15 +49,28 @@ public class PaperController {
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
     if (type.equals("quoted")) {
-      return service.getPaperQuotedResearcher(id);
+      List<String> res = service.getPaperQuotedResearcher(id);
+      if (checkProblem(res)) return res;
     }
     if (type.equals("quoting")) {
-      return service.getPaperQuotingResearcher(id);
+      List<String> res = service.getPaperQuotingResearcher(id);
+      if (checkProblem(res)) return res;
     }
     return null;
   }
 
   public PaperController(TaskCitationAnalysisService service) {
     this.service = service;
+  }
+
+  private boolean checkProblem(List<String> res) {
+    if (res.size() != 3) return true;
+    if (res.get(0).equals("Not Found")) {
+      throw Problem.valueOf(
+        Status.INTERNAL_SERVER_ERROR,
+        "Author Data Corrupted"
+      );
+    }
+    return true;
   }
 }

@@ -23,7 +23,9 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IAffiliation getAffiliationById(String id) {
-    IAffiliation res = new IAffiliation(getAffiliationBasicInfoById(id));
+    IAffiliationBasic iab = getAffiliationBasicInfoById(id);
+    if (iab.getId() == null) return new IAffiliation();
+    IAffiliation res = new IAffiliation();
     res.setResearchers(getAffiliationResearchersById(id));
     res.setDomains(getAffiliationDomainsById(id));
     res.setPapers(getAffiliationPapersById(id));
@@ -32,12 +34,14 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public IAffiliationBasic getAffiliationBasicInfoById(String id) {
-    String exist = "select id from affiliation where id='" + id + "'";
-    if (jdbcTemplate.queryForList(exist, String.class).size() == 0) {
-      return new IAffiliationBasic();
-    }
     String sql = "select * from affiliation where id='" + id + "'";
     return jdbcTemplate.queryForObject(sql, new AffiliationBasicRowMapper());
+  }
+
+  @Transactional(readOnly = true)
+  public boolean existsById(String id) {
+    String exist = "select id from affiliation where id='" + id + "'";
+    return jdbcTemplate.queryForList(exist, String.class).size() != 0;
   }
 
   @Transactional(readOnly = true)

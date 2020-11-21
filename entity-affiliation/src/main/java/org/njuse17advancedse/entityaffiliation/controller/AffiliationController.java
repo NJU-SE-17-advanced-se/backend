@@ -3,13 +3,14 @@ package org.njuse17advancedse.entityaffiliation.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliation;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliationBasic;
 import org.njuse17advancedse.entityaffiliation.dto.IResult;
 import org.njuse17advancedse.entityaffiliation.service.AffiliationService;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 
 @Api(tags = { "机构" })
 @RequestMapping("/affiliations")
@@ -23,6 +24,10 @@ public class AffiliationController {
     @ApiParam(value = "查询关键词") @RequestParam String keyword,
     @ApiParam(value = "页数") @RequestParam int page
   ) {
+    if (page <= 0) throw Problem.valueOf(
+      Status.BAD_REQUEST,
+      String.format("Argument '%s' illegal, Page should >= 1", page)
+    );
     return service.getAffiliationsByCond(keyword, page);
   }
 
@@ -31,7 +36,12 @@ public class AffiliationController {
   public IAffiliation getAffiliationById(
     @ApiParam(value = "机构 id") @PathVariable String id
   ) {
-    return service.getAffiliationById(id);
+    IAffiliation affiliation = service.getAffiliationById(id);
+    if (affiliation.getId() == null) throw Problem.valueOf(
+      Status.NOT_FOUND,
+      String.format("Affiliation '%s' not found", id)
+    );
+    return affiliation;
   }
 
   @ApiOperation("根据机构 id 获取机构简略信息")
@@ -39,7 +49,14 @@ public class AffiliationController {
   public IAffiliationBasic getAffiliationBasicInfoById(
     @ApiParam(value = "机构 id") @PathVariable String id
   ) {
-    return service.getAffiliationBasicInfoById(id);
+    IAffiliationBasic affiliationBasic = service.getAffiliationBasicInfoById(
+      id
+    );
+    if (affiliationBasic.getId() == null) throw Problem.valueOf(
+      Status.NOT_FOUND,
+      String.format("Affiliation '%s' not found", id)
+    );
+    return affiliationBasic;
   }
 
   @ApiOperation("根据机构 id 获取该机构的学者 id")
@@ -47,7 +64,14 @@ public class AffiliationController {
   public List<String> getAffiliationResearchersById(
     @ApiParam(value = "机构 id") @PathVariable String id
   ) {
-    return service.getAffiliationResearchersById(id);
+    List<String> res = service.getAffiliationResearchersById(id);
+    if (
+      res.size() == 1 && res.get(0).equals("Not Found")
+    ) throw Problem.valueOf(
+      Status.NOT_FOUND,
+      String.format("Affiliation '%s' not found", id)
+    );
+    return res;
   }
 
   @ApiOperation("根据机构 id 获取该机构发表的论文 id")
@@ -55,7 +79,14 @@ public class AffiliationController {
   public List<String> getAffiliationPapersById(
     @ApiParam(value = "机构 id") @PathVariable String id
   ) {
-    return service.getAffiliationPapersById(id);
+    List<String> res = service.getAffiliationPapersById(id);
+    if (
+      res.size() == 1 && res.get(0).equals("Not Found")
+    ) throw Problem.valueOf(
+      Status.NOT_FOUND,
+      String.format("Affiliation '%s' not found", id)
+    );
+    return res;
   }
 
   @ApiOperation("根据机构 id 获取该机构的研究领域 id")
@@ -63,7 +94,14 @@ public class AffiliationController {
   public List<String> getAffiliationDomainsById(
     @ApiParam(value = "机构 id") @PathVariable String id
   ) {
-    return service.getAffiliationDomainsById(id);
+    List<String> res = service.getAffiliationDomainsById(id);
+    if (
+      res.size() == 1 && res.get(0).equals("Not Found")
+    ) throw Problem.valueOf(
+      Status.NOT_FOUND,
+      String.format("Affiliation '%s' not found", id)
+    );
+    return res;
   }
 
   public AffiliationController(AffiliationService service) {

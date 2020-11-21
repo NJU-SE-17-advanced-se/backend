@@ -41,6 +41,7 @@ public class AffiliationServiceTest {
     ab1.setId("id0");
     ab1.setName("testAffiliation");
     ab1.setDescription("des");
+    Mockito.when(repository.existsById("id0")).thenReturn(true);
   }
 
   @Test
