@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.njuse17advancedse.entitypublication.dto.IPublication;
 import org.njuse17advancedse.entitypublication.dto.IPublicationBasic;
@@ -13,11 +12,15 @@ import org.njuse17advancedse.entitypublication.dto.ISearchResult;
 import org.njuse17advancedse.entitypublication.entity.JpaDomain;
 import org.njuse17advancedse.entitypublication.entity.JpaPaper;
 import org.njuse17advancedse.entitypublication.repository.PublicationRepository;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
+@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 class PublicationEntityServiceTest {
-  @Mock
+  @MockBean
   private PublicationRepository publicationRepository;
 
   private PublicationEntityService publicationEntityService;
