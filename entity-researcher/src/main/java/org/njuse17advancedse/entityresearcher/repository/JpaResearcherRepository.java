@@ -2,7 +2,6 @@ package org.njuse17advancedse.entityresearcher.repository;
 
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -61,17 +60,15 @@ public class JpaResearcherRepository implements ResearcherRepository {
    */
   private List<String> getDomains(List<String> papers) {
     List<String> domains = new ArrayList<>();
-    HashSet<String> hashSet = new HashSet<>();
     String sql;
     if (papers.size() > 0) {
       sql =
-        "select pd.domain.id from paper_domain pd where pd.paper.id in :papers";
-      List<String> domain = entityManager
-        .createQuery(sql, String.class)
-        .setParameter("papers", papers)
-        .getResultList();
-      hashSet.addAll(domain);
-      domains = new ArrayList<>(hashSet);
+        "select distinct pd.domain.id from paper_domain pd where pd.paper.id in :papers";
+      domains =
+        entityManager
+          .createQuery(sql, String.class)
+          .setParameter("papers", papers)
+          .getResultList();
     }
     return domains;
   }
@@ -157,15 +154,14 @@ public class JpaResearcherRepository implements ResearcherRepository {
       return Lists.newArrayList("no such researcher");
     }
     sql =
-      "select pr.paper.id from paper_researcher pr where pr.researcher.id = :rid and pr.paper.publicationDate between :start and :end";
-    List<String> papers = entityManager
-      .createQuery(sql, String.class)
-      .setParameter("rid", id)
-      .setParameter("start", startDate)
-      .setParameter("end", endDate)
-      .getResultList();
-    domains = getDomains(papers);
-
+      "select pd.did from paper_domain pd join paper_researcher pr on pr.pid = pd.pid where pr.rid = :rid and pd.paper.publicationDate between :start and :end";
+    domains =
+      entityManager
+        .createQuery(sql, String.class)
+        .setParameter("rid", id)
+        .setParameter("start", startDate)
+        .setParameter("end", endDate)
+        .getResultList();
     return domains;
   }
 
