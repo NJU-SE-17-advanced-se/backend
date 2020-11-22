@@ -23,6 +23,13 @@ public class ResearcherController {
   private List<String> getPartners(
     @ApiParam("学者 id") @PathVariable String id
   ) {
+    List<String> partners = taskPartnershipAnalysisService.getPartners(id);
+    if (partners == null) {
+      throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Researcher '%s' not found", id)
+      );
+    }
     return taskPartnershipAnalysisService.getPartners(id);
   }
 
@@ -56,11 +63,18 @@ public class ResearcherController {
         )
       );
     }
-    return taskPartnershipAnalysisService.getPartnership(
+    IResearcherNet iResearcherNet = taskPartnershipAnalysisService.getPartnership(
       id,
       startDate,
       endDate
     );
+    if (iResearcherNet == null) {
+      throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Researcher '%s' not found", id)
+      );
+    }
+    return iResearcherNet;
   }
 
   // 合作关系预测
@@ -76,7 +90,16 @@ public class ResearcherController {
   private Map<String, Double> getPotentialPartners(
     @ApiParam("学者 id") @PathVariable String id
   ) {
-    return taskPartnershipAnalysisService.getPotentialPartners(id);
+    Map<String, Double> map = taskPartnershipAnalysisService.getPotentialPartners(
+      id
+    );
+    if (map == null) {
+      throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Researcher '%s' not found", id)
+      );
+    }
+    return map;
   }
 
   /**

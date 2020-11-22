@@ -26,10 +26,12 @@ public class JpaResearcherRepository implements ResearcherRepository {
       sql =
         "select distinct pr.researcher.id from paper_researcher pr where pr.paper.id in :papers";
     }
-    return entityManager
+    List<String> partners = entityManager
       .createQuery(sql, String.class)
       .setParameter("papers", papers)
       .getResultList();
+    partners.remove(rid);
+    return partners;
   }
 
   /**
@@ -157,9 +159,9 @@ public class JpaResearcherRepository implements ResearcherRepository {
   }
 
   @Override
-  public List<String> getNearPartnersByRid(String researchId) {
-    List<String> papers = getPapersByRid(researchId, 0, Integer.MAX_VALUE);
-    HashMap<String, Integer> hashMap = getCoAuthorMap(researchId, papers);
+  public List<String> getNearPartnersByRid(String researcherId) {
+    List<String> papers = getPapersByRid(researcherId, 0, Integer.MAX_VALUE);
+    HashMap<String, Integer> hashMap = getCoAuthorMap(researcherId, papers);
     List<String> partners = new ArrayList<>(hashMap.keySet());
     partners.sort((o1, o2) -> hashMap.get(o2) - hashMap.get(o1));
     if (partners.size() <= 5) {
