@@ -45,6 +45,7 @@ public class EntityPaperServiceTest {
     pb1.setPublicationDate("1234");
     pb1.setPublicationDate("publication");
     pb1.setTitle("title");
+    Mockito.when(repository.existsById("test1")).thenReturn(true);
   }
 
   @Test

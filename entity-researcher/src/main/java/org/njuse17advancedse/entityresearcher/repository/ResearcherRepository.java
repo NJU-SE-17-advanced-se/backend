@@ -1,6 +1,5 @@
 package org.njuse17advancedse.entityresearcher.repository;
 
-import com.sun.istack.Nullable;
 import java.util.List;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
@@ -11,23 +10,11 @@ public interface ResearcherRepository {
 
   IResearcherBasic getResearcherBasic(String id);
 
-  List<String> findPapers(
-    String id,
-    @Nullable String start,
-    @Nullable String end
-  );
+  List<String> findPapers(String id, int start, int end);
 
-  List<String> findDomains(
-    String id,
-    @Nullable String start,
-    @Nullable String end
-  );
+  List<String> findDomains(String id, int start, int end);
 
-  List<String> findAffiliations(
-    String rid,
-    @Nullable String start,
-    @Nullable String end
-  );
+  List<String> findAffiliations(String rid, int start, int end);
 
   ISearchResult searchByCond(String keyword, int page);
 }

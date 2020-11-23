@@ -28,23 +28,28 @@ public class TaskImpactAnalysisServiceImpl
    * 计算学者影响力（H指数）
    */
   public int getHIndex(String id) {
-    IResearcher r = researcherService.getResearcherById(id);
-    if (isEmptyResearcher(r)) return -1;
-    ArrayList<String> tmpPaperIds = new ArrayList<>(r.getPapers());
-    ArrayList<Integer> tmpPapers = new ArrayList<>();
-    for (String s : tmpPaperIds) {
-      tmpPapers.add(paperService.getCitations(s).size());
-    }
-    tmpPapers.sort(Comparator.comparingInt(a -> -a));
-    int res = 0;
-    for (int i = 0; i < tmpPapers.size(); i++) {
-      if (tmpPapers.get(i) > i) {
-        res = i + 1;
-      } else {
-        break;
+    try {
+      IResearcher r = researcherService.getResearcherById(id);
+      if (isEmptyResearcher(r)) return -1;
+      ArrayList<String> tmpPaperIds = new ArrayList<>(r.getPapers());
+      ArrayList<Integer> tmpPapers = new ArrayList<>();
+      for (String s : tmpPaperIds) {
+        tmpPapers.add(paperService.getCitations(s).size());
       }
+      tmpPapers.sort(Comparator.comparingInt(a -> -a));
+      int res = 0;
+      for (int i = 0; i < tmpPapers.size(); i++) {
+        if (tmpPapers.get(i) > i) {
+          res = i + 1;
+        } else {
+          break;
+        }
+      }
+      return res;
+    } catch (Exception e) {
+      if (e.getMessage().contains("Researcher")) return -1;
+      return -2;
     }
-    return res;
   }
 
   static HashMap<String, Double> impactFactors;
@@ -54,15 +59,19 @@ public class TaskImpactAnalysisServiceImpl
    */
   @Override
   public double getPaperImpact(String id) {
-    IPaper p = paperService.getPaper(id);
-    if (isEmptyPaper(p)) return -1;
-    int size = paperService.getCitations(id).size();
-    return Double.parseDouble(
-      String.format(
-        "%.2f",
-        size * impactFactors.getOrDefault(p.getPublication(), 1d)
-      )
-    );
+    try {
+      IPaper p = paperService.getPaper(id);
+      if (isEmptyPaper(p)) return -1;
+      int size = paperService.getCitations(id).size();
+      return Double.parseDouble(
+        String.format(
+          "%.2f",
+          size * impactFactors.getOrDefault(p.getPublication(), 1d)
+        )
+      );
+    } catch (Exception e) {
+      return -1;
+    }
   }
 
   public String test() {

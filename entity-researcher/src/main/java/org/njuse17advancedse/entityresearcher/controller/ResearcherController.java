@@ -9,6 +9,8 @@ import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
 import org.njuse17advancedse.entityresearcher.dto.ISearchResult;
 import org.njuse17advancedse.entityresearcher.service.ResearcherEntityService;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 
 @Api(tags = { "学者" })
 @RequestMapping("/researchers")
@@ -22,6 +24,12 @@ public class ResearcherController {
     @ApiParam(value = "查询关键词") @RequestParam String keyword,
     @ApiParam(value = "页数") @RequestParam int page
   ) {
+    if (page <= 0) {
+      throw Problem.valueOf(
+        Status.BAD_REQUEST,
+        String.format("Argument '%s' illegal, Page should >= 1", page)
+      );
+    }
     return researcherEntityService.searchByCond(keyword, page);
   }
 
@@ -30,7 +38,14 @@ public class ResearcherController {
   public IResearcher getResearcherById(
     @ApiParam(value = "学者 id") @PathVariable String id
   ) {
-    return researcherEntityService.getResearcherById(id);
+    IResearcher iResearcher = researcherEntityService.getResearcherById(id);
+    if (iResearcher.getName() == null) {
+      throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Researcher '%s' not found", id)
+      );
+    }
+    return iResearcher;
   }
 
   @ApiOperation("根据学者 id 获取学者简略信息")
@@ -38,7 +53,16 @@ public class ResearcherController {
   public IResearcherBasic getResearcherBasicInfoById(
     @ApiParam(value = "学者 id") @PathVariable String id
   ) {
-    return researcherEntityService.getResearcherBasicById(id);
+    IResearcherBasic iResearcherBasic = researcherEntityService.getResearcherBasicById(
+      id
+    );
+    if (iResearcherBasic.getName() == null) {
+      throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Researcher '%s' not found", id)
+      );
+    }
+    return iResearcherBasic;
   }
 
   @ApiOperation("获取某作者的论文 id")
@@ -52,7 +76,37 @@ public class ResearcherController {
       required = false
     ) String end
   ) {
-    return researcherEntityService.getPapersByRid(id, start, end);
+    int startDate = 0;
+    int endDate = Integer.MAX_VALUE;
+    if (start != null) {
+      startDate = checkArgument(start);
+    }
+    if (end != null) {
+      endDate = checkArgument(end);
+    }
+    if (startDate < 0 || startDate > endDate) {
+      throw Problem.valueOf(
+        Status.BAD_REQUEST,
+        String.format(
+          "Argument '%s' illegal, Date error",
+          startDate + "," + endDate
+        )
+      );
+    }
+    List<String> papers = researcherEntityService.getPapersByRid(
+      id,
+      startDate,
+      endDate
+    );
+    if (papers.size() == 1) {
+      if (papers.get(0).equals("no such researcher")) {
+        throw Problem.valueOf(
+          Status.NOT_FOUND,
+          String.format("Researcher '%s' not found", id)
+        );
+      }
+    }
+    return papers;
   }
 
   @ApiOperation(
@@ -66,7 +120,37 @@ public class ResearcherController {
     @ApiParam(value = "开始年份，形如'2020'") String start,
     @ApiParam(value = "结束年份，形如'2020'") String end
   ) {
-    return researcherEntityService.getDomainByRid(id, start, end);
+    int startDate = 0;
+    int endDate = Integer.MAX_VALUE;
+    if (start != null) {
+      startDate = checkArgument(start);
+    }
+    if (end != null) {
+      endDate = checkArgument(end);
+    }
+    if (startDate < 0 || startDate > endDate) {
+      throw Problem.valueOf(
+        Status.BAD_REQUEST,
+        String.format(
+          "Argument '%s' illegal, Date error",
+          startDate + "," + endDate
+        )
+      );
+    }
+    List<String> domains = researcherEntityService.getDomainByRid(
+      id,
+      startDate,
+      endDate
+    );
+    if (domains.size() == 1) {
+      if (domains.get(0).equals("no such researcher")) {
+        throw Problem.valueOf(
+          Status.NOT_FOUND,
+          String.format("Researcher '%s' not found", id)
+        );
+      }
+    }
+    return domains;
   }
 
   @ApiOperation(
@@ -83,7 +167,55 @@ public class ResearcherController {
       required = false
     ) String end
   ) {
-    return researcherEntityService.getAffiliationByRid(id, start, end);
+    int startDate = 0;
+    int endDate = Integer.MAX_VALUE;
+    if (start != null) {
+      startDate = checkArgument(start);
+    }
+    if (end != null) {
+      endDate = checkArgument(end);
+    }
+    if (startDate < 0 || startDate > endDate) {
+      throw Problem.valueOf(
+        Status.BAD_REQUEST,
+        String.format(
+          "Argument '%s' illegal, Date error",
+          startDate + "," + endDate
+        )
+      );
+    }
+    List<String> affiliations = researcherEntityService.getAffiliationByRid(
+      id,
+      startDate,
+      endDate
+    );
+    if (affiliations.size() == 1) {
+      if (affiliations.get(0).equals("no such researcher")) {
+        throw Problem.valueOf(
+          Status.NOT_FOUND,
+          String.format("Researcher '%s' not found", id)
+        );
+      }
+    }
+    return affiliations;
+  }
+
+  /**
+   * 检查参数是否合法
+   * @param arg 参数
+   * @return 参数值
+   */
+  private int checkArgument(String arg) {
+    int value;
+    try {
+      value = Integer.parseInt(arg);
+      return value;
+    } catch (NumberFormatException e) {
+      throw Problem.valueOf(
+        Status.BAD_REQUEST,
+        String.format("Argument '%s' illegal, can not parseInt", arg)
+      );
+    }
   }
 
   public ResearcherController(ResearcherEntityService researcherEntityService) {

@@ -5,6 +5,8 @@ import java.util.Map;
 import org.njuse17advancedse.taskcitationanalysis.service.TaskCitationAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 import springfox.documentation.annotations.ApiIgnore;
 
 @ApiIgnore
@@ -22,10 +24,12 @@ public class TaskCitationAnalysisController {
     @RequestParam String type
   ) {
     if (type.equals("quoted")) {
-      return service.getResearcherQuotedResearcher(id);
+      List<String> res = service.getResearcherQuotedResearcher(id);
+      if (checkProblem(res)) return res;
     }
     if (type.equals("quoting")) {
-      return service.getResearcherQuotingResearcher(id);
+      List<String> res = service.getResearcherQuotingResearcher(id);
+      if (checkProblem(res)) return res;
     }
     return null;
   }
@@ -38,10 +42,14 @@ public class TaskCitationAnalysisController {
     @RequestParam String type
   ) {
     if (type.equals("quoted")) {
-      return service.getQuotedPapersByResearcherId(id);
+      Map<String, List<String>> res = service.getQuotedPapersByResearcherId(id);
+      if (checkProblem(res)) return res;
     }
     if (type.equals("quoting")) {
-      return service.getQuotingPapersByResearcherId(id);
+      Map<String, List<String>> res = service.getQuotingPapersByResearcherId(
+        id
+      );
+      if (checkProblem(res)) return res;
     }
     return null;
   }
@@ -54,10 +62,16 @@ public class TaskCitationAnalysisController {
     @RequestParam String type
   ) {
     if (type.equals("quoted")) {
-      return service.getResearcherPaperQuotedResearcher(id);
+      Map<String, List<String>> res = service.getResearcherPaperQuotedResearcher(
+        id
+      );
+      if (checkProblem(res)) return res;
     }
     if (type.equals("quoting")) {
-      return service.getResearcherPaperQuotingResearcher(id);
+      Map<String, List<String>> res = service.getResearcherPaperQuotingResearcher(
+        id
+      );
+      if (checkProblem(res)) return res;
     }
     return null;
   }
@@ -70,10 +84,12 @@ public class TaskCitationAnalysisController {
     @RequestParam String type
   ) {
     if (type.equals("quoted")) {
-      return service.getQuotedPapersByPaperId(id);
+      List<String> res = service.getQuotedPapersByPaperId(id);
+      if (checkProblem(res)) return res;
     }
     if (type.equals("quoting")) {
-      return service.getQuotingPapersByPaperId(id);
+      List<String> res = service.getQuotingPapersByPaperId(id);
+      if (checkProblem(res)) return res;
     }
     return null;
   }
@@ -86,15 +102,39 @@ public class TaskCitationAnalysisController {
     @RequestParam String type
   ) {
     if (type.equals("quoted")) {
-      return service.getPaperQuotedResearcher(id);
+      List<String> res = service.getPaperQuotedResearcher(id);
+      if (checkProblem(res)) return res;
     }
     if (type.equals("quoting")) {
-      return service.getPaperQuotingResearcher(id);
+      List<String> res = service.getPaperQuotingResearcher(id);
+      if (checkProblem(res)) return res;
     }
     return null;
   }
+
   //  @GetMapping("/test")
   //  public String test(){
   //    return service.test();
   //  }
+  private boolean checkProblem(Map<String, List<String>> res) {
+    if (res.containsKey("Not Found")) {
+      List<String> parms = res.get("Not Found");
+      throw Problem.valueOf(
+        Status.INTERNAL_SERVER_ERROR,
+        "Author Data Corrupted"
+      );
+    }
+    return true;
+  }
+
+  private boolean checkProblem(List<String> res) {
+    if (res.size() != 3) return true;
+    if (res.get(0).equals("Not Found")) {
+      throw Problem.valueOf(
+        Status.INTERNAL_SERVER_ERROR,
+        "Author Data Corrupted"
+      );
+    }
+    return true;
+  }
 }

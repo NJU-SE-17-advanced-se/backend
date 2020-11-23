@@ -41,13 +41,20 @@ public class TaskCitationAnalysisServiceImpl
   public Map<String, List<String>> getQuotingPapersByResearcherId(
     String researcherId
   ) {
-    Map<String, List<String>> res = new HashMap<>();
-    IResearcher r = researcherService.getResearcherById(researcherId);
-    if (isEmptyResearcher(r)) return res;
-    for (String s : r.getPapers()) {
-      res.put(s, getQuotingPapersByPaperId(s));
+    try {
+      Map<String, List<String>> res = new HashMap<>();
+      IResearcher r = researcherService.getResearcherById(researcherId);
+      for (String s : r.getPapers()) {
+        List<String> quotingPapers = getQuotingPapersByPaperId(s);
+        if (
+          quotingPapers.size() > 0 && quotingPapers.get(0).equals("Not Found")
+        ) continue;
+        res.put(s, quotingPapers);
+      }
+      return res;
+    } catch (Exception e) {
+      return getProblemMap(e.getMessage());
     }
-    return res;
   }
 
   /**
@@ -57,13 +64,20 @@ public class TaskCitationAnalysisServiceImpl
   public Map<String, List<String>> getQuotedPapersByResearcherId(
     String researcherId
   ) {
-    Map<String, List<String>> res = new HashMap<>();
-    IResearcher r = researcherService.getResearcherById(researcherId);
-    if (isEmptyResearcher(r)) return res;
-    for (String s : r.getPapers()) {
-      res.put(s, getQuotedPapersByPaperId(s));
+    try {
+      Map<String, List<String>> res = new HashMap<>();
+      IResearcher r = researcherService.getResearcherById(researcherId);
+      for (String s : r.getPapers()) {
+        List<String> quotedPapers = getQuotedPapersByPaperId(s);
+        if (
+          quotedPapers.size() > 0 && quotedPapers.get(0).equals("Not Found")
+        ) continue;
+        res.put(s, quotedPapers);
+      }
+      return res;
+    } catch (Exception e) {
+      return getProblemMap(e.getMessage());
     }
-    return res;
   }
 
   /**
@@ -71,7 +85,12 @@ public class TaskCitationAnalysisServiceImpl
    */
   @Override
   public List<String> getQuotingPapersByPaperId(String paperId) {
-    return paperService.getCitations(paperId);
+    try {
+      IPaper p = paperService.getPaper(paperId);
+      return paperService.getCitations(paperId);
+    } catch (Exception e) {
+      return getProblemList(e.getMessage());
+    }
   }
 
   /**
@@ -79,9 +98,12 @@ public class TaskCitationAnalysisServiceImpl
    */
   @Override
   public List<String> getQuotedPapersByPaperId(String paperId) {
-    IPaper p = paperService.getPaper(paperId);
-    if (isEmptyPaper(p)) return new ArrayList<>();
-    return p.getReferences();
+    try {
+      IPaper p = paperService.getPaper(paperId);
+      return p.getReferences();
+    } catch (Exception e) {
+      return getProblemList(e.getMessage());
+    }
   }
 
   @Override
@@ -90,22 +112,27 @@ public class TaskCitationAnalysisServiceImpl
   ) {
     Map<String, List<String>> res = new HashMap<>();
     Set<String> set;
-    IResearcher r = researcherService.getResearcherById(researcherId);
-    if (isEmptyResearcher(r)) return res;
-    List<String> pList = r.getPapers();
-    for (String s : pList) {
-      set = new HashSet<>();
-      List<String> quotedPapers = getQuotedPapersByPaperId(s);
-      for (String tp : quotedPapers) {
-        IPaper p = paperService.getPaper(tp);
-        if (isEmptyPaper(p)) {
-          continue;
+    try {
+      IResearcher r = researcherService.getResearcherById(researcherId);
+      List<String> pList = r.getPapers();
+      for (String s : pList) {
+        set = new HashSet<>();
+        List<String> quotedPapers = getQuotedPapersByPaperId(s);
+        if (
+          quotedPapers.size() > 0 && quotedPapers.get(0).equals("Not Found")
+        ) continue;
+        for (String tp : quotedPapers) {
+          try {
+            IPaper p = paperService.getPaper(tp);
+            set.addAll(p.getResearchers());
+          } catch (Exception e) {}
         }
-        set.addAll(p.getResearchers());
+        res.put(s, new ArrayList<>(set));
       }
-      res.put(s, new ArrayList<>(set));
+      return res;
+    } catch (Exception e) {
+      return getProblemMap(e.getMessage());
     }
-    return res;
   }
 
   @Override
@@ -114,123 +141,140 @@ public class TaskCitationAnalysisServiceImpl
   ) {
     Map<String, List<String>> res = new HashMap<>();
     Set<String> set;
-    IResearcher r = researcherService.getResearcherById(researcherId);
-    if (isEmptyResearcher(r)) return res;
-    List<String> pList = r.getPapers();
-    for (String s : pList) {
-      set = new HashSet<>();
-      List<String> quotingPapers = getQuotingPapersByPaperId(s);
-      for (String tp : quotingPapers) {
-        IPaper p = paperService.getPaper(tp);
-        if (isEmptyPaper(p)) {
-          continue;
+    try {
+      IResearcher r = researcherService.getResearcherById(researcherId);
+      List<String> pList = r.getPapers();
+      for (String s : pList) {
+        set = new HashSet<>();
+        List<String> quotingPapers = getQuotingPapersByPaperId(s);
+        if (
+          quotingPapers.size() > 0 && quotingPapers.get(0).equals("Not Found")
+        ) continue;
+        for (String tp : quotingPapers) {
+          IPaper p = paperService.getPaper(tp);
+          set.addAll(p.getResearchers());
         }
-        set.addAll(p.getResearchers());
+        res.put(s, new ArrayList<>(set));
       }
-      res.put(s, new ArrayList<>(set));
+      return res;
+    } catch (Exception e) {
+      return getProblemMap(e.getMessage());
     }
-    return res;
   }
 
   @Override
   public List<String> getResearcherQuotedResearcher(String researcherId) {
-    Set<String> set = new HashSet<>();
-    IResearcher r = researcherService.getResearcherById(researcherId);
-    if (isEmptyResearcher(r)) return new ArrayList<>();
-    List<String> pList = r.getPapers();
-    for (String s : pList) {
-      List<String> quotedPapers = getQuotedPapersByPaperId(s);
-      for (String tp : quotedPapers) {
-        IPaper p = paperService.getPaper(tp);
-        if (isEmptyPaper(p)) {
-          continue;
+    try {
+      Set<String> set = new HashSet<>();
+      IResearcher r = researcherService.getResearcherById(researcherId);
+      List<String> pList = r.getPapers();
+      for (String s : pList) {
+        List<String> quotedPapers = getQuotedPapersByPaperId(s);
+        if (
+          quotedPapers.size() > 0 && quotedPapers.get(0).equals("Not Found")
+        ) return quotedPapers;
+        for (String tp : quotedPapers) {
+          try {
+            IPaper p = paperService.getPaper(tp);
+            set.addAll(p.getResearchers());
+          } catch (Exception e) {}
         }
-        set.addAll(p.getResearchers());
       }
-    }
 
-    return new ArrayList<>(set);
+      return new ArrayList<>(set);
+    } catch (Exception e) {
+      return getProblemList(e.getMessage());
+    }
   }
 
   @Override
   public List<String> getResearcherQuotingResearcher(String researcherId) {
-    Set<String> set = new HashSet<>();
-    IResearcher r = researcherService.getResearcherById(researcherId);
-    if (isEmptyResearcher(r)) return new ArrayList<>();
-    List<String> pList = r.getPapers();
-    for (String s : pList) {
-      List<String> quotingPapers = getQuotingPapersByPaperId(s);
-      for (String tp : quotingPapers) {
-        IPaper p = paperService.getPaper(tp);
-        if (isEmptyPaper(p)) {
-          continue;
+    try {
+      Set<String> set = new HashSet<>();
+      IResearcher r = researcherService.getResearcherById(researcherId);
+      List<String> pList = r.getPapers();
+      for (String s : pList) {
+        List<String> quotingPapers = getQuotingPapersByPaperId(s);
+        if (
+          quotingPapers.size() > 0 && quotingPapers.get(0).equals("Not Found")
+        ) return quotingPapers;
+        for (String tp : quotingPapers) {
+          IPaper p = paperService.getPaper(tp);
+          set.addAll(p.getResearchers());
         }
-        set.addAll(p.getResearchers());
       }
-    }
 
-    return new ArrayList<>(set);
+      return new ArrayList<>(set);
+    } catch (Exception e) {
+      return getProblemList(e.getMessage());
+    }
   }
 
   //某论文引用了哪些学者
   @Override
   public List<String> getPaperQuotedResearcher(String paperId) {
     Set<String> set = new HashSet<>();
-    IPaper p = paperService.getPaper(paperId);
-    if (isEmptyPaper(p)) return new ArrayList<>();
-    List<String> quotedPapers = getQuotedPapersByPaperId(p.getId());
-    for (String tp : quotedPapers) {
-      IPaper tip = paperService.getPaper(tp);
-      if (isEmptyPaper(tip)) continue;
-      set.addAll(tip.getResearchers());
+    try {
+      IPaper p = paperService.getPaper(paperId);
+      List<String> quotedPapers = p.getReferences();
+      for (String tp : quotedPapers) {
+        try {
+          IPaper tip = paperService.getPaper(tp);
+          set.addAll(tip.getResearchers());
+        } catch (Exception e) {}
+      }
+      return new ArrayList<>(set);
+    } catch (Exception e) {
+      return getProblemList(e.getMessage());
     }
-    return new ArrayList<>(set);
   }
 
   //某论文被哪些学者引用
   public List<String> getPaperQuotingResearcher(String paperId) {
-    Set<String> set = new HashSet<>();
-    IPaper p = paperService.getPaper(paperId);
-    if (isEmptyPaper(p)) return new ArrayList<>();
-    List<String> quotingPapers = getQuotingPapersByPaperId(p.getId());
-    for (String tp : quotingPapers) {
-      IPaper tip = paperService.getPaper(tp);
-      if (isEmptyPaper(tip)) continue;
-      set.addAll(tip.getResearchers());
-    }
-    return new ArrayList<>(set);
-  }
-
-  @Override
-  public Map<String, Integer> getResearcherQuoteNums(
-    String researcherId1,
-    String researcherId2
-  ) {
-    IResearcher researcher1 = researcherService.getResearcherById(
-      researcherId1
-    );
-    IResearcher researcher2 = researcherService.getResearcherById(
-      researcherId2
-    );
-    var tmpVar1 = researcher1.getPapers();
-    var tmpVar2 = researcher2.getPapers();
-    Map<String, Integer> res = new HashMap<>();
-
-    Set<String> researcher2Ids = new HashSet<>(tmpVar2);
-    for (String s : tmpVar1) {
-      String id = s;
-      List<String> tmpList = getQuotedPapersByPaperId(id);
-      int cnt = 0;
-      for (String tId : tmpList) {
-        if (researcher2Ids.contains(tId)) {
-          cnt++;
-        }
+    try {
+      Set<String> set = new HashSet<>();
+      List<String> quotingPapers = getQuotingPapersByPaperId(paperId);
+      for (String tp : quotingPapers) {
+        IPaper tip = paperService.getPaper(tp);
+        set.addAll(tip.getResearchers());
       }
-      res.put(id, cnt);
+      return new ArrayList<>(set);
+    } catch (Exception e) {
+      return getProblemList(e.getMessage());
     }
-
-    return res;
   }
+
+  //
+  //  @Override
+  //  public Map<String, Integer> getResearcherQuoteNums(
+  //    String researcherId1,
+  //    String researcherId2
+  //  ) {
+  //    IResearcher researcher1 = researcherService.getResearcherById(
+  //      researcherId1
+  //    );
+  //    IResearcher researcher2 = researcherService.getResearcherById(
+  //      researcherId2
+  //    );
+  //    var tmpVar1 = researcher1.getPapers();
+  //    var tmpVar2 = researcher2.getPapers();
+  //    Map<String, Integer> res = new HashMap<>();
+  //
+  //    Set<String> researcher2Ids = new HashSet<>(tmpVar2);
+  //    for (String s : tmpVar1) {
+  //      String id = s;
+  //      List<String> tmpList = getQuotedPapersByPaperId(id);
+  //      int cnt = 0;
+  //      for (String tId : tmpList) {
+  //        if (researcher2Ids.contains(tId)) {
+  //          cnt++;
+  //        }
+  //      }
+  //      res.put(id, cnt);
+  //    }
+  //
+  //    return res;
+  //  }
 
   //
   //  @Override
@@ -285,11 +329,33 @@ public class TaskCitationAnalysisServiceImpl
   // String String2String(String l) {
   //   return String2String.get(l);
   // }
-  private boolean isEmptyResearcher(IResearcher r) {
-    return r.getId() == null;
+  //  private boolean isEmptyResearcher(IResearcher r) {
+  //    return r.getId() == null;
+  //  }
+  //
+  //  private boolean isEmptyPaper(IPaper p) {
+  //    return p.getId() == null;
+  //  }
+
+  private Map<String, List<String>> getProblemMap(String message) {
+    Map<String, List<String>> res = new HashMap<>();
+    List<String> parms = new ArrayList<>();
+    //    if (message.contains("Researcher")) parms.add("Researcher");
+    //    else if (message.contains("Paper")) parms.add("Paper");
+    //    else
+    parms.add("Unknown");
+    res.put("Not Found", parms);
+    return res;
   }
 
-  private boolean isEmptyPaper(IPaper p) {
-    return p.getId() == null;
+  private List<String> getProblemList(String message) {
+    List<String> res = new ArrayList<>();
+    res.add("Not Found");
+    //    if (message.contains("Researcher")) res.add("Researcher");
+    //    else if (message.contains("Paper")) res.add("Paper");
+    //    else
+    res.add("Unknown");
+    res.add("Unknown Id");
+    return res;
   }
 }

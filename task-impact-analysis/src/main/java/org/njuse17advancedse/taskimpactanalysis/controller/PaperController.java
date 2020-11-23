@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
 import org.springframework.web.bind.annotation.*;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 
 @Api(tags = { "论文" })
 @RestController
@@ -20,7 +22,12 @@ public class PaperController {
   public double getPaperImpact(
     @ApiParam(value = "论文 id") @PathVariable String id
   ) {
-    return service.getPaperImpact(id);
+    double res = service.getPaperImpact(id);
+    if (res < 0) throw Problem.valueOf(
+      Status.NOT_FOUND,
+      String.format("Paper '%s' not found", id)
+    );
+    return res;
   }
 
   public PaperController(TaskImpactAnalysisService service) {

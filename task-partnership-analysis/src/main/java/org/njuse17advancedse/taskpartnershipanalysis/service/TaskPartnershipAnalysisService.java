@@ -3,7 +3,6 @@ package org.njuse17advancedse.taskpartnershipanalysis.service;
 import java.util.List;
 import java.util.Map;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IResearcherNet;
-import org.springframework.http.ResponseEntity;
 
 /**
  * @author ycj
@@ -15,7 +14,7 @@ public interface TaskPartnershipAnalysisService {
    * @param researcherId 作者id
    * @return id列表
    */
-  ResponseEntity<List<String>> getPartners(String researcherId);
+  List<String> getPartners(String researcherId);
 
   /**
    * 根据作者id获得作者某一时期的合作网络
@@ -24,7 +23,7 @@ public interface TaskPartnershipAnalysisService {
    * @param endDate 止日期
    * @return 学者合作网络
    */
-  ResponseEntity<IResearcherNet> getPartnership(
+  IResearcherNet getPartnership(
     String researcherId,
     String startDate,
     String endDate
@@ -35,5 +34,5 @@ public interface TaskPartnershipAnalysisService {
    * @param researchId 作者id
    * @return 预测合作学者列表
    */
-  ResponseEntity<Map<String, Double>> getPotentialPartners(String researchId);
+  Map<String, Double> getPotentialPartners(String researchId);
 }

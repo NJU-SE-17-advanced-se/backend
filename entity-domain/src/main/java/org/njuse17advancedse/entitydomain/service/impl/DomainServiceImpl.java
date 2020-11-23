@@ -1,6 +1,7 @@
 package org.njuse17advancedse.entitydomain.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.njuse17advancedse.entitydomain.data.AllRepository;
 import org.njuse17advancedse.entitydomain.dto.IDomain;
@@ -35,20 +36,18 @@ public class DomainServiceImpl implements DomainService {
 
   @Override
   public List<String> getPapers(String id) {
-    try {
-      return repository.getPapers(id);
-    } catch (Exception e) {
-      return new ArrayList<>();
-    }
+    if (!repository.existsById(id)) return Collections.singletonList(
+      "Not Found"
+    );
+    return repository.getPapers(id);
   }
 
   @Override
   public List<String> getResearchers(String id) {
-    try {
-      return repository.getResearchers(id);
-    } catch (Exception e) {
-      return new ArrayList<>();
-    }
+    if (!repository.existsById(id)) return Collections.singletonList(
+      "Not Found"
+    );
+    return repository.getResearchers(id);
   }
 
   @Override
