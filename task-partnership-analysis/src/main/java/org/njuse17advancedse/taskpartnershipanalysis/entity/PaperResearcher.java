@@ -10,8 +10,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "paper_researcher")
+@IdClass(PaperResearcherPK.class)
 public class PaperResearcher implements Serializable {
   @Id
+  @Column(insertable = false, updatable = false)
+  private String rid;
+
+  @Id
+  @Column(insertable = false, updatable = false)
+  private String pid;
+
   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "rid")
   private JpaResearcher researcher;

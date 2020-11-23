@@ -1,4 +1,4 @@
-package org.njuse17advancedse.entityresearcher.entity;
+package org.njuse17advancedse.taskpartnershipanalysis.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
@@ -9,20 +9,20 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "paper_researcher")
-@IdClass(PaperResearcherPK.class)
-public class PaperResearcher implements Serializable {
-  @Id
-  @Column(insertable = false, updatable = false)
-  private String rid;
-
+@IdClass(PaperDomainPK.class)
+@Entity(name = "paper_domain")
+public class PaperDomain implements Serializable {
   @Id
   @Column(insertable = false, updatable = false)
   private String pid;
 
+  @Id
+  @Column(insertable = false, updatable = false)
+  private String did;
+
   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  @JoinColumn(name = "rid")
-  private JpaResearcher researcher;
+  @JoinColumn(name = "did")
+  private JpaDomain domain;
 
   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "pid")

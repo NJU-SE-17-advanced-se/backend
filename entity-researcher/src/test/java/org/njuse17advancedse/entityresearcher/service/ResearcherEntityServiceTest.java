@@ -13,10 +13,13 @@ import org.njuse17advancedse.entityresearcher.entity.JpaDomain;
 import org.njuse17advancedse.entityresearcher.entity.JpaPaper;
 import org.njuse17advancedse.entityresearcher.entity.JpaResearcher;
 import org.njuse17advancedse.entityresearcher.repository.ResearcherRepository;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
+@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 class ResearcherEntityServiceTest {
   @MockBean
   private ResearcherRepository researcherRepository;
