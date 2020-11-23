@@ -1,5 +1,6 @@
 package org.njuse17advancedse.entitydomain.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 @Configuration
 @EnableOpenApi
 public class Swagger3Config {
+  @Value("${swagger-ui.path-mapping}")
+  private String swaggerMappingPath;
 
   @Bean
   public Docket createRestApi() {
@@ -22,7 +25,8 @@ public class Swagger3Config {
       .select()
       .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
       .paths(PathSelectors.any())
-      .build();
+      .build()
+      .pathMapping(swaggerMappingPath);
   }
 
   private ApiInfo apiInfo() {
