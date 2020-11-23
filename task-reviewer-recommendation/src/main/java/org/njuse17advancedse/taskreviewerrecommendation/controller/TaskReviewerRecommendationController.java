@@ -31,7 +31,7 @@ public class TaskReviewerRecommendationController {
       iPaperUpload
     );
     if (reviewers == null) {
-      throw Problem.valueOf(Status.NOT_FOUND, "journal id not found");
+      throw Problem.valueOf(Status.NOT_FOUND, "publication not found");
     }
     return reviewers;
   }
@@ -49,7 +49,7 @@ public class TaskReviewerRecommendationController {
       iPaperUpload
     );
     if (reviewers == null) {
-      throw Problem.valueOf(Status.NOT_FOUND, "journal id not found");
+      throw Problem.valueOf(Status.NOT_FOUND, "publication not found");
     }
     return reviewers;
   }
@@ -75,7 +75,7 @@ public class TaskReviewerRecommendationController {
       iPaperUpload.getPublication() == null ||
       iPaperUpload.getPublication().equals("")
     ) {
-      throw Problem.valueOf(Status.BAD_REQUEST, "journal is null");
+      throw Problem.valueOf(Status.BAD_REQUEST, "publication is null");
     }
     if (iPaperUpload.getReferenceIds() == null) {
       iPaperUpload.setReferenceIds(new ArrayList<>());
