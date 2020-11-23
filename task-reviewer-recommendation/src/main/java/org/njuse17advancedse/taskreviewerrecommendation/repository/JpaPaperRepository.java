@@ -38,17 +38,6 @@ public class JpaPaperRepository implements PaperRepository {
     List<String> partners
   ) {
     String sql;
-    sql = "select count(p) from publication p where p.id =:id";
-    int count = Integer.parseInt(
-      entityManager
-        .createQuery(sql)
-        .setParameter("id", paperJournal)
-        .getSingleResult()
-        .toString()
-    );
-    if (count == 0) {
-      return Lists.newArrayList("no such journal");
-    }
     sql =
       "select distinct pr.rid from paper_researcher pr  where pr.paper.publication.id in :journal and pr.paper.publicationDate between :start and :end";
     List<String> researchers;
@@ -136,5 +125,19 @@ public class JpaPaperRepository implements PaperRepository {
         .getResultList();
     partners.removeAll(researcherIds);
     return partners;
+  }
+
+  @Override
+  public boolean containPublication(String paperJournal) {
+    String sql;
+    sql = "select count(p) from publication p where p.id =:id";
+    int count = Integer.parseInt(
+      entityManager
+        .createQuery(sql)
+        .setParameter("id", paperJournal)
+        .getSingleResult()
+        .toString()
+    );
+    return count != 0;
   }
 }

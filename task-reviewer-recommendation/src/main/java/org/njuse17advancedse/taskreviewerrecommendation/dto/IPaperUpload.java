@@ -13,11 +13,9 @@ public class IPaperUpload {
 
   private String abs;
 
-  private String journal;
+  private String publication;
 
   private String date;
-
-  private String link;
 
   private List<String> researcherIds;
 

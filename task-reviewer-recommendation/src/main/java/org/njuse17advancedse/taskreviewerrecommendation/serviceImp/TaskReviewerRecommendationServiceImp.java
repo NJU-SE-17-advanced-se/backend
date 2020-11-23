@@ -31,7 +31,9 @@ public class TaskReviewerRecommendationServiceImp
   @Override
   public List<String> getRecommendReviewer(IPaperUpload iPaperUpload) {
     List<String> researcherIds = new ArrayList<>();
-
+    if (!paperRepository.containPublication(iPaperUpload.getPublication())) {
+      return null;
+    }
     /* 第一步，获得作者曾今的合作者 */
     List<String> pastPartners = paperRepository.getPastPartners(
       iPaperUpload.getResearcherIds()
@@ -45,15 +47,17 @@ public class TaskReviewerRecommendationServiceImp
 
     /* 第三步，获得最近在投稿刊物发表过文章的作者 */
     List<String> reviewersFormPublication = paperRepository.getResearchersFromPublication(
-      iPaperUpload.getJournal(),
+      iPaperUpload.getPublication(),
       Integer.parseInt(iPaperUpload.getDate()),
       pastPartners
     );
+
     if (reviewersFormPublication.size() == 1) {
-      if (reviewersFormPublication.get(0).equals("no such journal")) {
+      if (reviewersFormPublication.get(0).equals("no such publication")) {
         return null;
       }
     }
+
     /* 第四步， 获得论文发表期间相同领域论文的作者列表*/
     List<String> reviewersFromSimilarDomain = paperRepository.getResearcherFromSimilarDomain(
       iPaperUpload.getDomainIds(),
@@ -78,6 +82,7 @@ public class TaskReviewerRecommendationServiceImp
         }
       }
     }
+
     /* 第五步，将剩余作者按照影响力进行排序，取前5个作为推荐审稿人候选 */
     //researcherIds = sortResearchersByImpact(researcherIds);
 
@@ -111,6 +116,10 @@ public class TaskReviewerRecommendationServiceImp
 
   @Override
   public List<String> getNotRecommendReviewer(IPaperUpload iPaperUpload) {
+    if (!paperRepository.containPublication(iPaperUpload.getPublication())) {
+      return null;
+    }
+
     List<String> researcherIds = new ArrayList<>();
     List<String> partners; //合作作者列表
 

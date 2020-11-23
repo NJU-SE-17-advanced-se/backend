@@ -45,7 +45,13 @@ public class TaskReviewerRecommendationController {
     @ApiParam("论文详细信息") @RequestBody IPaperUpload iPaperUpload
   ) {
     checkPaperUpload(iPaperUpload);
-    return recommendationService.getNotRecommendReviewer(iPaperUpload);
+    List<String> reviewers = recommendationService.getNotRecommendReviewer(
+      iPaperUpload
+    );
+    if (reviewers == null) {
+      throw Problem.valueOf(Status.NOT_FOUND, "journal id not found");
+    }
+    return reviewers;
   }
 
   /**
@@ -66,7 +72,8 @@ public class TaskReviewerRecommendationController {
       throw Problem.valueOf(Status.BAD_REQUEST, "domains is null");
     }
     if (
-      iPaperUpload.getJournal() == null || iPaperUpload.getJournal().equals("")
+      iPaperUpload.getPublication() == null ||
+      iPaperUpload.getPublication().equals("")
     ) {
       throw Problem.valueOf(Status.BAD_REQUEST, "journal is null");
     }

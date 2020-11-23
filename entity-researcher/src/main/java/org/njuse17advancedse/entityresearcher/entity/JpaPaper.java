@@ -34,6 +34,14 @@ public class JpaPaper {
 
   @ManyToMany
   @JoinTable(
+    name = "paper_researcher",
+    joinColumns = @JoinColumn(name = "pid"),
+    inverseJoinColumns = @JoinColumn(name = "rid")
+  )
+  private List<JpaResearcher> researchers;
+
+  @ManyToMany
+  @JoinTable(
     name = "paper_domain",
     joinColumns = @JoinColumn(name = "pid"),
     inverseJoinColumns = @JoinColumn(name = "did")

@@ -1,8 +1,7 @@
 package org.njuse17advancedse.entityresearcher.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.util.List;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,4 +19,12 @@ public class JpaAffiliation {
 
   @Column(name = "description")
   private String description;
+
+  @ManyToMany
+  @JoinTable(
+    name = "researcher_affiliation",
+    joinColumns = @JoinColumn(name = "aid"),
+    inverseJoinColumns = @JoinColumn(name = "rid")
+  )
+  private List<JpaResearcher> researchers;
 }

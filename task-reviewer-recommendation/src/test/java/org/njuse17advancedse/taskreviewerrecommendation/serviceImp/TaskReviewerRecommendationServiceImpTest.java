@@ -7,9 +7,7 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.njuse17advancedse.taskreviewerrecommendation.dto.IAffiliation;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.IPaperUpload;
-import org.njuse17advancedse.taskreviewerrecommendation.dto.IResearcher;
 import org.njuse17advancedse.taskreviewerrecommendation.repository.PaperRepository;
 import org.njuse17advancedse.taskreviewerrecommendation.service.*;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -41,16 +39,17 @@ class TaskReviewerRecommendationServiceImpTest {
   void getRecommendReviewer() {
     IPaperUpload testPaper = new IPaperUpload();
     testPaper.setTitle("testPaper");
-    testPaper.setJournal("EMSE");
+    testPaper.setPublication("EMSE");
     testPaper.setDate("2020");
     testPaper.setAbs("some word");
-    testPaper.setLink("link");
     List<String> researchers = Lists.newArrayList("1", "2", "3");
     testPaper.setResearcherIds(researchers);
     List<String> testDomains = Lists.newArrayList("a", "b", "c");
     testPaper.setDomainIds(testDomains);
     List<String> referenceIds = Lists.newArrayList("1", "2", "3");
     testPaper.setReferenceIds(referenceIds);
+
+    Mockito.when(paperRepository.containPublication("EMSE")).thenReturn(true);
 
     List<String> pastPartners = Lists.newArrayList("4", "5");
     Mockito
@@ -110,16 +109,17 @@ class TaskReviewerRecommendationServiceImpTest {
   void getNotRecommendReviewer() {
     IPaperUpload testPaper = new IPaperUpload();
     testPaper.setTitle("testPaper");
-    testPaper.setJournal("EMSE");
+    testPaper.setPublication("EMSE");
     testPaper.setDate("2020");
     testPaper.setAbs("some word");
-    testPaper.setLink("link");
     List<String> researchers = Lists.newArrayList("1", "2", "3");
     testPaper.setResearcherIds(researchers);
     List<String> testDomains = Lists.newArrayList("a", "b", "c");
     testPaper.setDomainIds(testDomains);
     List<String> referenceIds = Lists.newArrayList("1", "2", "3");
     testPaper.setReferenceIds(referenceIds);
+
+    Mockito.when(paperRepository.containPublication("EMSE")).thenReturn(true);
 
     List<String> pastPartners = Lists.newArrayList("4", "5");
     Mockito
@@ -151,10 +151,6 @@ class TaskReviewerRecommendationServiceImpTest {
         paperRepository.getResearcherFromSimilarDomain(testDomains, 2020, null)
       )
       .thenReturn(reviewersFromSimilarDomain);
-
-    System.out.println(
-      taskReviewerRecommendationService.getNotRecommendReviewer(testPaper)
-    );
 
     List<String> result = Lists.newArrayList("4", "5", "7");
 

@@ -24,4 +24,6 @@ public interface PaperRepository {
   List<String> getPastPartners(List<String> researcherIds);
 
   List<String> getPartnersByAffiliation(List<String> researcherIds);
+
+  boolean containPublication(String id);
 }
