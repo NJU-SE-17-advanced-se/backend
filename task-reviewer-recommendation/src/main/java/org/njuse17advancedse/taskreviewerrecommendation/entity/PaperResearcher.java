@@ -1,4 +1,4 @@
-package org.njuse17advancedse.entityresearcher.entity;
+package org.njuse17advancedse.taskreviewerrecommendation.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;

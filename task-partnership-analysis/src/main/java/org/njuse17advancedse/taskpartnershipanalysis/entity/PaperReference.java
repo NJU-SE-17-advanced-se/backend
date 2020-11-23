@@ -1,5 +1,6 @@
 package org.njuse17advancedse.taskpartnershipanalysis.entity;
 
+import java.io.Serializable;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,12 +10,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "paper_reference")
-public class PaperReference {
+@IdClass(PaperReferencePK.class)
+public class PaperReference implements Serializable {
+  @Id
+  @Column(insertable = false, updatable = false)
+  private String rid;
+
+  @Id
+  @Column(insertable = false, updatable = false)
+  private String pid;
+
   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "rid")
   private JpaPaper reference;
 
-  @Id
   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "pid")
   private JpaPaper paper;

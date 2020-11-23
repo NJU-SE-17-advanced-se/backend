@@ -1,4 +1,4 @@
-package org.njuse17advancedse.entityresearcher.entity;
+package org.njuse17advancedse.taskreviewerrecommendation.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "paper_researcher")
-@IdClass(PaperResearcherPK.class)
-public class PaperResearcher implements Serializable {
+@Entity(name = "paper_reference")
+@IdClass(PaperReferencePK.class)
+public class PaperReference implements Serializable {
   @Id
   @Column(insertable = false, updatable = false)
   private String rid;
@@ -22,7 +22,7 @@ public class PaperResearcher implements Serializable {
 
   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "rid")
-  private JpaResearcher researcher;
+  private JpaPaper reference;
 
   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "pid")

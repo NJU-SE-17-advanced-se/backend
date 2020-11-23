@@ -9,13 +9,21 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@IdClass(PaperDomainPK.class)
 @Entity(name = "paper_domain")
 public class PaperDomain implements Serializable {
+  @Id
+  @Column(insertable = false, updatable = false)
+  private String pid;
+
+  @Id
+  @Column(insertable = false, updatable = false)
+  private String did;
+
   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "did")
   private JpaDomain domain;
 
-  @Id
   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "pid")
   private JpaPaper paper;

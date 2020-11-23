@@ -1,4 +1,4 @@
-package org.njuse17advancedse.entityresearcher.entity;
+package org.njuse17advancedse.taskreviewerrecommendation.entity;
 
 import java.util.List;
 import javax.persistence.*;
