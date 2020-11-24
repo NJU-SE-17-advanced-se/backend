@@ -1,6 +1,8 @@
 package org.njuse17advancedse.taskimpactanalysis.service.impl;
 
 import java.util.*;
+import org.njuse17advancedse.taskimpactanalysis.data.AllRepository;
+import org.njuse17advancedse.taskimpactanalysis.dto.ICitation;
 import org.njuse17advancedse.taskimpactanalysis.dto.IPaper;
 import org.njuse17advancedse.taskimpactanalysis.dto.IResearcher;
 import org.njuse17advancedse.taskimpactanalysis.service.PaperService;
@@ -22,24 +24,22 @@ public class TaskImpactAnalysisServiceImpl
   PaperService paperService;
 
   @Autowired
-  ResearcherService researcherService;
+  AllRepository repository;
 
   /**
    * 计算学者影响力（H指数）
    */
   public int getHIndex(String id) {
     try {
-      IResearcher r = researcherService.getResearcherById(id);
-      if (isEmptyResearcher(r)) return -1;
-      ArrayList<String> tmpPaperIds = new ArrayList<>(r.getPapers());
-      ArrayList<Integer> tmpPapers = new ArrayList<>();
-      for (String s : tmpPaperIds) {
-        tmpPapers.add(paperService.getCitations(s).size());
+      if (!repository.existsResearcherById(id)) {
+        return -1;
       }
-      tmpPapers.sort(Comparator.comparingInt(a -> -a));
+      List<ICitation> citations = repository.getPaperQuotingTimes(id);
+
+      citations.sort(Comparator.comparingInt(a -> -a.getCitation()));
       int res = 0;
-      for (int i = 0; i < tmpPapers.size(); i++) {
-        if (tmpPapers.get(i) > i) {
+      for (int i = 0; i < citations.size(); i++) {
+        if (citations.get(i).getCitation() > i) {
           res = i + 1;
         } else {
           break;
@@ -76,10 +76,11 @@ public class TaskImpactAnalysisServiceImpl
 
   public String test() {
     IPaper p = paperService.getPaper("f9e5a809fc0e03c3dd75d87e6b6f05bf");
-    System.out.println(p.getAbs());
-    IResearcher r = researcherService.getResearcherById("IEEE_37317862200");
-    System.out.println(r.getName());
-    return p.getTitle() + " " + r.getName();
+    //    System.out.println(p.getAbs());
+    //    IResearcher r = researcherService.getResearcherById("IEEE_37317862200");
+    //    System.out.println(r.getName());
+    //    return p.getTitle() + " " + r.getName();
+    return p.getTitle();
   }
 
   private boolean isEmptyResearcher(IResearcher r) {
