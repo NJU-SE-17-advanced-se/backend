@@ -1,6 +1,5 @@
 package org.njuse17advancedse.taskreviewerrecommendation.repository;
 
-import com.google.common.collect.Lists;
 import com.sun.istack.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;

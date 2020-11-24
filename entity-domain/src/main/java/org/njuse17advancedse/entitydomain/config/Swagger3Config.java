@@ -15,7 +15,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 @Configuration
 @EnableOpenApi
 public class Swagger3Config {
-  @Value("${swagger-ui.path-mapping}")
+  @Value("${swagger-ui.path-mapping:/}")
   private String swaggerMappingPath;
 
   @Bean
