@@ -1,6 +1,8 @@
 package org.njuse17advancedse.taskreviewerrecommendation.entity;
 
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,12 +10,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Researcher {
+@Entity(name = "domain")
+public class JpaDomain {
+  @Id
   private String id;
 
+  @Column(name = "name")
   private String name;
 
-  private List<Affiliation> affiliations; // 作者所在的机构
-
-  private List<Paper> papers;
+  @Column(name = "url")
+  private String url;
 }

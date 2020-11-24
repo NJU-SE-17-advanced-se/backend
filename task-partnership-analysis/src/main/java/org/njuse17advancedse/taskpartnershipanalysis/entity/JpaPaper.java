@@ -39,4 +39,17 @@ public class JpaPaper {
     inverseJoinColumns = @JoinColumn(name = "did")
   )
   private List<JpaDomain> domains;
+
+  @ManyToMany
+  @JoinTable(
+    name = "paper_reference",
+    joinColumns = @JoinColumn(name = "pid"),
+    inverseJoinColumns = @JoinColumn(name = "rid")
+  )
+  private List<JpaPaper> references;
+
+  public JpaPaper(String id, int publicationDate) {
+    this.id = id;
+    this.publicationDate = publicationDate;
+  }
 }

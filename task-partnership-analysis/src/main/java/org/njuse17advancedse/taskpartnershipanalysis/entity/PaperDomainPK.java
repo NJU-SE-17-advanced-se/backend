@@ -1,6 +1,6 @@
 package org.njuse17advancedse.taskpartnershipanalysis.entity;
 
-import java.util.List;
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,10 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Journal {
-  private String id;
-
-  private String name;
-
-  private List<Paper> papers;
+public class PaperDomainPK implements Serializable {
+  private String pid;
+  private String did;
 }
