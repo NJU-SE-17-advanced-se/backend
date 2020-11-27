@@ -2,11 +2,8 @@ package org.njuse17advancedse.taskimpactanalysis.service.impl;
 
 import java.util.*;
 import org.njuse17advancedse.taskimpactanalysis.data.AllRepository;
-import org.njuse17advancedse.taskimpactanalysis.dto.ICitation;
 import org.njuse17advancedse.taskimpactanalysis.dto.IPaper;
 import org.njuse17advancedse.taskimpactanalysis.dto.IResearcher;
-import org.njuse17advancedse.taskimpactanalysis.service.PaperService;
-import org.njuse17advancedse.taskimpactanalysis.service.ResearcherService;
 import org.njuse17advancedse.taskimpactanalysis.service.TaskImpactAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,9 +16,6 @@ public class TaskImpactAnalysisServiceImpl
     impactFactors = new HashMap<>();
     impactFactors.put("", 1d);
   }
-
-  @Autowired
-  PaperService paperService;
 
   @Autowired
   AllRepository repository;
@@ -37,6 +31,7 @@ public class TaskImpactAnalysisServiceImpl
       //      }
       //      Date date1=new Date();
       //      System.out.println(date1.getTime()-date.getTime());
+      if (!repository.existsResearcherById(id)) return -1;
       List<Integer> citations = repository.getPaperQuotingTimes(id);
       //      System.out.println(new Date().getTime()-date1.getTime());
       if (citations.size() == 0) return -1;
@@ -64,13 +59,12 @@ public class TaskImpactAnalysisServiceImpl
   @Override
   public double getPaperImpact(String id) {
     try {
-      IPaper p = paperService.getPaper(id);
-      if (isEmptyPaper(p)) return -1;
-      int size = paperService.getCitations(id).size();
+      if (!repository.existsPaperById(id)) return -1;
+      int size = repository.getSinglePaperQuotingTimes(id);
       return Double.parseDouble(
         String.format(
           "%.2f",
-          size * impactFactors.getOrDefault(p.getPublication(), 1d)
+          size * impactFactors.getOrDefault("publication//TODO", 1d)
         )
       );
     } catch (Exception e) {
@@ -79,12 +73,12 @@ public class TaskImpactAnalysisServiceImpl
   }
 
   public String test() {
-    IPaper p = paperService.getPaper("f9e5a809fc0e03c3dd75d87e6b6f05bf");
-    //    System.out.println(p.getAbs());
-    //    IResearcher r = researcherService.getResearcherById("IEEE_37317862200");
-    //    System.out.println(r.getName());
-    //    return p.getTitle() + " " + r.getName();
-    return p.getTitle();
+    //    IPaper p = paperService.getPaper("f9e5a809fc0e03c3dd75d87e6b6f05bf");
+    //        System.out.println(p.getAbs());
+    //        IResearcher r = researcherService.getResearcherById("IEEE_37317862200");
+    //        System.out.println(r.getName());
+    //        return p.getTitle() + " " + r.getName();
+    return "p.getTitle();;";
   }
 
   private boolean isEmptyResearcher(IResearcher r) {
