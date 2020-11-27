@@ -8,6 +8,7 @@ import lombok.var;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.njuse17advancedse.taskcitationanalysis.data.CitationAnalysisRepository;
 import org.njuse17advancedse.taskcitationanalysis.dto.IPaper;
 import org.njuse17advancedse.taskcitationanalysis.dto.IResearcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,545 +18,243 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
-@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
+//@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 public class TaskCitationAnalysisServiceTest {
-  @MockBean
-  PaperService paperService;
-
-  @MockBean
-  ResearcherService researcherService;
-
   @Autowired
   TaskCitationAnalysisService service;
 
+  @MockBean
+  CitationAnalysisRepository repository;
+
   @BeforeEach
   public void init() {
-    IPaper p1 = mock(IPaper.class);
-    p1.setId("1");
-    Mockito.when(p1.getId()).thenReturn("1");
-    IPaper p2 = mock(IPaper.class);
-    p2.setId("2");
-    Mockito.when(p2.getId()).thenReturn("2");
-    IPaper p3 = mock(IPaper.class);
-    p3.setId("3");
-    Mockito.when(p3.getId()).thenReturn("3");
-    IPaper p4 = mock(IPaper.class);
-    p4.setId("4");
-    Mockito.when(p4.getId()).thenReturn("4");
-    IPaper p5 = mock(IPaper.class);
-    p5.setId("5");
-    Mockito.when(p5.getId()).thenReturn("5");
-    IPaper p6 = mock(IPaper.class);
-    p6.setId("6");
-    Mockito.when(p6.getId()).thenReturn("6");
-    IPaper p7 = mock(IPaper.class);
-    p7.setId("7");
-    Mockito.when(p7.getId()).thenReturn("7");
-    IPaper p8 = mock(IPaper.class);
-    p8.setId("8");
-    Mockito.when(p8.getId()).thenReturn("8");
-    Mockito
-      .when(p1.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4"));
-    Mockito.when(p2.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito.when(p3.getReferences()).thenReturn(Collections.singletonList("1"));
-    Mockito
-      .when(p4.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7"));
-    Mockito.when(p5.getReferences()).thenReturn(Collections.emptyList());
-    Mockito.when(p6.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito
-      .when(p7.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5"));
-    Mockito
-      .when(p8.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4"));
-    Mockito
-      .when(paperService.getCitations("1"))
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "6", "7", "8"));
-    Mockito
-      .when(paperService.getCitations("2"))
-      .thenReturn(Arrays.asList("1", "2", "4", "6", "7", "8"));
-    Mockito
-      .when(paperService.getCitations("3"))
-      .thenReturn(Arrays.asList("1", "2", "4", "6", "7", "8"));
-    Mockito
-      .when(paperService.getCitations("4"))
-      .thenReturn(Arrays.asList("1", "4", "7", "8"));
-    Mockito
-      .when(paperService.getCitations("5"))
-      .thenReturn(Arrays.asList("4", "7"));
-    Mockito
-      .when(paperService.getCitations("6"))
-      .thenReturn(Collections.singletonList("4"));
-    Mockito
-      .when(paperService.getCitations("7"))
-      .thenReturn(Collections.singletonList("4"));
-    Mockito
-      .when(paperService.getCitations("8"))
-      .thenReturn(Collections.emptyList());
-    IResearcher r = mock(IResearcher.class);
-    r.setId("rid");
-    Mockito
-      .when(paperService.getPapers(null, null, null))
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8"));
-    Mockito.when(paperService.getPaper("1")).thenReturn(p1);
-    Mockito.when(paperService.getPaper("2")).thenReturn(p2);
-    Mockito.when(paperService.getPaper("3")).thenReturn(p3);
-    Mockito.when(paperService.getPaper("4")).thenReturn(p4);
-    Mockito.when(paperService.getPaper("5")).thenReturn(p5);
-    Mockito.when(paperService.getPaper("6")).thenReturn(p6);
-    Mockito.when(paperService.getPaper("7")).thenReturn(p7);
-    Mockito.when(paperService.getPaper("8")).thenReturn(p8);
+    Mockito.when(repository.existsPaperById("pid")).thenReturn(true);
+    Mockito.when(repository.existsResearcherById("rid")).thenReturn(true);
   }
 
   @Test
   public void testGetQuotedPapers() {
+    Mockito
+      .when(repository.getQuotedPapersByPaperId("pid"))
+      .thenReturn(Arrays.asList("1", "test1"));
     assertEquals(
-      service.getQuotedPapersByPaperId("1"),
-      Arrays.asList("1", "2", "3", "4")
-    );
-    assertEquals(
-      service.getQuotedPapersByPaperId("2"),
-      Arrays.asList("1", "2", "3")
-    );
-    assertEquals(
-      service.getQuotedPapersByPaperId("3"),
-      Collections.singletonList("1")
-    );
-    assertEquals(
-      service.getQuotedPapersByPaperId("4"),
-      Arrays.asList("1", "2", "3", "4", "5", "6", "7")
-    );
-    assertEquals(
-      service.getQuotedPapersByPaperId("5"),
-      Collections.emptyList()
-    );
-    assertEquals(
-      service.getQuotedPapersByPaperId("6"),
-      Arrays.asList("1", "2", "3")
-    );
-    assertEquals(
-      service.getQuotedPapersByPaperId("7"),
-      Arrays.asList("1", "2", "3", "4", "5")
-    );
-    assertEquals(
-      service.getQuotedPapersByPaperId("8"),
-      Arrays.asList("1", "2", "3", "4")
+      service.getQuotedPapersByPaperId("pid"),
+      Arrays.asList("1", "test1")
     );
   }
 
   @Test
   public void testGetQuotingPapers() {
+    Mockito
+      .when(repository.getQuotingPapersByPaperId("pid"))
+      .thenReturn(Arrays.asList("2", "test2"));
     assertEquals(
-      service.getQuotingPapersByPaperId("1"),
-      Arrays.asList("1", "2", "3", "4", "6", "7", "8")
-    );
-    assertEquals(
-      service.getQuotingPapersByPaperId("2"),
-      Arrays.asList("1", "2", "4", "6", "7", "8")
-    );
-    assertEquals(
-      service.getQuotingPapersByPaperId("3"),
-      Arrays.asList("1", "2", "4", "6", "7", "8")
-    );
-    assertEquals(
-      service.getQuotingPapersByPaperId("4"),
-      Arrays.asList("1", "4", "7", "8")
-    );
-    assertEquals(
-      service.getQuotingPapersByPaperId("5"),
-      Arrays.asList("4", "7")
-    );
-    assertEquals(
-      service.getQuotingPapersByPaperId("6"),
-      Collections.singletonList("4")
-    );
-    assertEquals(
-      service.getQuotingPapersByPaperId("7"),
-      Collections.singletonList("4")
-    );
-    assertEquals(
-      service.getQuotingPapersByPaperId("8"),
-      Collections.emptyList()
+      service.getQuotingPapersByPaperId("pid"),
+      Arrays.asList("2", "test2")
     );
   }
 
   @Test
-  public void testGetResearcherQuoted() {
-    IPaper p1 = mock(IPaper.class);
-    p1.setId("1");
-    Mockito.when(p1.getId()).thenReturn("1");
-    IPaper p2 = mock(IPaper.class);
-    p2.setId("2");
-    Mockito.when(p2.getId()).thenReturn("2");
-    IPaper p3 = mock(IPaper.class);
-    p3.setId("3");
-    Mockito.when(p3.getId()).thenReturn("3");
-    IPaper p4 = mock(IPaper.class);
-    p4.setId("4");
-    Mockito.when(p4.getId()).thenReturn("4");
-    IPaper p5 = mock(IPaper.class);
-    p5.setId("5");
-    Mockito.when(p5.getId()).thenReturn("5");
-    IPaper p6 = mock(IPaper.class);
-    p6.setId("6");
-    Mockito.when(p6.getId()).thenReturn("6");
-    IPaper p7 = mock(IPaper.class);
-    p7.setId("7");
-    Mockito.when(p7.getId()).thenReturn("7");
-    IPaper p8 = mock(IPaper.class);
-    p8.setId("8");
-    Mockito.when(p8.getId()).thenReturn("8");
+  public void testGetQuotedResearchers() {
     Mockito
-      .when(p1.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4"));
-    Mockito.when(p2.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito.when(p3.getReferences()).thenReturn(Collections.singletonList("1"));
-    Mockito
-      .when(p4.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7"));
-    Mockito.when(p5.getReferences()).thenReturn(Collections.emptyList());
-    Mockito.when(p6.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito
-      .when(p7.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5"));
-    Mockito
-      .when(p8.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4"));
-    IResearcher r1 = mock(IResearcher.class);
-    r1.setId("rid");
-    Mockito
-      .when(paperService.getPapers(null, null, null))
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8"));
-    Mockito.when(r1.getPapers()).thenReturn(Arrays.asList("1", "2", "3"));
-    Map<String, List<String>> map = new HashMap<>();
-    map.put("1", Arrays.asList("1", "2", "3", "4"));
-    map.put("2", Arrays.asList("1", "2", "3"));
-    map.put("3", Collections.singletonList("1"));
-    Mockito.when(r1.getId()).thenReturn("R1");
-    Mockito.when(researcherService.getResearcherById("R1")).thenReturn(r1);
-    assertEquals(service.getQuotedPapersByResearcherId("R1"), map);
-  }
-
-  @Test
-  public void testGetResearcherQuoting() {
-    IPaper p1 = mock(IPaper.class);
-    p1.setId("1");
-    Mockito.when(p1.getId()).thenReturn("1");
-    IPaper p2 = mock(IPaper.class);
-    p2.setId("2");
-    Mockito.when(p2.getId()).thenReturn("2");
-    IPaper p3 = mock(IPaper.class);
-    p3.setId("3");
-    Mockito.when(p3.getId()).thenReturn("3");
-    IPaper p4 = mock(IPaper.class);
-    p4.setId("4");
-    Mockito.when(p4.getId()).thenReturn("4");
-    IPaper p5 = mock(IPaper.class);
-    p5.setId("5");
-    Mockito.when(p5.getId()).thenReturn("5");
-    IPaper p6 = mock(IPaper.class);
-    p6.setId("6");
-    Mockito.when(p6.getId()).thenReturn("6");
-    IPaper p7 = mock(IPaper.class);
-    p7.setId("7");
-    Mockito.when(p7.getId()).thenReturn("7");
-    IPaper p8 = mock(IPaper.class);
-    p8.setId("8");
-    Mockito.when(p8.getId()).thenReturn("8");
-    Mockito
-      .when(p1.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4"));
-    Mockito.when(p2.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito.when(p3.getReferences()).thenReturn(Collections.singletonList("1"));
-    Mockito
-      .when(p4.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7"));
-    Mockito.when(p5.getReferences()).thenReturn(Collections.emptyList());
-    Mockito.when(p6.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito
-      .when(p7.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5"));
-    Mockito
-      .when(p8.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4"));
-    IResearcher r1 = mock(IResearcher.class);
-    r1.setId("rid");
-    Mockito
-      .when(paperService.getPapers(null, null, null))
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8"));
-    Mockito.when(r1.getPapers()).thenReturn(Arrays.asList("1", "2", "3"));
-    Map<String, List<String>> map = new HashMap<>();
-    map.put("1", Arrays.asList("1", "2", "3", "4", "6", "7", "8"));
-    map.put("2", Arrays.asList("1", "2", "4", "6", "7", "8"));
-    map.put("3", Arrays.asList("1", "2", "4", "6", "7", "8"));
-
-    Mockito.when(r1.getId()).thenReturn("R1");
-    Mockito.when(researcherService.getResearcherById("R1")).thenReturn(r1);
-    assertEquals(service.getQuotingPapersByResearcherId("R1"), map);
-  }
-
-  @Test
-  public void testGetResearcherQuotedResearcherNum() {
-    IResearcher r1 = mock(IResearcher.class);
-    Mockito.when(r1.getId()).thenReturn("R1");
-    Mockito.when(researcherService.getResearcherById("R1")).thenReturn(r1);
-    IResearcher r2 = mock(IResearcher.class);
-    Mockito.when(r2.getId()).thenReturn("R2");
-    Mockito.when(researcherService.getResearcherById("R2")).thenReturn(r2);
-    IResearcher r3 = mock(IResearcher.class);
-    Mockito.when(r3.getId()).thenReturn("R3");
-    Mockito.when(researcherService.getResearcherById("R3")).thenReturn(r3);
-    IPaper p1 = mock(IPaper.class);
-    p1.setId("1");
-    Mockito.when(p1.getId()).thenReturn("1");
-    IPaper p2 = mock(IPaper.class);
-    p2.setId("2");
-    Mockito.when(p2.getId()).thenReturn("2");
-    IPaper p3 = mock(IPaper.class);
-    p3.setId("3");
-    Mockito.when(p3.getId()).thenReturn("3");
-    IPaper p4 = mock(IPaper.class);
-    p4.setId("4");
-    Mockito.when(p4.getId()).thenReturn("4");
-    IPaper p5 = mock(IPaper.class);
-    p5.setId("5");
-    Mockito.when(p5.getId()).thenReturn("5");
-    IPaper p6 = mock(IPaper.class);
-    p6.setId("6");
-    Mockito.when(p6.getId()).thenReturn("6");
-    IPaper p7 = mock(IPaper.class);
-    p7.setId("7");
-    Mockito.when(p7.getId()).thenReturn("7");
-    IPaper p8 = mock(IPaper.class);
-    p8.setId("8");
-    Mockito.when(p8.getId()).thenReturn("8");
-    Mockito
-      .when(p1.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4"));
-    Mockito.when(p2.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito.when(p3.getReferences()).thenReturn(Collections.singletonList("1"));
-    Mockito
-      .when(p4.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7"));
-    Mockito.when(p5.getReferences()).thenReturn(Collections.emptyList());
-    Mockito.when(p6.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito
-      .when(p7.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5"));
-    Mockito
-      .when(p8.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4"));
-
-    Mockito
-      .when(paperService.getPapers(null, null, null))
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8"));
-    Mockito
-      .when(p1.getResearchers())
-      .thenReturn(Collections.singletonList("R1"));
-    Mockito
-      .when(p2.getResearchers())
-      .thenReturn(Collections.singletonList("R1"));
-    Mockito
-      .when(p3.getResearchers())
-      .thenReturn(Collections.singletonList("R2"));
-    Mockito.when(p4.getResearchers()).thenReturn(Collections.emptyList());
-    Mockito.when(p5.getResearchers()).thenReturn(Collections.emptyList());
-    Mockito
-      .when(p6.getResearchers())
-      .thenReturn(Collections.singletonList("R3"));
-    Mockito.when(p7.getResearchers()).thenReturn(Collections.emptyList());
-    Mockito.when(p8.getResearchers()).thenReturn(Collections.emptyList());
-    Mockito
-      .when(p1.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4"));
-    Mockito.when(p2.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito.when(p3.getReferences()).thenReturn(Collections.singletonList("1"));
-    Mockito
-      .when(p4.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7"));
-    Mockito.when(p5.getReferences()).thenReturn(Collections.emptyList());
-    Mockito.when(p6.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito
-      .when(p7.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5"));
-    Mockito
-      .when(p8.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4"));
-    Mockito.when(r1.getPapers()).thenReturn(Arrays.asList("1", "2"));
-    Mockito.when(r2.getPapers()).thenReturn(Collections.singletonList("3"));
-    Mockito.when(r3.getPapers()).thenReturn(Collections.singletonList("6"));
-
-    Mockito.when(paperService.getPaper("1")).thenReturn(p1);
-    Mockito.when(paperService.getPaper("2")).thenReturn(p2);
-    Mockito.when(paperService.getPaper("3")).thenReturn(p3);
-    Mockito.when(paperService.getPaper("4")).thenReturn(p4);
-    Mockito.when(paperService.getPaper("5")).thenReturn(p5);
-    Mockito.when(paperService.getPaper("6")).thenReturn(p6);
-    Mockito.when(paperService.getPaper("7")).thenReturn(p7);
-    Mockito.when(paperService.getPaper("8")).thenReturn(p8);
-    Map<String, List<String>> map1 = new HashMap<>();
-    map1.put("1", Arrays.asList("R1", "R2"));
-    map1.put("2", Arrays.asList("R1", "R2"));
-    Map<String, List<String>> map2 = new HashMap<>();
-    map2.put("3", Arrays.asList("R1"));
-    Map<String, List<String>> map3 = new HashMap<>();
-    map3.put("6", Arrays.asList("R1", "R2"));
-    Mockito.when(researcherService.getResearcherById("R1")).thenReturn(r1);
-    Mockito.when(researcherService.getResearcherById("R2")).thenReturn(r2);
-    Mockito.when(researcherService.getResearcherById("R3")).thenReturn(r3);
+      .when(repository.getPaperQuotedResearcher("pid"))
+      .thenReturn(Arrays.asList("1", "test1"));
     assertEquals(
-      true,
-      sameMap(map1, service.getResearcherPaperQuotedResearcher("R1"))
-    );
-    assertEquals(
-      true,
-      sameMap(map2, service.getResearcherPaperQuotedResearcher("R2"))
-    );
-    assertEquals(
-      true,
-      sameMap(map3, service.getResearcherPaperQuotedResearcher("R3"))
+      service.getPaperQuotedResearcher("pid"),
+      Arrays.asList("1", "test1")
     );
   }
 
   @Test
-  public void testGetResearcherQuotingResearcherNum() {
-    IResearcher r1 = mock(IResearcher.class);
-    Mockito.when(r1.getId()).thenReturn("R1");
-    Mockito.when(researcherService.getResearcherById("R1")).thenReturn(r1);
-    IResearcher r2 = mock(IResearcher.class);
-    Mockito.when(r2.getId()).thenReturn("R2");
-    Mockito.when(researcherService.getResearcherById("R2")).thenReturn(r2);
-    IResearcher r3 = mock(IResearcher.class);
-    Mockito.when(r3.getId()).thenReturn("R3");
-    Mockito.when(researcherService.getResearcherById("R3")).thenReturn(r3);
-    IPaper p1 = mock(IPaper.class);
-    p1.setId("1");
-    Mockito.when(p1.getId()).thenReturn("1");
-    IPaper p2 = mock(IPaper.class);
-    p2.setId("2");
-    Mockito.when(p2.getId()).thenReturn("2");
-    IPaper p3 = mock(IPaper.class);
-    p3.setId("3");
-    Mockito.when(p3.getId()).thenReturn("3");
-    IPaper p4 = mock(IPaper.class);
-    p4.setId("4");
-    Mockito.when(p4.getId()).thenReturn("4");
-    IPaper p5 = mock(IPaper.class);
-    p5.setId("5");
-    Mockito.when(p5.getId()).thenReturn("5");
-    IPaper p6 = mock(IPaper.class);
-    p6.setId("6");
-    Mockito.when(p6.getId()).thenReturn("6");
-    IPaper p7 = mock(IPaper.class);
-    p7.setId("7");
-    Mockito.when(p7.getId()).thenReturn("7");
-    IPaper p8 = mock(IPaper.class);
-    p8.setId("8");
-    Mockito.when(p8.getId()).thenReturn("8");
+  public void testGetQuotingResearchers() {
     Mockito
-      .when(p1.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4"));
-    Mockito.when(p2.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito.when(p3.getReferences()).thenReturn(Collections.singletonList("1"));
-    Mockito
-      .when(p4.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7"));
-    Mockito.when(p5.getReferences()).thenReturn(Collections.emptyList());
-    Mockito.when(p6.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito
-      .when(p7.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5"));
-    Mockito
-      .when(p8.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4"));
-
-    Mockito
-      .when(paperService.getPapers(null, null, null))
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8"));
-    Mockito
-      .when(p1.getResearchers())
-      .thenReturn(Collections.singletonList("R1"));
-    Mockito
-      .when(p2.getResearchers())
-      .thenReturn(Collections.singletonList("R1"));
-    Mockito
-      .when(p3.getResearchers())
-      .thenReturn(Collections.singletonList("R2"));
-    Mockito.when(p4.getResearchers()).thenReturn(Collections.emptyList());
-    Mockito.when(p5.getResearchers()).thenReturn(Collections.emptyList());
-    Mockito
-      .when(p6.getResearchers())
-      .thenReturn(Collections.singletonList("R3"));
-    Mockito.when(p7.getResearchers()).thenReturn(Collections.emptyList());
-    Mockito.when(p8.getResearchers()).thenReturn(Collections.emptyList());
-    Mockito
-      .when(p1.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4"));
-    Mockito.when(p2.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito.when(p3.getReferences()).thenReturn(Collections.singletonList("1"));
-    Mockito
-      .when(p4.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5", "6", "7"));
-    Mockito.when(p5.getReferences()).thenReturn(Collections.emptyList());
-    Mockito.when(p6.getReferences()).thenReturn(Arrays.asList("1", "2", "3"));
-    Mockito
-      .when(p7.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4", "5"));
-    Mockito
-      .when(p8.getReferences())
-      .thenReturn(Arrays.asList("1", "2", "3", "4"));
-    Mockito.when(r1.getPapers()).thenReturn(Arrays.asList("1", "2"));
-    Mockito.when(r2.getPapers()).thenReturn(Collections.singletonList("3"));
-    Mockito.when(r3.getPapers()).thenReturn(Collections.singletonList("6"));
-    Map<String, List<String>> map1 = new HashMap<>();
-    map1.put("1", Arrays.asList("R1", "R2", "R3"));
-    map1.put("2", Arrays.asList("R1", "R3"));
-    Map<String, List<String>> map2 = new HashMap<>();
-    map2.put("3", Arrays.asList("R1", "R3"));
-    Map<String, List<String>> map3 = new HashMap<>();
-    map3.put("6", Collections.emptyList());
-
-    Mockito.when(paperService.getPaper("1")).thenReturn(p1);
-    Mockito.when(paperService.getPaper("2")).thenReturn(p2);
-    Mockito.when(paperService.getPaper("3")).thenReturn(p3);
-    Mockito.when(paperService.getPaper("4")).thenReturn(p4);
-    Mockito.when(paperService.getPaper("5")).thenReturn(p5);
-    Mockito.when(paperService.getPaper("6")).thenReturn(p6);
-    Mockito.when(paperService.getPaper("7")).thenReturn(p7);
-    Mockito.when(paperService.getPaper("8")).thenReturn(p8);
+      .when(repository.getPaperQuotingResearcher("pid"))
+      .thenReturn(Arrays.asList("2", "test2"));
     assertEquals(
-      true,
-      sameMap(map1, service.getResearcherPaperQuotingResearcher("R1"))
-    );
-    assertEquals(
-      true,
-      sameMap(map2, service.getResearcherPaperQuotingResearcher("R2"))
-    );
-    assertEquals(
-      true,
-      sameMap(map3, service.getResearcherPaperQuotingResearcher("R3"))
+      service.getPaperQuotingResearcher("pid"),
+      Arrays.asList("2", "test2")
     );
   }
 
-  boolean sameMap(
-    Map<String, List<String>> map1,
-    Map<String, List<String>> map2
-  ) {
-    if (map1.size() != map2.size()) {
-      return false;
-    }
-    for (String s : map1.keySet()) {
-      var l1 = map1.get(s);
-      var l2 = map2.get(s);
-      if (l1 == null || l2 == null) return false;
-      Collections.sort(l1);
-      Collections.sort(l2);
-      if (!l1.equals(l2)) {
-        return false;
-      }
-    }
-    return true;
+  @Test
+  public void testGetResearcherPaperQuotedPapers() {
+    HashMap<String, List<String>> map = new HashMap<>();
+    map.put("pid1", Arrays.asList("1", "test1"));
+    map.put("pid2", Arrays.asList("2", "test2"));
+    Mockito
+      .when(repository.getResearcherPaperQuotedPapers("rid"))
+      .thenReturn(map);
+    assertEquals(service.getQuotedPapersByResearcherId("rid"), map);
   }
+
+  @Test
+  public void testGetResearcherPaperQuotingPapers() {
+    HashMap<String, List<String>> map = new HashMap<>();
+    map.put("pid3", Arrays.asList("4", "test1"));
+    map.put("pid4", Arrays.asList("2", "test9"));
+    map.put("pid5", Arrays.asList("sada", "faker"));
+    Mockito
+      .when(repository.getResearcherPaperQuotingPapers("rid"))
+      .thenReturn(map);
+    assertEquals(service.getQuotingPapersByResearcherId("rid"), map);
+  }
+
+  @Test
+  public void testGetResearcherPaperQuotedResearcher() {
+    HashMap<String, List<String>> map = new HashMap<>();
+    map.put("pid1", Arrays.asList("1", "test1"));
+    map.put("pid2", Arrays.asList("2", "test2"));
+    Mockito
+      .when(repository.getResearcherPaperQuotedResearchers("rid"))
+      .thenReturn(map);
+    assertEquals(service.getResearcherPaperQuotedResearcher("rid"), map);
+  }
+
+  @Test
+  public void testGetResearcherPaperQuotingResearcher() {
+    HashMap<String, List<String>> map = new HashMap<>();
+    map.put("pid3", Arrays.asList("4", "test1"));
+    map.put("pid4", Arrays.asList("2", "test9"));
+    map.put("pid5", Arrays.asList("sada", "faker"));
+    Mockito
+      .when(repository.getResearcherPaperQuotingResearchers("rid"))
+      .thenReturn(map);
+    assertEquals(service.getResearcherPaperQuotingResearcher("rid"), map);
+  }
+
+  @Test
+  public void testGetResearcherQuotedResearcher() {
+    List<String> list = Arrays.asList("1", "2", "3");
+    Mockito
+      .when(repository.getResearcherQuotedResearcher("rid"))
+      .thenReturn(list);
+    assertEquals(list, service.getResearcherQuotedResearcher("rid"));
+  }
+
+  @Test
+  public void testGetResearcherQuotingResearcher() {
+    List<String> list = Arrays.asList("1", "2", "3");
+    Mockito
+      .when(repository.getResearcherQuotingResearcher("rid"))
+      .thenReturn(list);
+    assertEquals(list, service.getResearcherQuotingResearcher("rid"));
+  }
+  //  @Autowired
+  //  CitationAnalysisRepository repository;
+  //  @Test
+  //  public void testSQL(){
+  //    for(int i=0;i<3;i++){
+  //    Date date=new Date();
+  //    List<String> papers=repository.getPapersByResearcherId("37598376400");
+  //    Date date1=new Date();
+  //    System.out.println(date1.getTime()-date.getTime());
+  //    Map<String,List<String>> pqr=new HashMap<>();
+  //    for(String pid:papers){
+  //      pqr.put(pid,repository.getQuotedPapersByPaperId(pid));
+  //    }
+  //    for(String key:papers){
+  //      if(!pqr.containsKey(key)){
+  //        pqr.put(key,new ArrayList<>());
+  //      }}
+  //    Date date2=new Date();
+  //    System.out.println(date2.getTime()-date1.getTime());
+  //
+  //    var rs=repository.getResearcherPaperQuotedPapers("37598376400");
+  //    Date date3=new Date();
+  //    System.out.println(date3.getTime()-date2.getTime());
+  //    assertEquals(true,sameMap(rs,pqr));
+  //    System.out.println("-*-*-*-*-");}
+  //    System.out.println();
+  //
+  //    for(int i=0;i<5;i++) {
+  //      System.out.println("asdasdasdasdasd");
+  //      Date d1 = new Date();
+  //      List<String> res = repository.getResearcherQuotedResearcher("37598376400");
+  //      Date d2 = new Date();
+  //      System.out.println("time1: " + (d2.getTime() - d1.getTime()));
+  //      List<String> res1 = repository.getResearcherQuotingResearcher("37598376400");
+  //      Date d3 = new Date();
+  //      System.out.println("time2: " + (d3.getTime() - d1.getTime()));
+  //    }
+  //    System.out.println();
+  //  }
+  //
+  //  @Test
+  //  public void testGetResearcherItemsWithDB(){
+  //    List<String> papers=repository.getPapersByResearcherId("37598376400");
+  //    Map<String,List<String>> pqr=new HashMap<>();
+  //    for(String pid:papers){
+  //      pqr.put(pid,repository.getQuotedPapersByPaperId(pid));
+  //    }
+  //    for(String key:papers){
+  //      if(!pqr.containsKey(key)){
+  //        pqr.put(key,new ArrayList<>());
+  //      }
+  //    }
+  //
+  //    var rs1=repository.getResearcherPaperQuotedPapers("37598376400");
+  //    assertEquals(true,sameMap(pqr,rs1));
+  //
+  //    pqr=new HashMap<>();
+  //    for(String pid:papers){
+  //      pqr.put(pid,repository.getQuotingPapersByPaperId(pid));
+  //    }
+  //    for(String key:papers){
+  //      if(!pqr.containsKey(key)){
+  //        pqr.put(key,new ArrayList<>());
+  //      }
+  //    }
+  //
+  //    var rs2=repository.getResearcherPaperQuotingPapers("37598376400");
+  //    assertEquals(true,sameMap(pqr,rs2));
+  //
+  //    pqr=new HashMap<>();
+  //    for(String pid:papers){
+  //      pqr.put(pid,repository.getPaperQuotingResearcher(pid));
+  //    }
+  //    for(String key:papers){
+  //      if(!pqr.containsKey(key)){
+  //        pqr.put(key,new ArrayList<>());
+  //      }
+  //    }
+  //    var rs3=repository.getResearcherPaperQuotingResearchers("37598376400");
+  //    assertEquals(true,sameMap(pqr,rs3));
+  //
+  //    pqr=new HashMap<>();
+  //    for(String pid:papers){
+  //      pqr.put(pid,repository.getPaperQuotedResearcher(pid));
+  //    }
+  //    for(String key:papers){
+  //      if(!pqr.containsKey(key)){
+  //        pqr.put(key,new ArrayList<>());
+  //      }
+  //    }
+  //    var rs4=repository.getResearcherPaperQuotedResearchers("37598376400");
+  //    assertEquals(true,sameMap(pqr,rs4));
+  //
+  //
+  //
+  //  }
+  //
+  //
+  //
+  //  boolean sameMap(
+  //    Map<String, List<String>> map1,
+  //    Map<String, List<String>> map2
+  //  ) {
+  //    if (map1.size() != map2.size()) {
+  //      return false;
+  //    }
+  //    for (String s : map1.keySet()) {
+  //      List<String> l1 = map1.get(s);
+  //      List<String> l2 = map2.get(s);
+  //      if (l1 == null || l2 == null) return false;
+  //      Collections.sort(l1);
+  //      Collections.sort(l2);
+  //      if (!l1.equals(l2)) {
+  //        return false;
+  //      }
+  //    }
+  //    return true;
+  //  }
 }
