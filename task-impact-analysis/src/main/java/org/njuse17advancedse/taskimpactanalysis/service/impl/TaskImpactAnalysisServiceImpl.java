@@ -34,7 +34,6 @@ public class TaskImpactAnalysisServiceImpl
       if (!repository.existsResearcherById(id)) return -1;
       List<Integer> citations = repository.getPaperQuotingTimes(id);
       //      System.out.println(new Date().getTime()-date1.getTime());
-      if (citations.size() == 0) return -1;
       citations.sort(Comparator.comparingInt(a -> -a));
       int res = 0;
       for (int i = 0; i < citations.size(); i++) {
