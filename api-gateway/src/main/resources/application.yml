@@ -6,18 +6,10 @@ spring:
   profiles:
     active: dev
 
-# 目前还不知道怎么处理，动态路由好像不是很优雅
-# 先硬编码吧
-#zuul:
-#  routes:
-    # 实体服务
-#    entity-affiliation: /**
-    #entity-domain: /**
-#    entity-paper: /**
-    #entity-researcher: /**
-    #entity-publication: /**
-    # 业务服务
-    #task-citation-analysis: /**
-    #task-impact-analysis: /**
-    #task-partnership-analysis: /**
-    #task-reviewer-recommendation: /**
+# 2.5s 超时
+ribbon:
+  ReadTimeout: 2000
+  SocketTimeout: 2000
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 1
+  retryableStatusCodes: 404,502
