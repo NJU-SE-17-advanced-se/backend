@@ -21,27 +21,27 @@ public class AllRepository {
 
   @Transactional(readOnly = true)
   public boolean existsResearcherById(String id) {
-    String exist = "select id from `researcher` where id='" + id + "'";
+    String exist = "select id from `researcher` where id='" + id + "';";
     return jdbcTemplate.queryForList(exist, String.class).size() != 0;
   }
 
   @Transactional(readOnly = true)
-  public List<ICitation> getPaperQuotingTimes(String researcherId) {
+  public List<Integer> getPaperQuotingTimes(String researcherId) {
     String sql =
-      " select rel1.pid as paperId,count(rel.pid) as citation from paper_researcher rel1 left join paper_reference rel on rel1.pid=rel.rid  where rel1.rid='" +
+      " select paper.citation from paper left join paper_researcher on paper_researcher.pid=paper.id where paper_researcher.rid='" +
       researcherId +
-      "' group by rel1.pid;";
-    return jdbcTemplate.query(sql, new BeanCitationRowMapper());
+      "' ;";
+    return jdbcTemplate.queryForList(sql, Integer.class);
   }
 }
-
-class BeanCitationRowMapper extends BeanPropertyRowMapper<ICitation> {
-
-  @Override
-  public ICitation mapRow(ResultSet rs, int rowNum) throws SQLException {
-    ICitation res = new ICitation();
-    res.setPaperId(rs.getString("paperId"));
-    res.setCitation(rs.getInt("citation"));
-    return res;
-  }
-}
+//
+//class BeanCitationRowMapper extends BeanPropertyRowMapper<ICitation> {
+//
+//  @Override
+//  public ICitation mapRow(ResultSet rs, int rowNum) throws SQLException {
+//    ICitation res = new ICitation();
+//    res.setPaperId(rs.getString("paperId"));
+//    res.setCitation(rs.getInt("citation"));
+//    return res;
+//  }
+//}
