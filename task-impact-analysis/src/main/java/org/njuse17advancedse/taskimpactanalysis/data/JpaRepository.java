@@ -1,5 +1,7 @@
 package org.njuse17advancedse.taskimpactanalysis.data;
 
+import io.swagger.models.auth.In;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -38,7 +40,15 @@ public class JpaRepository implements AllRepository {
 
   public List<Integer> getPaperQuotingTimes(String id) {
     String sql =
-      "select paper.citation from paper join paper_researcher on paper.id= paper_researcher.pid where paper_researcher.rid=:researcherId";
+      "select p.citation from paper p join paper_researcher pr on p.id= pr.pid where pr.rid=:researcherId";
+    //    List<String> res= entityManager
+    //      .createQuery(sql, String.class)
+    //      .setParameter("researcherId", id)
+    //      .getResultList();
+    //    List<Integer> i=new ArrayList<>();
+    //    for(String r:res)
+    //      i.add(Integer.valueOf(r));
+    //    return i;
     return entityManager
       .createQuery(sql, Integer.class)
       .setParameter("researcherId", id)
