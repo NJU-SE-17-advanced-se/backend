@@ -12,10 +12,13 @@ import org.njuse17advancedse.entityaffiliation.dto.IAffiliation;
 import org.njuse17advancedse.entityaffiliation.dto.IAffiliationBasic;
 import org.njuse17advancedse.entityaffiliation.dto.IResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
+@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 public class AffiliationServiceTest {
   @Autowired
   AffiliationService service;
