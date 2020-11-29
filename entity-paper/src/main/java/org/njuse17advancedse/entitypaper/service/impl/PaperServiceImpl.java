@@ -25,57 +25,6 @@ public class PaperServiceImpl implements PaperService {
     }
   }
 
-  public List<String> getPapers(
-    String researcher,
-    String publication,
-    String date
-  ) {
-    try {
-      //啥都不限制
-      if (researcher == null && publication == null && date == null) {
-        return repository.getAllPapers();
-      }
-      //只限制researcher
-      if (researcher != null && publication == null && date == null) {
-        return repository.getPapersByResearcher(researcher);
-      }
-      //只限制publication
-      if (researcher == null && publication != null && date == null) {
-        return repository.getPapersByPublication(publication);
-      }
-      //只限制date
-      if (researcher == null && publication == null && date != null) {
-        return repository.getPapersByDate(date);
-      }
-      //限制researcher和publication
-      if (researcher != null && publication != null && date == null) {
-        return repository.getPapersByResearcherAndPublication(
-          researcher,
-          publication
-        );
-      }
-      //限制researcher和date
-      if (researcher != null && publication == null && date != null) {
-        return repository.getPapersByResearcherAndDate(researcher, date);
-      }
-      //限制publication和date
-      if (researcher == null && publication != null && date != null) {
-        return repository.getPapersByPublicationAndDate(publication, date);
-      }
-      //全都限制
-      if (researcher != null && publication != null && date != null) {
-        return repository.getPapersByResearcherAndPublicationAndDate(
-          researcher,
-          publication,
-          date
-        );
-      }
-      return new ArrayList<>();
-    } catch (Exception e) {
-      return new ArrayList<>();
-    }
-  }
-
   //获取
   public IPaperBasic getPaperBasicInfo(String id) {
     try {

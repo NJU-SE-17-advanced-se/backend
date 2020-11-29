@@ -108,17 +108,6 @@ public class PaperController {
     this.service = service;
   }
 
-  @GetMapping("/selection")
-  // 根据其他指标获取论文
-  // 如果都没填，返回全部论文
-  List<String> getPapers(
-    @RequestParam(required = false) String researcher,
-    @RequestParam(required = false) String publication,
-    @RequestParam(required = false) String date
-  ) {
-    return service.getPapers(researcher, publication, date);
-  }
-
   private int checkArgument(String arg) {
     int value;
     try {
