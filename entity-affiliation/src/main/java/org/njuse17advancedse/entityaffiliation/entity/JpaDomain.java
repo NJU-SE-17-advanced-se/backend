@@ -1,6 +1,8 @@
 package org.njuse17advancedse.entityaffiliation.entity;
 
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,14 +10,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Affiliation {
+@Entity(name = "domain")
+public class JpaDomain {
+  @Id
   private String id;
 
+  @Column(name = "name")
   private String name;
 
-  private String description;
-
-  private List<String> researchers;
-
-  private List<String> papers;
+  @Column(name = "url")
+  private String url;
 }
