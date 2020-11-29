@@ -3,6 +3,7 @@ package org.njuse17advancedse.entitypaper.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.*;
+import lombok.var;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -23,7 +24,7 @@ public class EntityPaperServiceTest {
   PaperService service;
 
   @MockBean
-  //    @Autowired
+  //      @Autowired
   AllRepository repository;
 
   IPaper p1;
@@ -72,69 +73,6 @@ public class EntityPaperServiceTest {
   }
 
   @Test
-  public void testGetPaperIds() {
-    Mockito
-      .when(repository.getAllPapers())
-      .thenReturn(Arrays.asList("asd", "fgh", "jkl"));
-    Mockito
-      .when(repository.getPapersByResearcher("testGetPapersByResearcher"))
-      .thenReturn(Arrays.asList("test1", "test2"));
-    Mockito
-      .when(repository.getPapersByPublication("testGetPapersByPublication"))
-      .thenReturn(Arrays.asList("test2", "test3"));
-    Mockito
-      .when(repository.getPapersByDate("testGetPapersByDate"))
-      .thenReturn(Arrays.asList("test3", "test4"));
-    Mockito
-      .when(repository.getPapersByResearcherAndPublication("r", "p"))
-      .thenReturn(Arrays.asList("test5", "test3"));
-    Mockito
-      .when(repository.getPapersByResearcherAndDate("r", "d"))
-      .thenReturn(Arrays.asList("test3", "Test1"));
-    Mockito
-      .when(repository.getPapersByPublicationAndDate("p", "d"))
-      .thenReturn(Arrays.asList("test7", "Test2"));
-    Mockito
-      .when(
-        repository.getPapersByResearcherAndPublicationAndDate("r", "p", "a")
-      )
-      .thenReturn(Arrays.asList("test1", "test8"));
-
-    assertEquals(
-      service.getPapers(null, null, null),
-      Arrays.asList("asd", "fgh", "jkl")
-    );
-    assertEquals(
-      service.getPapers("testGetPapersByResearcher", null, null),
-      Arrays.asList("test1", "test2")
-    );
-    assertEquals(
-      service.getPapers(null, "testGetPapersByPublication", null),
-      Arrays.asList("test2", "test3")
-    );
-    assertEquals(
-      service.getPapers(null, null, "testGetPapersByDate"),
-      Arrays.asList("test3", "test4")
-    );
-    assertEquals(
-      service.getPapers("r", "p", null),
-      Arrays.asList("test5", "test3")
-    );
-    assertEquals(
-      service.getPapers("r", null, "d"),
-      Arrays.asList("test3", "Test1")
-    );
-    assertEquals(
-      service.getPapers(null, "p", "d"),
-      Arrays.asList("test7", "Test2")
-    );
-    assertEquals(
-      service.getPapers("r", "p", "a"),
-      Arrays.asList("test1", "test8")
-    );
-  }
-
-  @Test
   public void testGetPaperCond() {
     IResult r1 = new IResult(Arrays.asList("SKTOTTO", "SKTFaker"), 14);
     Mockito.when(repository.getPaperByCond("skt", 4)).thenReturn(r1);
@@ -179,13 +117,29 @@ public class EntityPaperServiceTest {
       emptyIResult
     );
   }
-  //        @Test
-  //        public void testSQL(){
-  //          IResult r1=service.getPapersByCond("work","2020","2010",1);
-  //          IResult r2=service.getPapersByCond("work","2010",null,2);
-  //          IResult r3=service.getPapersByCond("work",null,"2019",1);
-  //          IResult r4=service.getPapersByCond("Work",null, null,3);
-  //          System.out.println();
+  //          @Test
+  //          public void testSQL(){
+  //    Date date=new Date();
+  //            IResult r1=service.getPapersByCond("work","2020","2010",1);
+  //            IResult r2=service.getPapersByCond("work","2010",null,2);
+  //            IResult r3=service.getPapersByCond("work",null,"2019",1);
+  //            IResult r4=service.getPapersByCond("Work",null, null,3);
   //
-  //        }
+  //            System.out.println(new Date().getTime()-date.getTime());
+  //            Date date1=new Date();
+  //            IPaper paper=service.getIPaper("9000000");
+  //            Date date2=new Date();
+  //            IPaperBasic paperBasic=service.getPaperBasicInfo("9000000");
+  //            Date date3=new Date();
+  //            var r=service.getDomains("9000000");
+  //            Date date4=new Date();
+  //            var re2=service.getCitations("9000000");
+  //            Date date5=new Date();
+  //            System.out.println(date2.getTime()-date1.getTime());
+  //            System.out.println(date3.getTime()-date2.getTime());
+  //            System.out.println(date4.getTime()-date3.getTime());
+  //            System.out.println(date5.getTime()-date4.getTime());
+  //
+  //            System.out.println();
+  //          }
 }
