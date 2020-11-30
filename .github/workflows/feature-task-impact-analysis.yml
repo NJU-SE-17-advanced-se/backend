@@ -35,7 +35,7 @@ jobs:
         run: mvn -B clean test -Dspring.profiles.active=test
 
       - name: Quality Analysis
-          run: mvn sonar:sonar \
-            -Dsonar.projectKey=org.NJU-SE-17-advanced-se:task-impact-analysis \
-            -Dsonar.host.url={{ secrets.SONAR_HOST }} \
-            -Dsonar.login={{ secrets.TASK_IMPACT_ANALYSIS_SONAR_TOKEN }}
+        run: mvn sonar:sonar \
+          -Dsonar.projectKey=org.NJU-SE-17-advanced-se:task-impact-analysis \
+          -Dsonar.host.url={{ secrets.SONAR_HOST }} \
+          -Dsonar.login={{ secrets.TASK_IMPACT_ANALYSIS_SONAR_TOKEN }}
