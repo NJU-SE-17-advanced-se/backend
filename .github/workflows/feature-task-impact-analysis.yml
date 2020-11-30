@@ -36,6 +36,6 @@ jobs:
 
       - name: Quality Analysis
         run: mvn sonar:sonar \
-          -Dsonar.projectKey=org.NJU-SE-17-advanced-se:task-impact-analysis \
+          -Dsonar.projectKey='org.NJU-SE-17-advanced-se:task-impact-analysis' \
           -Dsonar.host.url={{ secrets.SONAR_HOST }} \
           -Dsonar.login={{ secrets.TASK_IMPACT_ANALYSIS_SONAR_TOKEN }}

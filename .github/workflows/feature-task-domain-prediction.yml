@@ -39,6 +39,6 @@ jobs:
 
       - name: Quality Analysis
         run: mvn sonar:sonar \
-          -Dsonar.projectKey=org.NJU-SE-17-advanced-se:task-domain-prediction \
+          -Dsonar.projectKey='org.NJU-SE-17-advanced-se:task-domain-prediction' \
           -Dsonar.host.url={{ secrets.SONAR_HOST }} \
           -Dsonar.login={{ secrets.TASK_DOMAIN_PREDICTION_SONAR_TOKEN }}

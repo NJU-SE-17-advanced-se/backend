@@ -39,6 +39,6 @@ jobs:
 
       - name: Quality Analysis
         run: mvn sonar:sonar \
-          -Dsonar.projectKey=org.NJU-SE-17-advanced-se:entity-paper \
+          -Dsonar.projectKey='org.NJU-SE-17-advanced-se:entity-paper' \
           -Dsonar.host.url={{ secrets.SONAR_HOST }} \
           -Dsonar.login={{ secrets.ENTITY_PAPER_SONAR_TOKEN }}
