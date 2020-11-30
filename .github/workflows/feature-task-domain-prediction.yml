@@ -38,8 +38,7 @@ jobs:
         run: mvn -B clean test -Dspring.profiles.active=test
 
       - name: Quality Analysis
-          run: |
-            mvn sonar:sonar \
+          run: mvn sonar:sonar \
             -Dsonar.projectKey=org.NJU-SE-17-advanced-se:task-domain-prediction \
             -Dsonar.host.url={{ secrets.SONAR_HOST }} \
             -Dsonar.login={{ secrets.TASK_DOMAIN_PREDICTION_SONAR_TOKEN }}
