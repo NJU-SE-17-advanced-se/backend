@@ -1,7 +1,9 @@
 package org.njuse17advancedse.entitypaper.data;
 
+import io.swagger.models.auth.In;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import lombok.var;
@@ -10,6 +12,7 @@ import org.njuse17advancedse.entitypaper.dto.IPaperBasic;
 import org.njuse17advancedse.entitypaper.dto.IResult;
 import org.njuse17advancedse.entitypaper.entity.JpaDomain;
 import org.njuse17advancedse.entitypaper.entity.JpaPaper;
+import org.njuse17advancedse.entitypaper.entity.JpaPublication;
 import org.njuse17advancedse.entitypaper.entity.JpaResearcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -47,97 +50,113 @@ public class PaperRepository implements AllRepository {
   }
 
   public IPaper getIPaper(String paperId) {
-    IPaperBasic paperBasic = getPaperBasic(paperId);
-    IPaper res = new IPaper();
-    res.setId(paperId);
-    res.setTitle(paperBasic.getTitle());
-    res.setAbs(paperBasic.getAbs());
-    res.setCitations(paperBasic.getCitations());
-    res.setPublication(paperBasic.getPublication());
-    res.setPublicationDate(paperBasic.getPublicationDate());
-    res.setResearchers(paperBasic.getResearchers());
-
-    res.setDomains(getDomains(paperId));
-
-    String sql = "select rid from paper_reference where pid=:paperId";
-    res.setReferences(
-      entityManager
-        .createQuery(sql)
-        .setParameter("paperId", paperId)
-        .getResultList()
-    );
-
-    try {
-      sql = "select link from paper where id=:paperId";
-      res.setLink(
-        entityManager
-          .createQuery(sql, String.class)
-          .setParameter("paperId", paperId)
-          .getSingleResult()
-      );
-    } catch (Exception e) {}
-    return res;
+    //      IPaper res = new IPaper();
+    //      String sql =
+    //              "select concat(p.title,'@#',p.abs,'@#',p.publication,'@#',p.publicationDate,'@#', IFNULL (p.link,'SKTFaker'),'@#',p.citation) as res from paper p where p.id=:paperId";
+    //      String tmp = entityManager
+    //              .createQuery(sql, String.class)
+    //              .setParameter("paperId", paperId)
+    //              .getSingleResult();
+    //      String[] strs = tmp.split(separator);
+    //      res.setId(paperId);
+    //      res.setTitle(strs[0]);
+    //      res.setAbs(strs[1]);
+    //      res.setPublication(strs[2]);
+    //      res.setPublicationDate(strs[3]);
+    //      res.setCitations(Integer.parseInt(strs[5]));
+    //    res.setLink(strs[4].equals("SKTFaker")?null:strs[4]);
+    //      String sql="select title from paper where id=:paperId";
+    //      res.setId(paperId);
+    //      res.setTitle(entityManager.createQuery(sql,String.class).setParameter("paperId",paperId).getSingleResult());
+    //      sql="select p.abs from paper p where p.id=:paperId";
+    //      res.setAbs(entityManager.createQuery(sql,String.class).setParameter("paperId",paperId).getSingleResult());
+    //      sql="select p.publication from paper p where p.id=:paperId";
+    //      res.setPublication(entityManager.createQuery(sql, JpaPublication.class).setParameter("paperId",paperId).getSingleResult().getId());
+    //      sql="select p.publicationDate from paper p where p.id=:paperId";
+    //      res.setPublicationDate(entityManager.createQuery(sql,String.class).setParameter("paperId",paperId).getSingleResult());
+    //      sql="select p.link from paper p where p.id=:paperId";
+    //      res.setLink(entityManager.createQuery(sql,String.class).setParameter("paperId",paperId).getSingleResult());
+    //      sql="select p.citation from paper p where p.id=:paperId";
+    //      res.setCitations(Integer.parseInt(entityManager.createQuery(sql).setParameter("paperId",paperId).getSingleResult().toString()));
+    //
+    //
+    //      sql = "select rid from paper_researcher where pid=:paperId";
+    //      res.setResearchers(
+    //              entityManager
+    //                      .createQuery(sql, String.class)
+    //                      .setParameter("paperId", paperId)
+    //                      .getResultList()
+    //      );
+    //
+    //    res.setDomains(getDomains(paperId));
+    //
+    //    sql = "select rid from paper_reference where pid=:paperId";
+    //    res.setReferences(
+    //      entityManager
+    //        .createQuery(sql,String.class)
+    //        .setParameter("apaperId", paperId)
+    //        .getResultList()
+    //    );
+    //
+    //
+    //    return res;
     //        String sql="select OBJECT(p) from paper p where p.id=:paperId";
     ////        JpaPaper p=entityManager.createQuery(sql,JpaPaper.class).setParameter("paperId",paperId).getSingleResult();
     //        var tmp=repository.findById(paperId);
-    //                JpaPaper p=tmp.get();
-    //        IPaper paper=new IPaper();
-    //        paper.setId(paperId);
-    //        paper.setTitle(p.getTitle());
-    //        paper.setAbs(p.getAbs());
-    //        paper.setCitations(p.getCitation());
-    //        paper.setPublication(p.getPublication().getId());
-    //        paper.setPublicationDate(p.getPublicationDate());
-    //        paper.setLink(p.getLink());
-    //        List<String> domains=new ArrayList<>();
-    //        for(JpaDomain domain:p.getDomains())
-    //            domains.add(domain.getId());
-    //        paper.setDomains(domains);
-    //        List<String> researchers=new ArrayList<>();
-    //        for(JpaResearcher researcher:p.getResearchers())
-    //            domains.add(researcher.getId());
-    //        paper.setResearchers(researchers);
-    //        sql="select rid from paper_reference where pid=:paperId";
-    //        paper.setReferences(entityManager.createQuery(sql).setParameter("paperId",paperId).getResultList());
-    //        return paper;
+    //                JpaPaper p=tmp.get()
+    //                ;
+    JpaPaper p = entityManager.find(JpaPaper.class, paperId);
+    IPaper paper = new IPaper();
+    paper.setId(paperId);
+    paper.setTitle(p.getTitle());
+    paper.setAbs(p.getAbs());
+    paper.setCitations(p.getCitation());
+    paper.setPublication(p.getPublication().getId());
+    paper.setPublicationDate(p.getPublicationDate());
+    paper.setLink(p.getLink());
+    String sql = "select pd.did from paper_domain pd where pd.pid =:id";
+    List<String> domains = entityManager
+      .createQuery(sql, String.class)
+      .setParameter("id", paperId)
+      .getResultList();
+    paper.setDomains(domains);
+    sql = "select pr.rid from paper_researcher pr where pr.pid=:id";
+    paper.setResearchers(
+      entityManager
+        .createQuery(sql, String.class)
+        .setParameter("id", paperId)
+        .getResultList()
+    );
+    sql = "select pr.rid from paper_reference pr where pr.pid=:id";
+    paper.setReferences(
+      entityManager
+        .createQuery(sql, String.class)
+        .setParameter("id", paperId)
+        .getResultList()
+    );
+    //            paper.setDomains(p.getDomains().stream().map(JpaDomain::getId).collect(Collectors.toList()));
+    //            paper.setResearchers(p.getResearchers().stream().map(JpaResearcher::getId).collect(Collectors.toList()));
+    //            paper.setReferences(p.getReferences().stream().map(JpaPaper::getId).collect(Collectors.toList()));
+    return paper;
   }
 
   public IPaperBasic getPaperBasic(String paperId) {
-    IPaperBasic iPaperBasic = new IPaperBasic();
-    //        String s="select publication_date from paper_where id='s'";
-    String sql =
-      "select concat(p.title,'@#',p.abs,'@#',p.publication,'@#',p.publicationDate) as res from paper p where p.id=:paperId";
-    String res = entityManager
-      .createQuery(sql, String.class)
-      .setParameter("paperId", paperId)
-      .getSingleResult();
-    String[] strs = res.split(separator);
-    iPaperBasic.setId(paperId);
-    iPaperBasic.setTitle(strs[0]);
-    iPaperBasic.setAbs(strs[1]);
-    iPaperBasic.setPublication(strs[2]);
-    iPaperBasic.setPublicationDate(strs[3]);
-
-    sql = "select citation from paper where id=:paperId";
-    iPaperBasic.setCitations(
-      Integer.parseInt(
-        entityManager
-          .createQuery(sql)
-          .setParameter("paperId", paperId)
-          .getSingleResult()
-          .toString()
-      )
-    );
-
-    sql = "select rid from paper_researcher where pid=:paperId";
-    iPaperBasic.setResearchers(
+    IPaperBasic paper = new IPaperBasic();
+    JpaPaper p = entityManager.find(JpaPaper.class, paperId);
+    paper.setId(paperId);
+    paper.setTitle(p.getTitle());
+    paper.setAbs(p.getAbs());
+    paper.setCitations(p.getCitation());
+    paper.setPublication(p.getPublication().getId());
+    paper.setPublicationDate(p.getPublicationDate());
+    String sql = "select pr.rid from paper_researcher pr where pr.pid=:id";
+    paper.setResearchers(
       entityManager
         .createQuery(sql, String.class)
-        .setParameter("paperId", paperId)
+        .setParameter("id", paperId)
         .getResultList()
     );
-
-    return iPaperBasic;
+    return paper;
   }
 
   public List<String> getCitations(String paperId) {
