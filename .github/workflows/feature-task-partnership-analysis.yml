@@ -32,4 +32,7 @@ jobs:
           java-version: 1.8
 
       - name: Maven Test
-        run: mvn -B clean test -Dspring.profiles.active=test
+        run: mvn -B clean test verify -Dspring.profiles.active=test
+
+      - name: Quality Analysis
+        run: mvn sonar:sonar -Dsonar.projectKey=org.NJU-SE-17-advanced-se:task-partnership-analysis -Dsonar.host.url=${{ secrets.SONAR_HOST }} -Dsonar.login=${{ secrets.TASK_PARTNERSHIP_ANALYSIS_SONAR_TOKEN }}
