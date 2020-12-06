@@ -1,4 +1,4 @@
-package org.njuse17advancedse.taskreviewerrecommendation.serviceImp;
+package org.njuse17advancedse.taskreviewerrecommendation.implement;
 
 import java.util.*;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.*;
@@ -17,23 +17,20 @@ public class TaskReviewerRecommendationServiceImp
   implements TaskReviewerRecommendationService {
   private final PaperRepository paperRepository;
 
-  private final TaskImpactAnalysisService taskImpactAnalysisService;
-
   @Autowired
-  public TaskReviewerRecommendationServiceImp(
-    PaperRepository paperRepository,
-    TaskImpactAnalysisService taskImpactAnalysisService
-  ) {
+  public TaskReviewerRecommendationServiceImp(PaperRepository paperRepository) {
     this.paperRepository = paperRepository;
-    this.taskImpactAnalysisService = taskImpactAnalysisService;
+  }
+
+  @Override
+  public boolean containPublication(String publicationId) {
+    return !paperRepository.containPublication(publicationId);
   }
 
   @Override
   public List<String> getRecommendReviewer(IPaperUpload iPaperUpload) {
     List<String> researcherIds = new ArrayList<>();
-    if (!paperRepository.containPublication(iPaperUpload.getPublication())) {
-      return null;
-    }
+
     /* 第一步，获得作者曾今的合作者 */
     List<String> pastPartners = paperRepository.getPastPartners(
       iPaperUpload.getResearcherIds()
@@ -51,12 +48,6 @@ public class TaskReviewerRecommendationServiceImp
       Integer.parseInt(iPaperUpload.getDate()),
       pastPartners
     );
-
-    if (reviewersFormPublication.size() == 1) {
-      if (reviewersFormPublication.get(0).equals("no such publication")) {
-        return null;
-      }
-    }
 
     /* 第四步， 获得论文发表期间相同领域论文的作者列表*/
     List<String> reviewersFromSimilarDomain = paperRepository.getResearcherFromSimilarDomain(
@@ -84,8 +75,7 @@ public class TaskReviewerRecommendationServiceImp
     }
 
     /* 第五步，将剩余作者按照影响力进行排序，取前5个作为推荐审稿人候选 */
-    //researcherIds = sortResearchersByImpact(researcherIds);
-
+    sortResearchersByImpact(researcherIds);
     return researcherIds;
   }
 
@@ -93,15 +83,11 @@ public class TaskReviewerRecommendationServiceImp
    * 作者按照影响力进行排序
    * @param researcherIds 作者列表
    */
-  private List<String> sortResearchersByImpact(List<String> researcherIds) {
+  private void sortResearchersByImpact(List<String> researcherIds) {
     List<Integer> impacts = new ArrayList<>();
     try {
-      //impacts = taskImpactAnalysisService.getImpactsByRids(researcherIds);
-      //System.out.println(impacts);
       for (String researcherId : researcherIds) {
-        impacts.add(
-          taskImpactAnalysisService.getImpactByResearcherId(researcherId)
-        );
+        impacts.add(paperRepository.getImpactByResearcherId(researcherId));
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -111,15 +97,10 @@ public class TaskReviewerRecommendationServiceImp
       map.put(researcherIds.get(i), impacts.get(i));
     }
     researcherIds.sort((o1, o2) -> (map.get(o2) - map.get(o1)));
-    return researcherIds;
   }
 
   @Override
   public List<String> getNotRecommendReviewer(IPaperUpload iPaperUpload) {
-    if (!paperRepository.containPublication(iPaperUpload.getPublication())) {
-      return null;
-    }
-
     List<String> researcherIds = new ArrayList<>();
     List<String> partners; //合作作者列表
 
@@ -149,7 +130,6 @@ public class TaskReviewerRecommendationServiceImp
         researcherIds.add(rid);
       }
     }
-
     return researcherIds;
   }
 }

@@ -17,18 +17,16 @@ import org.zalando.problem.Status;
 public class ResearcherController {
   private final TaskPartnershipAnalysisService taskPartnershipAnalysisService;
 
+  private String message = "Researcher '%s' not found";
+
   // 获得合作作者列表
   @ApiOperation("获得合作学者列表")
-  @RequestMapping(value = "/{id}/partners", method = RequestMethod.GET)
-  private List<String> getPartners(
+  @GetMapping(value = "/{id}/partners")
+  public List<String> getPartners(
     @ApiParam("学者 id") @PathVariable String id
   ) {
-    List<String> partners = taskPartnershipAnalysisService.getPartners(id);
-    if (partners == null) {
-      throw Problem.valueOf(
-        Status.NOT_FOUND,
-        String.format("Researcher '%s' not found", id)
-      );
+    if (!taskPartnershipAnalysisService.containResearcher(id)) {
+      throw Problem.valueOf(Status.NOT_FOUND, String.format(message, id));
     }
     return taskPartnershipAnalysisService.getPartners(id);
   }
@@ -38,14 +36,17 @@ public class ResearcherController {
     value = "查看某学者某一时间段的合作关系",
     notes = "需求 5.1：能够识别研究者存在的合作关系，形成社会网络"
   )
-  @RequestMapping(value = "/{id}/partners-net", method = RequestMethod.GET)
-  private IResearcherNet getPartnership(
+  @GetMapping(value = "/{id}/partners-net")
+  public IResearcherNet getPartnership(
     @ApiParam("学者 id") @PathVariable String id,
     @ApiParam("开始年份，形如'2020'") @RequestParam(
       required = false
     ) String start,
     @ApiParam("结束年份，形如'2020'") @RequestParam(required = false) String end
   ) {
+    if (!taskPartnershipAnalysisService.containResearcher(id)) {
+      throw Problem.valueOf(Status.NOT_FOUND, String.format(message, id));
+    }
     int startDate = 0;
     int endDate = Integer.MAX_VALUE;
     if (start != null) {
@@ -63,18 +64,11 @@ public class ResearcherController {
         )
       );
     }
-    IResearcherNet iResearcherNet = taskPartnershipAnalysisService.getPartnership(
+    return taskPartnershipAnalysisService.getPartnership(
       id,
       startDate,
       endDate
     );
-    if (iResearcherNet == null) {
-      throw Problem.valueOf(
-        Status.NOT_FOUND,
-        String.format("Researcher '%s' not found", id)
-      );
-    }
-    return iResearcherNet;
   }
 
   // 合作关系预测
@@ -83,23 +77,14 @@ public class ResearcherController {
     value = "预测某学者未来的合作关系",
     notes = "需求 5.2：能够初步预测研究者之间的合作走向"
   )
-  @RequestMapping(
-    value = "/{id}/potential-partners",
-    method = RequestMethod.GET
-  )
-  private Map<String, Double> getPotentialPartners(
+  @GetMapping(value = "/{id}/potential-partners")
+  public Map<String, Double> getPotentialPartners(
     @ApiParam("学者 id") @PathVariable String id
   ) {
-    Map<String, Double> map = taskPartnershipAnalysisService.getPotentialPartners(
-      id
-    );
-    if (map == null) {
-      throw Problem.valueOf(
-        Status.NOT_FOUND,
-        String.format("Researcher '%s' not found", id)
-      );
+    if (!taskPartnershipAnalysisService.containResearcher(id)) {
+      throw Problem.valueOf(Status.NOT_FOUND, String.format(message, id));
     }
-    return map;
+    return taskPartnershipAnalysisService.getPotentialPartners(id);
   }
 
   /**

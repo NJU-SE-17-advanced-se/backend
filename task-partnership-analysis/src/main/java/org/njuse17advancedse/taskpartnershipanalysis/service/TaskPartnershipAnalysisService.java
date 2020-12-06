@@ -35,4 +35,11 @@ public interface TaskPartnershipAnalysisService {
    * @return 预测合作学者列表
    */
   Map<String, Double> getPotentialPartners(String researchId);
+
+  /**
+   * 判断学者是否存在
+   * @param researcherId 学者id
+   * @return true or false
+   */
+  boolean containResearcher(String researcherId);
 }

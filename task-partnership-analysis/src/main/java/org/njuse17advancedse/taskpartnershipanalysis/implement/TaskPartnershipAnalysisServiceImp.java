@@ -1,4 +1,4 @@
-package org.njuse17advancedse.taskpartnershipanalysis.serviceImp;
+package org.njuse17advancedse.taskpartnershipanalysis.implement;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,21 +12,15 @@ import org.springframework.stereotype.Service;
 public class TaskPartnershipAnalysisServiceImp
   implements TaskPartnershipAnalysisService {
   private final ResearcherRepository researcherRepository;
-  private final TaskImpactAnalysisService taskImpactAnalysisService;
 
   public TaskPartnershipAnalysisServiceImp(
-    ResearcherRepository researcherRepository,
-    TaskImpactAnalysisService taskImpactAnalysisService
+    ResearcherRepository researcherRepository
   ) {
     this.researcherRepository = researcherRepository;
-    this.taskImpactAnalysisService = taskImpactAnalysisService;
   }
 
   @Override
   public List<String> getPartners(String researcherId) {
-    if (researcherRepository.notContainThisResearcher(researcherId)) {
-      return null;
-    }
     return researcherRepository.getPartnersByRid(researcherId);
   }
 
@@ -37,9 +31,7 @@ public class TaskPartnershipAnalysisServiceImp
     int endDate
   ) {
     IResearcherNet iResearcherNet;
-    if (researcherRepository.notContainThisResearcher(researcherId)) {
-      return null;
-    }
+
     //根据作者，时间获得该作者发表的论文
     List<String> papers = researcherRepository.getPapersByRid(
       researcherId,
@@ -117,9 +109,6 @@ public class TaskPartnershipAnalysisServiceImp
 
   @Override
   public Map<String, Double> getPotentialPartners(String researcherId) {
-    if (researcherRepository.notContainThisResearcher(researcherId)) {
-      return null;
-    }
     Map<String, Double> potentialPartnerNet = new HashMap<>();
 
     //获得作者的研究方向列表
@@ -156,9 +145,9 @@ public class TaskPartnershipAnalysisServiceImp
         researcherId
       );
       //计算三个评估方向的得分加权和
-      //TODO 权值待确定
       Double score =
-        //countByImpact(partner) + //影响力数值评分
+        countByImpact(partner) *
+        0.1 + //影响力数值评分
         countByDomain(domains, partner) + //领域契合度数值评分
         countByCooperation(papers1, papers2); //合作程度量化数值评分
       potentialPartnerNet.put(
@@ -183,6 +172,11 @@ public class TaskPartnershipAnalysisServiceImp
       }
     }
     return potentialPartnerNet;
+  }
+
+  @Override
+  public boolean containResearcher(String researcherId) {
+    return researcherRepository.containThisResearcher(researcherId);
   }
 
   /**
@@ -274,9 +268,7 @@ public class TaskPartnershipAnalysisServiceImp
    * @param partnerId 作者id
    * @return 影响力数值
    */
-  private Double countByImpact(String partnerId) {
-    Double impact;
-    impact = taskImpactAnalysisService.getImpactByResearcherId(partnerId);
-    return impact;
+  private Integer countByImpact(String partnerId) {
+    return researcherRepository.getImpactByResearcherId(partnerId);
   }
 }
