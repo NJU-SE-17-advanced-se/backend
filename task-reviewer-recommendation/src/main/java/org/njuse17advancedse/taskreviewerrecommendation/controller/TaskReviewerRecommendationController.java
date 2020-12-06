@@ -22,36 +22,34 @@ public class TaskReviewerRecommendationController {
     value = "查看某论文推荐的审稿人",
     notes = "需求 6.1：提交审稿时，能够自动推荐相关审稿人"
   )
-  @RequestMapping(value = "/recommend", method = RequestMethod.POST)
-  private List<String> getRecommendReviewer(
+  @PostMapping(value = "/recommend")
+  public List<String> getRecommendReviewer(
     @ApiParam("论文详细信息") @RequestBody IPaperUpload iPaperUpload
   ) {
-    checkPaperUpload(iPaperUpload);
-    List<String> reviewers = recommendationService.getRecommendReviewer(
-      iPaperUpload
-    );
-    if (reviewers == null) {
+    if (
+      recommendationService.containPublication(iPaperUpload.getPublication())
+    ) {
       throw Problem.valueOf(Status.NOT_FOUND, "publication not found");
     }
-    return reviewers;
+    checkPaperUpload(iPaperUpload);
+    return recommendationService.getRecommendReviewer(iPaperUpload);
   }
 
   @ApiOperation(
     value = "查看某论文不推荐的审稿人",
     notes = "需求 6.2：提交审稿时，能够自动屏蔽相关审稿人"
   )
-  @RequestMapping(value = "/not-recommend", method = RequestMethod.POST)
-  private List<String> getNotRecommendReviewer(
+  @PostMapping(value = "/not-recommend")
+  public List<String> getNotRecommendReviewer(
     @ApiParam("论文详细信息") @RequestBody IPaperUpload iPaperUpload
   ) {
-    checkPaperUpload(iPaperUpload);
-    List<String> reviewers = recommendationService.getNotRecommendReviewer(
-      iPaperUpload
-    );
-    if (reviewers == null) {
+    if (
+      recommendationService.containPublication(iPaperUpload.getPublication())
+    ) {
       throw Problem.valueOf(Status.NOT_FOUND, "publication not found");
     }
-    return reviewers;
+    checkPaperUpload(iPaperUpload);
+    return recommendationService.getNotRecommendReviewer(iPaperUpload);
   }
 
   /**
@@ -61,13 +59,13 @@ public class TaskReviewerRecommendationController {
   private void checkPaperUpload(IPaperUpload iPaperUpload) {
     if (
       iPaperUpload.getResearcherIds() == null ||
-      iPaperUpload.getResearcherIds().size() == 0
+      iPaperUpload.getResearcherIds().isEmpty()
     ) {
       throw Problem.valueOf(Status.BAD_REQUEST, "researchers is null");
     }
     if (
       iPaperUpload.getDomainIds() == null ||
-      iPaperUpload.getDomainIds().size() == 0
+      iPaperUpload.getDomainIds().isEmpty()
     ) {
       throw Problem.valueOf(Status.BAD_REQUEST, "domains is null");
     }

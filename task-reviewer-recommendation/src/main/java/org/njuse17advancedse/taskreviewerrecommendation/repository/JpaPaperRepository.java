@@ -1,11 +1,11 @@
 package org.njuse17advancedse.taskreviewerrecommendation.repository;
 
-import com.sun.istack.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -57,12 +57,6 @@ public class JpaPaperRepository implements PaperRepository {
     int date,
     @Nullable List<String> partners
   ) {
-    //        for(String domain:domains){
-    //            String sql = "select count(d) from domain d where d.id = :id";
-    //            if(Integer.parseInt(entityManager.createQuery(sql).setParameter("id",domain).getSingleResult().toString())==0){
-    //                return Lists.newArrayList("no such domain: "+ domain);
-    //            }
-    //        }
     HashMap<String, Integer> hashMap = new HashMap<>();
     String sql =
       "select pr.rid from paper_researcher pr join paper_domain pd on pr.pid= pd.pid where pd.did in :domains and pd.paper.publicationDate between :start and :end";
@@ -138,5 +132,29 @@ public class JpaPaperRepository implements PaperRepository {
         .toString()
     );
     return count != 0;
+  }
+
+  @Override
+  public Integer getImpactByResearcherId(String researcherId) {
+    String sql =
+      "select pr.paper.citation from paper_researcher pr where pr.rid =:id";
+    List<Integer> citations;
+    citations =
+      entityManager
+        .createQuery(sql, Integer.class)
+        .setParameter("id", researcherId)
+        .getResultList();
+    int HIndex = 0;
+    if (citations.size() > 0) {
+      for (int i = 1; i <= citations.size(); i++) {
+        List<Integer> temp = new ArrayList<>(citations);
+        int n = i;
+        temp.removeIf(integer -> integer < n);
+        if (temp.size() >= n) {
+          HIndex = n;
+        }
+      }
+    }
+    return HIndex;
   }
 }

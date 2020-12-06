@@ -1,4 +1,4 @@
-package org.njuse17advancedse.taskpartnershipanalysis.serviceImp;
+package org.njuse17advancedse.taskpartnershipanalysis.implement;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,7 +12,6 @@ import org.mockito.Mockito;
 import org.njuse17advancedse.taskpartnershipanalysis.dto.IResearcherNet;
 import org.njuse17advancedse.taskpartnershipanalysis.entity.JpaPaper;
 import org.njuse17advancedse.taskpartnershipanalysis.repository.ResearcherRepository;
-import org.njuse17advancedse.taskpartnershipanalysis.service.TaskImpactAnalysisService;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,18 +26,12 @@ class TaskPartnershipAnalysisServiceImpTest {
   @MockBean
   private ResearcherRepository researcherRepository;
 
-  @MockBean
-  private TaskImpactAnalysisService taskImpactAnalysisService;
-
   private TaskPartnershipAnalysisServiceImp taskPartnershipAnalysisService;
 
   @BeforeEach
   public void init() {
     taskPartnershipAnalysisService =
-      new TaskPartnershipAnalysisServiceImp(
-        researcherRepository,
-        taskImpactAnalysisService
-      );
+      new TaskPartnershipAnalysisServiceImp(researcherRepository);
   }
 
   @Test

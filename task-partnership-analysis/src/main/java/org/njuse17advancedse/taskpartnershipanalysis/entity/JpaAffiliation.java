@@ -1,5 +1,6 @@
 package org.njuse17advancedse.taskpartnershipanalysis.entity;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "affiliation")
-public class JpaAffiliation {
+public class JpaAffiliation implements Serializable {
   @Id
   private String id;
 

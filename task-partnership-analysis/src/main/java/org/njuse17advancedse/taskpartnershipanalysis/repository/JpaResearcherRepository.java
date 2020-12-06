@@ -16,31 +16,31 @@ public class JpaResearcherRepository implements ResearcherRepository {
   @Override
   public List<String> getPartnersByRid(String rid) {
     String sql;
+    List<String> papers;
+    List<String> partners = new ArrayList<>();
     sql =
       "select pr.paper.id from paper_researcher pr where pr.researcher.id =:id ";
-    List<String> papers = entityManager
-      .createQuery(sql, String.class)
-      .setParameter("id", rid)
-      .getResultList();
-    if (papers.size() > 0) {
+    papers =
+      entityManager
+        .createQuery(sql, String.class)
+        .setParameter("id", rid)
+        .getResultList();
+
+    if (papers != null && !papers.isEmpty()) {
       sql =
         "select distinct pr.researcher.id from paper_researcher pr where pr.paper.id in :papers";
+      partners =
+        entityManager
+          .createQuery(sql, String.class)
+          .setParameter("papers", papers)
+          .getResultList();
+      partners.remove(rid);
     }
-    List<String> partners = entityManager
-      .createQuery(sql, String.class)
-      .setParameter("papers", papers)
-      .getResultList();
-    partners.remove(rid);
     return partners;
   }
 
-  /**
-   * 判断作者是否存在数据库中
-   * @param rid 作者id
-   * @return true or false
-   */
   @Override
-  public boolean notContainThisResearcher(String rid) {
+  public boolean containThisResearcher(String rid) {
     String sql = "select count(r) from researcher r where r.id = :id";
     int count = Integer.parseInt(
       entityManager
@@ -49,7 +49,7 @@ public class JpaResearcherRepository implements ResearcherRepository {
         .getSingleResult()
         .toString()
     );
-    return count == 0;
+    return count != 0;
   }
 
   @Override
@@ -179,5 +179,29 @@ public class JpaResearcherRepository implements ResearcherRepository {
       .createQuery(sql, JpaPaper.class)
       .setParameter("rid", researchId)
       .getResultList();
+  }
+
+  @Override
+  public Integer getImpactByResearcherId(String researcherId) {
+    String sql =
+      "select pr.paper.citation from paper_researcher pr where pr.rid =:id";
+    List<Integer> citations;
+    citations =
+      entityManager
+        .createQuery(sql, Integer.class)
+        .setParameter("id", researcherId)
+        .getResultList();
+    int HIndex = 0;
+    if (citations.size() > 0) {
+      for (int i = 1; i <= citations.size(); i++) {
+        List<Integer> temp = new ArrayList<>(citations);
+        int n = i;
+        temp.removeIf(integer -> integer < n);
+        if (temp.size() >= n) {
+          HIndex = n;
+        }
+      }
+    }
+    return HIndex;
   }
 }
