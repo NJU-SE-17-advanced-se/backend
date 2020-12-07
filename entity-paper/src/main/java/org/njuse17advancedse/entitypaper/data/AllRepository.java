@@ -4,9 +4,6 @@ import java.util.List;
 import org.njuse17advancedse.entitypaper.dto.IPaper;
 import org.njuse17advancedse.entitypaper.dto.IPaperBasic;
 import org.njuse17advancedse.entitypaper.dto.IResult;
-import org.njuse17advancedse.entitypaper.entity.JpaPaper;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 public interface AllRepository {
   List<String> getDomains(String pid);

@@ -1,6 +1,5 @@
 package org.njuse17advancedse.entitypaper.service.impl;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.njuse17advancedse.entitypaper.data.AllRepository;

@@ -1,9 +1,9 @@
 package org.njuse17advancedse.entitypaper.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.*;
-import lombok.var;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,12 +19,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
-public class EntityPaperServiceTest {
+class EntityPaperServiceTest {
   @Autowired
   PaperService service;
 
   @MockBean
-  //      @Autowired
   AllRepository repository;
 
   IPaper p1;
@@ -50,30 +49,49 @@ public class EntityPaperServiceTest {
     pb1.setPublicationDate("publication");
     pb1.setTitle("title");
     Mockito.when(repository.existsById("test1")).thenReturn(true);
+    Mockito.when(repository.existsById("not exist")).thenReturn(false);
   }
 
   @Test
-  public void testGetPaper() {
+  void testGetPaper() {
     Mockito.when(repository.getIPaper("test1")).thenReturn(p1);
-    assertEquals(service.getIPaper("test1"), p1);
+    assertEquals(p1, service.getIPaper("test1"));
+    assertNull(service.getIPaper("not exist").getId());
   }
 
   @Test
-  public void testGetDomains() {
+  void testGetDomains() {
     Mockito
       .when(repository.getDomains("test1"))
       .thenReturn(Arrays.asList("D1", "D2"));
-    assertEquals(service.getDomains("test1"), Arrays.asList("D1", "D2"));
+    assertEquals(Arrays.asList("D1", "D2"), service.getDomains("test1"));
+    assertEquals(
+      Collections.singletonList("Not Found"),
+      service.getDomains("not exist")
+    );
   }
 
   @Test
-  public void testGetIPaperBasic() {
+  void testGetCitations() {
+    Mockito
+      .when(repository.getCitations("test1"))
+      .thenReturn(Arrays.asList("1", "2"));
+    assertEquals(Arrays.asList("1", "2"), service.getCitations("test1"));
+    assertEquals(
+      Collections.singletonList("Not Found"),
+      service.getCitations("not exist")
+    );
+  }
+
+  @Test
+  void testGetIPaperBasic() {
     Mockito.when(repository.getPaperBasic("test1")).thenReturn(pb1);
-    assertEquals(service.getPaperBasicInfo("test1"), pb1);
+    assertEquals(pb1, service.getPaperBasicInfo("test1"));
+    assertNull(service.getPaperBasicInfo("not exist").getId());
   }
 
   @Test
-  public void testGetPaperCond() {
+  void testGetPaperCond() {
     IResult r1 = new IResult(Arrays.asList("SKTOTTO", "SKTFaker"), 14);
     Mockito.when(repository.getPaperByCond("skt", 4)).thenReturn(r1);
     IResult r2 = new IResult(
@@ -90,14 +108,14 @@ public class EntityPaperServiceTest {
     IResult r4 = new IResult(Arrays.asList("OTTO", "SKT"), 9);
     Mockito.when(repository.getPaperByCond("skt", "1", "2", 4)).thenReturn(r4);
 
-    assertEquals(service.getPapersByCond("skt", null, null, 4), r1);
-    assertEquals(service.getPapersByCond("skt", "shit", null, 2), r2);
-    assertEquals(service.getPapersByCond("skt", null, "miss", 3), r3);
-    assertEquals(service.getPapersByCond("skt", "1", "2", 4), r4);
-    assertEquals(service.getPapersByCond("SKT", null, null, 4), r1);
-    assertEquals(service.getPapersByCond("sKT", "shit", null, 2), r2);
-    assertEquals(service.getPapersByCond("SkT", null, "miss", 3), r3);
-    assertEquals(service.getPapersByCond("SKt", "1", "2", 4), r4);
+    assertEquals(r1, service.getPapersByCond("skt", null, null, 4));
+    assertEquals(r2, service.getPapersByCond("skt", "shit", null, 2));
+    assertEquals(r3, service.getPapersByCond("skt", null, "miss", 3));
+    assertEquals(r4, service.getPapersByCond("skt", "1", "2", 4));
+    assertEquals(r1, service.getPapersByCond("SKT", null, null, 4));
+    assertEquals(r2, service.getPapersByCond("sKT", "shit", null, 2));
+    assertEquals(r3, service.getPapersByCond("SkT", null, "miss", 3));
+    assertEquals(r4, service.getPapersByCond("SKt", "1", "2", 4));
 
     //边界情况
     IResult emptyIResult = new IResult();
@@ -109,37 +127,12 @@ public class EntityPaperServiceTest {
       service.getPapersByCond("skt", "2020", "2010", 3),
       emptyIResult
     );
-    assertEquals(service.getPapersByCond("skt", null, null, -1), emptyIResult);
-    assertEquals(service.getPapersByCond("skt", "1", "2", -1), emptyIResult);
-    assertEquals(service.getPapersByCond("skt", null, "12", -1), emptyIResult);
+    assertEquals(emptyIResult, service.getPapersByCond("skt", null, null, -1));
+    assertEquals(emptyIResult, service.getPapersByCond("skt", "1", "2", -1));
+    assertEquals(emptyIResult, service.getPapersByCond("skt", null, "12", -1));
     assertEquals(
       service.getPapersByCond("skt", "2019", null, -1),
       emptyIResult
     );
   }
-  //          @Test
-  //          public void testSQL(){
-  //    Date date=new Date();
-  //            IResult r1=service.getPapersByCond("work","2020","2010",1);
-  //            IResult r2=service.getPapersByCond("work","2010",null,2);
-  //            IResult r3=service.getPapersByCond("work",null,"2019",1);
-  //            IResult r4=service.getPapersByCond("Work",null, null,3);
-  //
-  //            System.out.println(new Date().getTime()-date.getTime());
-  //            Date date1=new Date();
-  //            IPaper paper=service.getIPaper("9000000");
-  //            Date date2=new Date();
-  //            IPaperBasic paperBasic=service.getPaperBasicInfo("9000000");
-  //            Date date3=new Date();
-  //            var r=service.getDomains("9000000");
-  //            Date date4=new Date();
-  //            var re2=service.getCitations("9000000");
-  //            Date date5=new Date();
-  //            System.out.println(date2.getTime()-date1.getTime());
-  //            System.out.println(date3.getTime()-date2.getTime());
-  //            System.out.println(date4.getTime()-date3.getTime());
-  //            System.out.println(date5.getTime()-date4.getTime());
-  //
-  //            System.out.println();
-  //          }
 }
