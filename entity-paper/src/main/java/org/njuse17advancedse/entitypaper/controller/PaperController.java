@@ -34,7 +34,7 @@ public class PaperController {
     if (start != null) startYear = checkArgument(start);
     int endYear = 0;
     if (end != null) endYear = checkArgument(end);
-    if (startYear < 0 || startYear > endYear) {
+    if (startYear < 0 || (endYear > 0 && startYear > endYear)) {
       throw Problem.valueOf(
         Status.BAD_REQUEST,
         String.format(
@@ -58,7 +58,7 @@ public class PaperController {
     IPaper paper = service.getIPaper(id);
     if (paper.getId() == null) throw Problem.valueOf(
       Status.NOT_FOUND,
-      String.format("Paper '%s' not found", id)
+      notFound(id)
     );
     return paper;
   }
@@ -71,7 +71,7 @@ public class PaperController {
     IPaperBasic paperBasic = service.getPaperBasicInfo(id);
     if (paperBasic.getId() == null) throw Problem.valueOf(
       Status.NOT_FOUND,
-      String.format("Paper '%s' not found", id)
+      notFound(id)
     );
     return paperBasic;
   }
@@ -81,10 +81,7 @@ public class PaperController {
   public List<String> getDomains(@ApiParam("论文 id") @PathVariable String id) {
     List<String> res = service.getDomains(id);
     if (res.size() == 1 && res.get(0).equals("Not Found")) {
-      throw Problem.valueOf(
-        Status.NOT_FOUND,
-        String.format("Paper '%s' not found", id)
-      );
+      throw Problem.valueOf(Status.NOT_FOUND, notFound(id));
     }
     return res;
   }
@@ -96,10 +93,7 @@ public class PaperController {
   ) {
     List<String> res = service.getCitations(id);
     if (res.size() == 1 && res.get(0).equals("Not Found")) {
-      throw Problem.valueOf(
-        Status.NOT_FOUND,
-        String.format("Paper '%s' not found", id)
-      );
+      throw Problem.valueOf(Status.NOT_FOUND, notFound(id));
     }
     return res;
   }
@@ -119,5 +113,9 @@ public class PaperController {
         String.format("Argument '%s' illegal, can not parseInt", arg)
       );
     }
+  }
+
+  private String notFound(String id) {
+    return String.format("Paper '%s' not found", id);
   }
 }
