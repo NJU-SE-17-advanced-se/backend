@@ -32,22 +32,7 @@ public class PublicationController {
   ) {
     int startDate = 0;
     int endDate = Integer.MAX_VALUE;
-    if (start != null) {
-      startDate = checkArgument(start);
-    }
-    if (end != null) {
-      endDate = checkArgument(end);
-    }
-
-    if (startDate < 0 || startDate > endDate) {
-      throw Problem.valueOf(
-        Status.BAD_REQUEST,
-        String.format(
-          "Argument '%s' illegal, Date error",
-          startDate + "," + endDate
-        )
-      );
-    }
+    checkDate(startDate, endDate, start, end);
     if (page <= 0) {
       throw Problem.valueOf(
         Status.BAD_REQUEST,
@@ -67,14 +52,13 @@ public class PublicationController {
   public IPublication getPublicationById(
     @ApiParam(value = "出版物 id") @PathVariable String id
   ) {
-    IPublication iPublication = publicationEntityService.getPublicationById(id);
-    if (iPublication.getName() == null) {
+    if (!publicationEntityService.containPublication(id)) {
       throw Problem.valueOf(
         Status.NOT_FOUND,
         String.format("Publication '%s' not found", id)
       );
     }
-    return iPublication;
+    return publicationEntityService.getPublicationById(id);
   }
 
   @ApiOperation("根据 id 获取出版物简略信息")
@@ -82,16 +66,13 @@ public class PublicationController {
   public IPublicationBasic getPublicationBasicInfoById(
     @ApiParam(value = "出版物 id") @PathVariable String id
   ) {
-    IPublicationBasic iPublicationBasic = publicationEntityService.getIPublicationBasic(
-      id
-    );
-    if (iPublicationBasic.getName() == null) {
+    if (!publicationEntityService.containPublication(id)) {
       throw Problem.valueOf(
         Status.NOT_FOUND,
         String.format("Publication '%s' not found", id)
       );
     }
-    return iPublicationBasic;
+    return publicationEntityService.getIPublicationBasic(id);
   }
 
   @ApiOperation("根据 id （和时间范围）获取出版物包含的论文 id")
@@ -103,8 +84,30 @@ public class PublicationController {
     ) String start,
     @ApiParam("结束年份，形如'2020'") @RequestParam(required = false) String end
   ) {
+    if (!publicationEntityService.containPublication(id)) {
+      throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Publication '%s' not found", id)
+      );
+    }
     int startDate = 0;
     int endDate = Integer.MAX_VALUE;
+    checkDate(startDate, endDate, start, end);
+    return publicationEntityService.getPapersByIdOrTimeRange(
+      id,
+      startDate,
+      endDate
+    );
+  }
+
+  /**
+   * 判断时间参数
+   * @param startDate 开始日期
+   * @param endDate 结束日期
+   * @param start 开始参数
+   * @param end 结束参数
+   */
+  private void checkDate(int startDate, int endDate, String start, String end) {
     if (start != null) {
       startDate = checkArgument(start);
     }
@@ -120,20 +123,6 @@ public class PublicationController {
         )
       );
     }
-    List<String> papers = publicationEntityService.getPapersByIdOrTimeRange(
-      id,
-      startDate,
-      endDate
-    );
-    if (papers.size() == 1) {
-      if (papers.get(0).equals("no such publication")) {
-        throw Problem.valueOf(
-          Status.NOT_FOUND,
-          String.format("Publication '%s' not found", id)
-        );
-      }
-    }
-    return papers;
   }
 
   /**

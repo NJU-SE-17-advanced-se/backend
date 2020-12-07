@@ -29,13 +29,12 @@ public class ResearcherController {
   public List<String> getFutureDomains(
     @ApiParam(value = "学者 id") @PathVariable String id
   ) {
-    List<String> domains = taskDomainPredictionService.getFutureDomains(id);
-    if (domains == null) {
+    if (!taskDomainPredictionService.containResearcher(id)) {
       throw Problem.valueOf(
         Status.NOT_FOUND,
         String.format("Researcher '%s' is not found", id)
       );
     }
-    return domains;
+    return taskDomainPredictionService.getFutureDomains(id);
   }
 }

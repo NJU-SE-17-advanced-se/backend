@@ -9,4 +9,11 @@ public interface TaskDomainPredictionService {
    * @return 研究领域id列表
    */
   List<String> getFutureDomains(String rid);
+
+  /**
+   * 判断学者是否存在
+   * @param id 学者id
+   * @return true or false
+   */
+  boolean containResearcher(String id);
 }

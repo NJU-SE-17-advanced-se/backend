@@ -1,10 +1,8 @@
 package org.njuse17advancedse.entityresearcher.repository;
 
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
@@ -22,15 +20,11 @@ public class JpaResearcherRepository implements ResearcherRepository {
     String name;
     sql = "select r.name from researcher r where r.id = :rid";
     IResearcher iResearcher = new IResearcher();
-    try {
-      name =
-        entityManager
-          .createQuery(sql, String.class)
-          .setParameter("rid", id)
-          .getSingleResult();
-    } catch (NoResultException e) {
-      return iResearcher;
-    }
+    name =
+      entityManager
+        .createQuery(sql, String.class)
+        .setParameter("rid", id)
+        .getSingleResult();
     sql =
       "select ra.affiliation.id from researcher_affiliation ra where ra.researcher.id = :rid";
     List<String> affiliations = entityManager
@@ -80,15 +74,11 @@ public class JpaResearcherRepository implements ResearcherRepository {
     IResearcherBasic iResearcherBasic = new IResearcherBasic();
 
     sql = "select r.name from researcher r where r.id = :rid";
-    try {
-      name =
-        entityManager
-          .createQuery(sql, String.class)
-          .setParameter("rid", id)
-          .getSingleResult();
-    } catch (NoResultException e) {
-      return iResearcherBasic;
-    }
+    name =
+      entityManager
+        .createQuery(sql, String.class)
+        .setParameter("rid", id)
+        .getSingleResult();
     sql =
       "select ra.affiliation.id from researcher_affiliation ra where ra.researcher.id = :rid";
     List<String> affiliations = entityManager
@@ -115,17 +105,6 @@ public class JpaResearcherRepository implements ResearcherRepository {
   public List<String> findPapers(String id, int startDate, int endDate) {
     String sql;
     List<String> papers;
-    sql = "select count(r) from researcher r where r.id = :id";
-    int count = Integer.parseInt(
-      entityManager
-        .createQuery(sql)
-        .setParameter("id", id)
-        .getSingleResult()
-        .toString()
-    );
-    if (count == 0) {
-      return Lists.newArrayList("no such researcher");
-    }
     sql =
       "select pr.paper.id from paper_researcher pr where pr.researcher.id = :rid and pr.paper.publicationDate between :start and :end";
     papers =
@@ -142,17 +121,6 @@ public class JpaResearcherRepository implements ResearcherRepository {
   public List<String> findDomains(String id, int startDate, int endDate) {
     String sql;
     List<String> domains;
-    sql = "select count(r) from researcher r where r.id = :id";
-    int count = Integer.parseInt(
-      entityManager
-        .createQuery(sql)
-        .setParameter("id", id)
-        .getSingleResult()
-        .toString()
-    );
-    if (count == 0) {
-      return Lists.newArrayList("no such researcher");
-    }
     sql =
       "select pd.did from paper_domain pd join paper_researcher pr on pr.pid = pd.pid where pr.rid = :rid and pd.paper.publicationDate between :start and :end";
     domains =
@@ -169,17 +137,6 @@ public class JpaResearcherRepository implements ResearcherRepository {
   public List<String> findAffiliations(String rid, int startDate, int endDate) {
     String sql;
     List<String> affiliations;
-    sql = "select count(r) from researcher r where r.id = :id";
-    int count = Integer.parseInt(
-      entityManager
-        .createQuery(sql)
-        .setParameter("id", rid)
-        .getSingleResult()
-        .toString()
-    );
-    if (count == 0) {
-      return Lists.newArrayList("no such researcher");
-    }
     sql =
       "select ra.affiliation.id from researcher_affiliation ra where ra.researcher.id = :rid and ra.year between :a and :b";
     affiliations =
@@ -226,5 +183,18 @@ public class JpaResearcherRepository implements ResearcherRepository {
     iSearchResult.setCount(count);
     iSearchResult.setResult(result);
     return iSearchResult;
+  }
+
+  @Override
+  public boolean containResearcher(String id) {
+    String sql = "select count(r) from researcher r where r.id = :id";
+    int count = Integer.parseInt(
+      entityManager
+        .createQuery(sql)
+        .setParameter("id", id)
+        .getSingleResult()
+        .toString()
+    );
+    return count != 0;
   }
 }
