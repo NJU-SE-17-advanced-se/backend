@@ -3,6 +3,8 @@ package org.njuse17advancedse.taskcitationanalysis.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.njuse17advancedse.taskcitationanalysis.service.TaskCitationAnalysisService;
@@ -16,6 +18,8 @@ import org.zalando.problem.Status;
 public class ResearcherController {
   private final TaskCitationAnalysisService service;
 
+  private static String notFound = "Not Found";
+
   // 某个学者引用了哪些学者
   // 某个学者被哪些学者引用
   @ApiOperation(
@@ -27,15 +31,17 @@ public class ResearcherController {
     @ApiParam(value = "学者 id") @PathVariable String id,
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
-    if (type.equals("quoted")) {
+    if (quoted(type)) {
       List<String> res = service.getResearcherQuotedResearcher(id);
-      if (checkProblem(res)) return res;
+      checkProblem(res);
+      return res;
     }
-    if (type.equals("quoting")) {
+    if (quoting(type)) {
       List<String> res = service.getResearcherQuotingResearcher(id);
-      if (checkProblem(res)) return res;
+      checkProblem(res);
+      return res;
     }
-    return null;
+    return Collections.emptyList();
   }
 
   // 某个学者的论文分别引用了哪些论文
@@ -49,17 +55,19 @@ public class ResearcherController {
     @ApiParam(value = "学者 id") @PathVariable String id,
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
-    if (type.equals("quoted")) {
+    if (quoted(type)) {
       Map<String, List<String>> res = service.getQuotedPapersByResearcherId(id);
-      if (checkProblem(res)) return res;
+      checkProblem(res);
+      return res;
     }
-    if (type.equals("quoting")) {
+    if (quoting(type)) {
       Map<String, List<String>> res = service.getQuotingPapersByResearcherId(
         id
       );
-      if (checkProblem(res)) return res;
+      checkProblem(res);
+      return res;
     }
-    return null;
+    return new HashMap<>();
   }
 
   // 某个学者的论文分别引用了哪些学者
@@ -73,19 +81,21 @@ public class ResearcherController {
     @ApiParam(value = "学者 id") @PathVariable String id,
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
-    if (type.equals("quoted")) {
+    if (quoted(type)) {
       Map<String, List<String>> res = service.getResearcherPaperQuotedResearcher(
         id
       );
-      if (checkProblem(res)) return res;
+      checkProblem(res);
+      return res;
     }
-    if (type.equals("quoting")) {
+    if (quoting(type)) {
       Map<String, List<String>> res = service.getResearcherPaperQuotingResearcher(
         id
       );
-      if (checkProblem(res)) return res;
+      checkProblem(res);
+      return res;
     }
-    return null;
+    return new HashMap<>();
   }
 
   public ResearcherController(TaskCitationAnalysisService service) {
@@ -93,8 +103,7 @@ public class ResearcherController {
   }
 
   private boolean checkProblem(Map<String, List<String>> res) {
-    if (res.containsKey("Not Found")) {
-      List<String> parms = res.get("Not Found");
+    if (res.containsKey(notFound)) {
       throw Problem.valueOf(
         Status.INTERNAL_SERVER_ERROR,
         "Author Data Corrupted"
@@ -103,14 +112,20 @@ public class ResearcherController {
     return true;
   }
 
-  private boolean checkProblem(List<String> res) {
-    if (res.size() != 3) return true;
-    if (res.get(0).equals("Not Found")) {
+  private void checkProblem(List<String> res) {
+    if (res.size() == 3 && res.get(0).equals(notFound)) {
       throw Problem.valueOf(
         Status.INTERNAL_SERVER_ERROR,
         "Author Data Corrupted"
       );
     }
-    return true;
+  }
+
+  private boolean quoted(String type) {
+    return type.equals("quoted");
+  }
+
+  private boolean quoting(String type) {
+    return type.equals("quoting");
   }
 }
