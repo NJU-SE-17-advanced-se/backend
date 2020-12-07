@@ -1,8 +1,8 @@
 package org.njuse17advancedse.entityaffiliation.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import com.google.inject.internal.asm.$ClassReader;
 import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
-public class AffiliationServiceTest {
+class AffiliationServiceTest {
   @Autowired
   AffiliationService service;
 
@@ -31,7 +31,7 @@ public class AffiliationServiceTest {
   IAffiliationBasic ab1;
 
   @BeforeEach
-  public void init() {
+  void init() {
     a1 = new IAffiliation();
     a1.setId("id0");
     a1.setName("testAffiliation");
@@ -45,71 +45,72 @@ public class AffiliationServiceTest {
     ab1.setName("testAffiliation");
     ab1.setDescription("des");
     Mockito.when(repository.existsById("id0")).thenReturn(true);
+    Mockito.when(repository.existsById("not exist")).thenReturn(false);
   }
 
   @Test
-  public void testGetAffiliation() {
+  void testGetAffiliation() {
     Mockito.when(repository.getAffiliationById("id0")).thenReturn(a1);
-    assertEquals(service.getAffiliationById("id0"), a1);
+    assertEquals(a1, service.getAffiliationById("id0"));
+    assertNull(service.getAffiliationById("not exist").getId());
   }
 
   @Test
-  public void testGetAffiliationBasic() {
+  void testGetAffiliationBasic() {
     Mockito.when(repository.getAffiliationBasicInfoById("id0")).thenReturn(ab1);
-    assertEquals(service.getAffiliationBasicInfoById("id0"), ab1);
+    assertEquals(ab1, service.getAffiliationBasicInfoById("id0"));
+    assertNull(service.getAffiliationBasicInfoById("not exist").getId());
   }
 
   @Test
-  public void testGetResearchers() {
+  void testGetResearchers() {
     Mockito
       .when(repository.getAffiliationResearchersById("id0"))
       .thenReturn(Arrays.asList("r1", "r2", "r3", "r4"));
     assertEquals(
-      service.getAffiliationResearchersById("id0"),
-      Arrays.asList("r1", "r2", "r3", "r4")
+      Arrays.asList("r1", "r2", "r3", "r4"),
+      service.getAffiliationResearchersById("id0")
+    );
+    assertEquals(
+      Collections.singletonList("Not Found"),
+      service.getAffiliationResearchersById("not exist")
     );
   }
 
   @Test
-  public void testGetPapers() {
+  void testGetPapers() {
     Mockito
       .when(repository.getAffiliationPapersById("id0"))
       .thenReturn(Arrays.asList("p1", "p2", "p3"));
     assertEquals(
-      service.getAffiliationPapersById("id0"),
-      Arrays.asList("p1", "p2", "p3")
+      Arrays.asList("p1", "p2", "p3"),
+      service.getAffiliationPapersById("id0")
+    );
+    assertEquals(
+      Collections.singletonList("Not Found"),
+      service.getAffiliationPapersById("not exist")
     );
   }
 
   @Test
-  public void testGetDomains() {
+  void testGetDomains() {
     Mockito
-      .when(repository.getAffiliationPapersById("id0"))
+      .when(repository.getAffiliationDomainsById("id0"))
       .thenReturn(Arrays.asList("d1", "d2"));
     assertEquals(
-      service.getAffiliationPapersById("id0"),
-      Arrays.asList("d1", "d2")
+      Arrays.asList("d1", "d2"),
+      service.getAffiliationDomainsById("id0")
+    );
+    assertEquals(
+      Collections.singletonList("Not Found"),
+      service.getAffiliationDomainsById("not exist")
     );
   }
 
   @Test
-  public void testGetAffiliationByCond() {
+  void testGetAffiliationByCond() {
     IResult r = new IResult(Arrays.asList("ASD", "JKL"), 4);
     Mockito.when(repository.getAffiliationsByCond("s", 2)).thenReturn(r);
     assertEquals(r, service.getAffiliationsByCond("s", 2));
-
-    assertEquals(service.getAffiliationsByCond("testAf", -12), new IResult());
   }
-  //        @Test
-  //        public void testSQL(){
-  //            IAffiliation ia=service.getAffiliationById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //            IAffiliationBasic ib=service.getAffiliationBasicInfoById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //            List<String> rs=service.getAffiliationResearchersById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //            List<String> ps=service.getAffiliationPapersById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //            List<String> ds=service.getAffiliationDomainsById("1a10e4a1fa06c9bfaf40da95026163a0");
-  //            IResult r=service.getAffiliationsByCond("China",3);
-  //            IResult r1=service.getAffiliationsByCond("china",3);
-  //            System.out.println();
-  //        }
-
 }
