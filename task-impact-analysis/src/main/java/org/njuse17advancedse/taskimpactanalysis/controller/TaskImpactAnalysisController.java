@@ -30,7 +30,7 @@ public class TaskImpactAnalysisController {
       );
       if (res == -2) throw Problem.valueOf(
         Status.INTERNAL_SERVER_ERROR,
-        String.format("Author data corrupted", id)
+        "Author data corrupted"
       );
       return res;
     }
