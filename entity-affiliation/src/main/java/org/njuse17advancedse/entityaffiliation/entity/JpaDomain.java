@@ -1,5 +1,6 @@
 package org.njuse17advancedse.entityaffiliation.entity;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "domain")
-public class JpaDomain {
+public class JpaDomain implements Serializable {
   @Id
   private String id;
 

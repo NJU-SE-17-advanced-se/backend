@@ -18,6 +18,8 @@ import org.zalando.problem.Status;
 public class AffiliationController {
   private final AffiliationService service;
 
+  private static String notFound = "Not Found";
+
   @ApiOperation("根据查询条件查询满足条件的机构 id")
   @GetMapping("")
   public IResult getAffiliationsByCond(
@@ -39,7 +41,7 @@ public class AffiliationController {
     IAffiliation affiliation = service.getAffiliationById(id);
     if (affiliation.getId() == null) throw Problem.valueOf(
       Status.NOT_FOUND,
-      String.format("Affiliation '%s' not found", id)
+      notFound(id)
     );
     return affiliation;
   }
@@ -54,7 +56,7 @@ public class AffiliationController {
     );
     if (affiliationBasic.getId() == null) throw Problem.valueOf(
       Status.NOT_FOUND,
-      String.format("Affiliation '%s' not found", id)
+      notFound(id)
     );
     return affiliationBasic;
   }
@@ -65,11 +67,9 @@ public class AffiliationController {
     @ApiParam(value = "机构 id") @PathVariable String id
   ) {
     List<String> res = service.getAffiliationResearchersById(id);
-    if (
-      res.size() == 1 && res.get(0).equals("Not Found")
-    ) throw Problem.valueOf(
+    if (res.size() == 1 && res.get(0).equals(notFound)) throw Problem.valueOf(
       Status.NOT_FOUND,
-      String.format("Affiliation '%s' not found", id)
+      notFound(id)
     );
     return res;
   }
@@ -80,11 +80,9 @@ public class AffiliationController {
     @ApiParam(value = "机构 id") @PathVariable String id
   ) {
     List<String> res = service.getAffiliationPapersById(id);
-    if (
-      res.size() == 1 && res.get(0).equals("Not Found")
-    ) throw Problem.valueOf(
+    if (res.size() == 1 && res.get(0).equals(notFound)) throw Problem.valueOf(
       Status.NOT_FOUND,
-      String.format("Affiliation '%s' not found", id)
+      notFound(id)
     );
     return res;
   }
@@ -95,16 +93,18 @@ public class AffiliationController {
     @ApiParam(value = "机构 id") @PathVariable String id
   ) {
     List<String> res = service.getAffiliationDomainsById(id);
-    if (
-      res.size() == 1 && res.get(0).equals("Not Found")
-    ) throw Problem.valueOf(
+    if (res.size() == 1 && res.get(0).equals(notFound)) throw Problem.valueOf(
       Status.NOT_FOUND,
-      String.format("Affiliation '%s' not found", id)
+      notFound(id)
     );
     return res;
   }
 
   public AffiliationController(AffiliationService service) {
     this.service = service;
+  }
+
+  private String notFound(String id) {
+    return String.format("Affiliation '%s' not found", id);
   }
 }

@@ -1,7 +1,5 @@
 package org.njuse17advancedse.entityaffiliation.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.njuse17advancedse.entityaffiliation.data.AllRepository;
@@ -17,45 +15,37 @@ public class AffiliationServiceImpl implements AffiliationService {
   @Autowired
   AllRepository repository;
 
+  private static final List<String> notFound = Collections.singletonList(
+    "Not Found"
+  );
+
   @Override
   public IAffiliation getAffiliationById(String id) {
-    try {
-      return repository.getAffiliationById(id);
-    } catch (Exception e) {
-      return new IAffiliation();
-    }
+    if (!repository.existsById(id)) return new IAffiliation();
+    return repository.getAffiliationById(id);
   }
 
   @Override
   public IAffiliationBasic getAffiliationBasicInfoById(String id) {
-    try {
-      return repository.getAffiliationBasicInfoById(id);
-    } catch (Exception e) {
-      return new IAffiliationBasic();
-    }
+    if (!repository.existsById(id)) return new IAffiliationBasic();
+    return repository.getAffiliationBasicInfoById(id);
   }
 
   @Override
   public List<String> getAffiliationResearchersById(String id) {
-    if (!repository.existsById(id)) return Collections.singletonList(
-      "Not Found"
-    );
+    if (!repository.existsById(id)) return notFound;
     return repository.getAffiliationResearchersById(id);
   }
 
   @Override
   public List<String> getAffiliationPapersById(String id) {
-    if (!repository.existsById(id)) return Collections.singletonList(
-      "Not Found"
-    );
+    if (!repository.existsById(id)) return notFound;
     return repository.getAffiliationPapersById(id);
   }
 
   @Override
   public List<String> getAffiliationDomainsById(String id) {
-    if (!repository.existsById(id)) return Collections.singletonList(
-      "Not Found"
-    );
+    if (!repository.existsById(id)) return notFound;
     return repository.getAffiliationDomainsById(id);
   }
 

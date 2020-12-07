@@ -43,19 +43,20 @@ public class AffiliationRepository implements AllRepository {
           .setParameter("id", id)
           .getSingleResult()
       );
-    } catch (Exception e) {}
+    } catch (Exception ignored) {
+      return iAffiliationBasic;
+    }
     return iAffiliationBasic;
   }
 
   public boolean existsById(String id) {
     String sql = "select id from affiliation where id=:id";
     return (
-      entityManager
+      !entityManager
         .createQuery(sql, String.class)
         .setParameter("id", id)
         .getResultList()
-        .size() !=
-      0
+        .isEmpty()
     );
   }
 
