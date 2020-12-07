@@ -13,4 +13,6 @@ public interface PublicationRepository {
   List<String> getPapers(String id, int start, int end);
 
   ISearchResult searchByCond(String keyword, int start, int end, int page);
+
+  boolean containPublication(String id);
 }

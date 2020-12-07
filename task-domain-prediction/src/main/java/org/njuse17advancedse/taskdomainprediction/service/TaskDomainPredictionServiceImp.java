@@ -18,9 +18,6 @@ public class TaskDomainPredictionServiceImp
 
   @Override
   public List<String> getFutureDomains(String rid) {
-    if (!researcherRepository.containResearcher(rid)) {
-      return null;
-    }
     List<String> predictDomains;
 
     /* 第一步，获得作者最近三年的研究领域 */
@@ -40,5 +37,10 @@ public class TaskDomainPredictionServiceImp
       predictDomains = pastDomains;
     }
     return predictDomains;
+  }
+
+  @Override
+  public boolean containResearcher(String id) {
+    return researcherRepository.containResearcher(id);
   }
 }
