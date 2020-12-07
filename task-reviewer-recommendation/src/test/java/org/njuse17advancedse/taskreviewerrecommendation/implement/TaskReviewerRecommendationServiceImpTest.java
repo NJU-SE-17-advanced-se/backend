@@ -1,4 +1,4 @@
-package org.njuse17advancedse.taskreviewerrecommendation.serviceImp;
+package org.njuse17advancedse.taskreviewerrecommendation.implement;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.njuse17advancedse.taskreviewerrecommendation.dto.IPaperUpload;
 import org.njuse17advancedse.taskreviewerrecommendation.repository.PaperRepository;
-import org.njuse17advancedse.taskreviewerrecommendation.service.*;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,9 +18,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 class TaskReviewerRecommendationServiceImpTest {
   @MockBean
-  private TaskImpactAnalysisService taskImpactAnalysisService;
-
-  @MockBean
   private PaperRepository paperRepository;
 
   private TaskReviewerRecommendationServiceImp taskReviewerRecommendationService;
@@ -29,10 +25,7 @@ class TaskReviewerRecommendationServiceImpTest {
   @BeforeEach
   public void init() {
     taskReviewerRecommendationService =
-      new TaskReviewerRecommendationServiceImp(
-        paperRepository,
-        taskImpactAnalysisService
-      );
+      new TaskReviewerRecommendationServiceImp(paperRepository);
   }
 
   @Test
@@ -98,7 +91,15 @@ class TaskReviewerRecommendationServiceImpTest {
       )
       .thenReturn(reviewersFromSimilarDomain);
 
-    List<String> result = Lists.newArrayList("10", "11", "1", "2", "3");
+    List<String> reviewers = Lists.newArrayList("10", "11", "1", "2", "3");
+    for (String reviewer : reviewers) {
+      Mockito
+        .when(paperRepository.getImpactByResearcherId(reviewer))
+        .thenReturn(Integer.parseInt(reviewer));
+    }
+
+    List<String> result = Lists.newArrayList("11", "10", "3", "2", "1");
+
     assertEquals(
       taskReviewerRecommendationService.getRecommendReviewer(testPaper),
       result

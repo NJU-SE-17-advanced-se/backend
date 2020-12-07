@@ -9,6 +9,11 @@ import org.njuse17advancedse.taskreviewerrecommendation.dto.IPaperUpload;
  */
 public interface TaskReviewerRecommendationService {
   /**
+   * 判断投稿出版社是否存在
+   */
+  boolean containPublication(String publicationId);
+
+  /**
    * 获得推荐审稿人
    * @param iPaperUpload 上传论文实体
    * @return ResponseEntity

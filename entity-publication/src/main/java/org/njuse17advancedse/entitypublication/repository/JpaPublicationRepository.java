@@ -21,18 +21,11 @@ public class JpaPublicationRepository implements PublicationRepository {
   @Override
   public IPublication findPublication(String id) {
     IPublication iPublication = new IPublication();
-    String sql;
-    String name;
-    sql = "select p.name from publication p where p.id=:id";
-    try {
-      name =
-        entityManager
-          .createQuery(sql, String.class)
-          .setParameter("id", id)
-          .getSingleResult();
-    } catch (NoResultException e) {
-      return iPublication;
-    }
+    String sql = "select p.name from publication p where p.id=:id";
+    String name = entityManager
+      .createQuery(sql, String.class)
+      .setParameter("id", id)
+      .getSingleResult();
     sql = "select p.publicationDate from publication p where p.id=:id";
     Integer publicationDate = entityManager
       .createQuery(sql, Integer.class)
@@ -62,15 +55,11 @@ public class JpaPublicationRepository implements PublicationRepository {
     String sql;
     String name;
     sql = "select p.name from publication p where p.id=:id";
-    try {
-      name =
-        entityManager
-          .createQuery(sql, String.class)
-          .setParameter("id", id)
-          .getSingleResult();
-    } catch (NoResultException e) {
-      return iPublicationBasic;
-    }
+    name =
+      entityManager
+        .createQuery(sql, String.class)
+        .setParameter("id", id)
+        .getSingleResult();
     sql = "select p.publicationDate from publication p where p.id=:id";
     Integer publicationDate = entityManager
       .createQuery(sql, Integer.class)
@@ -86,17 +75,6 @@ public class JpaPublicationRepository implements PublicationRepository {
   public List<String> getPapers(String id, int startDate, int endDate) {
     String sql;
     List<String> papers;
-    sql = "select count(p) from publication p where p.id = :id";
-    int count = Integer.parseInt(
-      entityManager
-        .createQuery(sql)
-        .setParameter("id", id)
-        .getSingleResult()
-        .toString()
-    );
-    if (count == 0) {
-      return Lists.newArrayList("no such publication");
-    }
     sql =
       "select p.id from paper p where p.publication.id = :id and p.publicationDate between :start and :end";
     papers =
@@ -149,5 +127,18 @@ public class JpaPublicationRepository implements PublicationRepository {
     iSearchResult.setCount(count);
     iSearchResult.setResult(result);
     return iSearchResult;
+  }
+
+  @Override
+  public boolean containPublication(String id) {
+    String sql = "select count(p) from publication p where p.id = :id";
+    int count = Integer.parseInt(
+      entityManager
+        .createQuery(sql)
+        .setParameter("id", id)
+        .getSingleResult()
+        .toString()
+    );
+    return count != 0;
   }
 }

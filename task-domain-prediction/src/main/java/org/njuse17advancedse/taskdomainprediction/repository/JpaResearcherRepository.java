@@ -41,7 +41,7 @@ public class JpaResearcherRepository implements ResearcherRepository {
         .setParameter("start", year - 2)
         .setParameter("end", year)
         .getResultList();
-    if (domains.size() == 0) {
+    if (domains.isEmpty()) {
       sql =
         "select pd.did from paper_domain pd join paper_researcher pr on pr.pid = pd.pid where pr.rid = :rid";
       domains =

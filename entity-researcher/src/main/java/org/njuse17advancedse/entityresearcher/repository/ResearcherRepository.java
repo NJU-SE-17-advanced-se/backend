@@ -17,4 +17,6 @@ public interface ResearcherRepository {
   List<String> findAffiliations(String rid, int start, int end);
 
   ISearchResult searchByCond(String keyword, int page);
+
+  boolean containResearcher(String id);
 }

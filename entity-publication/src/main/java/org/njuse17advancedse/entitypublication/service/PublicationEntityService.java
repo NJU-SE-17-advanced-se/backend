@@ -60,4 +60,13 @@ public class PublicationEntityService {
   ) {
     return publicationRepository.searchByCond(keyword, start, end, page);
   }
+
+  /**
+   * 判断出版物是否存在
+   * @param id 出版物id
+   * @return true or false
+   */
+  public boolean containPublication(String id) {
+    return publicationRepository.containPublication(id);
+  }
 }

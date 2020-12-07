@@ -75,4 +75,13 @@ public class ResearcherEntityService {
   public ISearchResult searchByCond(String keyword, int page) {
     return researcherRepository.searchByCond(keyword, page);
   }
+
+  /**
+   * 判断学者是否存在
+   * @param id 学者id
+   * @return true or false
+   */
+  public boolean containResearcher(String id) {
+    return researcherRepository.containResearcher(id);
+  }
 }

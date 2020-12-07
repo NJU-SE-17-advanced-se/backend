@@ -38,14 +38,13 @@ public class ResearcherController {
   public IResearcher getResearcherById(
     @ApiParam(value = "学者 id") @PathVariable String id
   ) {
-    IResearcher iResearcher = researcherEntityService.getResearcherById(id);
-    if (iResearcher.getName() == null) {
+    if (!researcherEntityService.containResearcher(id)) {
       throw Problem.valueOf(
         Status.NOT_FOUND,
         String.format("Researcher '%s' not found", id)
       );
     }
-    return iResearcher;
+    return researcherEntityService.getResearcherById(id);
   }
 
   @ApiOperation("根据学者 id 获取学者简略信息")
@@ -53,16 +52,13 @@ public class ResearcherController {
   public IResearcherBasic getResearcherBasicInfoById(
     @ApiParam(value = "学者 id") @PathVariable String id
   ) {
-    IResearcherBasic iResearcherBasic = researcherEntityService.getResearcherBasicById(
-      id
-    );
-    if (iResearcherBasic.getName() == null) {
+    if (!researcherEntityService.containResearcher(id)) {
       throw Problem.valueOf(
         Status.NOT_FOUND,
         String.format("Researcher '%s' not found", id)
       );
     }
-    return iResearcherBasic;
+    return researcherEntityService.getResearcherBasicById(id);
   }
 
   @ApiOperation("获取某作者的论文 id")
@@ -78,21 +74,7 @@ public class ResearcherController {
   ) {
     int startDate = 0;
     int endDate = Integer.MAX_VALUE;
-    if (start != null) {
-      startDate = checkArgument(start);
-    }
-    if (end != null) {
-      endDate = checkArgument(end);
-    }
-    if (startDate < 0 || startDate > endDate) {
-      throw Problem.valueOf(
-        Status.BAD_REQUEST,
-        String.format(
-          "Argument '%s' illegal, Date error",
-          startDate + "," + endDate
-        )
-      );
-    }
+    checkDate(startDate, endDate, start, end);
     List<String> papers = researcherEntityService.getPapersByRid(
       id,
       startDate,
@@ -120,37 +102,16 @@ public class ResearcherController {
     @ApiParam(value = "开始年份，形如'2020'") String start,
     @ApiParam(value = "结束年份，形如'2020'") String end
   ) {
-    int startDate = 0;
-    int endDate = Integer.MAX_VALUE;
-    if (start != null) {
-      startDate = checkArgument(start);
-    }
-    if (end != null) {
-      endDate = checkArgument(end);
-    }
-    if (startDate < 0 || startDate > endDate) {
+    if (!researcherEntityService.containResearcher(id)) {
       throw Problem.valueOf(
-        Status.BAD_REQUEST,
-        String.format(
-          "Argument '%s' illegal, Date error",
-          startDate + "," + endDate
-        )
+        Status.NOT_FOUND,
+        String.format("Researcher '%s' not found", id)
       );
     }
-    List<String> domains = researcherEntityService.getDomainByRid(
-      id,
-      startDate,
-      endDate
-    );
-    if (domains.size() == 1) {
-      if (domains.get(0).equals("no such researcher")) {
-        throw Problem.valueOf(
-          Status.NOT_FOUND,
-          String.format("Researcher '%s' not found", id)
-        );
-      }
-    }
-    return domains;
+    int startDate = 0;
+    int endDate = Integer.MAX_VALUE;
+    checkDate(startDate, endDate, start, end);
+    return researcherEntityService.getDomainByRid(id, startDate, endDate);
   }
 
   @ApiOperation(
@@ -167,8 +128,26 @@ public class ResearcherController {
       required = false
     ) String end
   ) {
+    if (!researcherEntityService.containResearcher(id)) {
+      throw Problem.valueOf(
+        Status.NOT_FOUND,
+        String.format("Researcher '%s' not found", id)
+      );
+    }
     int startDate = 0;
     int endDate = Integer.MAX_VALUE;
+    checkDate(startDate, endDate, start, end);
+    return researcherEntityService.getAffiliationByRid(id, startDate, endDate);
+  }
+
+  /**
+   * 判断时间参数
+   * @param startDate 开始日期
+   * @param endDate 结束日期
+   * @param start 开始参数
+   * @param end 结束参数
+   */
+  private void checkDate(int startDate, int endDate, String start, String end) {
     if (start != null) {
       startDate = checkArgument(start);
     }
@@ -184,20 +163,6 @@ public class ResearcherController {
         )
       );
     }
-    List<String> affiliations = researcherEntityService.getAffiliationByRid(
-      id,
-      startDate,
-      endDate
-    );
-    if (affiliations.size() == 1) {
-      if (affiliations.get(0).equals("no such researcher")) {
-        throw Problem.valueOf(
-          Status.NOT_FOUND,
-          String.format("Researcher '%s' not found", id)
-        );
-      }
-    }
-    return affiliations;
   }
 
   /**

@@ -1,5 +1,6 @@
 package org.njuse17advancedse.taskdomainprediction.entity;
 
+import java.io.Serializable;
 import java.util.List;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "affiliation")
-public class JpaAffiliation {
+public class JpaAffiliation implements Serializable {
   @Id
   private String id;
 
