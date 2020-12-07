@@ -1,6 +1,5 @@
 package org.njuse17advancedse.entitydomain.service.impl;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.njuse17advancedse.entitydomain.data.AllRepository;
@@ -18,20 +17,14 @@ public class DomainServiceImpl implements DomainService {
 
   @Override
   public IDomain getDomainById(String id) {
-    try {
-      return repository.getDomain(id);
-    } catch (Exception e) {
-      return new IDomain();
-    }
+    if (!repository.existsById(id)) return new IDomain();
+    return repository.getDomain(id);
   }
 
   @Override
   public IDomainBasic getDomainBasicInfoById(String id) {
-    try {
-      return repository.getDomainBasic(id);
-    } catch (Exception e) {
-      return new IDomainBasic();
-    }
+    if (!repository.existsById(id)) return new IDomainBasic();
+    return repository.getDomainBasic(id);
   }
 
   @Override
