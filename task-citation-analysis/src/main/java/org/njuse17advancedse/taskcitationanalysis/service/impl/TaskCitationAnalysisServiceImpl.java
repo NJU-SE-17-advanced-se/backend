@@ -2,16 +2,9 @@ package org.njuse17advancedse.taskcitationanalysis.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import lombok.var;
 import org.njuse17advancedse.taskcitationanalysis.data.CitationAnalysisRepository;
-import org.njuse17advancedse.taskcitationanalysis.dto.IPaper;
-import org.njuse17advancedse.taskcitationanalysis.dto.IResearcher;
-import org.njuse17advancedse.taskcitationanalysis.service.PaperService;
-import org.njuse17advancedse.taskcitationanalysis.service.ResearcherService;
 import org.njuse17advancedse.taskcitationanalysis.service.TaskCitationAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,9 +14,6 @@ public class TaskCitationAnalysisServiceImpl
   implements TaskCitationAnalysisService {
   @Autowired
   CitationAnalysisRepository repository;
-
-  @Autowired
-  private ResearcherService researcherService;
 
   /**
    *  获取学者论文被引情况
@@ -161,9 +151,6 @@ public class TaskCitationAnalysisServiceImpl
   private Map<String, List<String>> getProblemMap() {
     Map<String, List<String>> res = new HashMap<>();
     List<String> parms = new ArrayList<>();
-    //    if (message.contains("Researcher")) parms.add("Researcher");
-    //    else if (message.contains("Paper")) parms.add("Paper");
-    //    else
     parms.add("Unknown");
     res.put("Not Found", parms);
     return res;
@@ -172,9 +159,6 @@ public class TaskCitationAnalysisServiceImpl
   private List<String> getProblemList() {
     List<String> res = new ArrayList<>();
     res.add("Not Found");
-    //    if (message.contains("Researcher")) res.add("Researcher");
-    //    else if (message.contains("Paper")) res.add("Paper");
-    //    else
     res.add("Unknown");
     res.add("Unknown Id");
     return res;

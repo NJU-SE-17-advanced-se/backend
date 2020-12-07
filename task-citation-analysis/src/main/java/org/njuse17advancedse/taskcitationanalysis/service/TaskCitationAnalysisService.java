@@ -27,15 +27,6 @@ public interface TaskCitationAnalysisService {
 
   List<String> getQuotedPapersByPaperId(String paperId);
 
-  //  /**
-  //   *
-  //   */
-  //  Map<String, Integer> getResearcherQuoteNums(
-  //    String researcherId1,
-  //    String researcherId2
-  //  );
-  // 某学者每篇论文引用的学者
-  //
   Map<String, List<String>> getResearcherPaperQuotedResearcher(
     String researcherId
   );
@@ -55,6 +46,4 @@ public interface TaskCitationAnalysisService {
   //某论文被哪些学者引用
   List<String> getPaperQuotingResearcher(String paperId);
   //计算一遍数据
-  //  void init();
-  //  String test();
 }

@@ -13,16 +13,18 @@ public class JpaRepository implements CitationAnalysisRepository {
   @PersistenceContext //并不会真正注入EntityManager，因为它不是线程安全的
   private EntityManager entityManager;
 
+  private static String pId = "paperId";
+  private static String rId = "researcherId";
+
   //某学者是否存在
   public boolean existsResearcherById(String id) {
     String sql = "select id from researcher where id=:id";
     return (
-      entityManager
+      !entityManager
         .createQuery(sql, String.class)
         .setParameter("id", id)
         .getResultList()
-        .size() !=
-      0
+        .isEmpty()
     );
   }
 
@@ -30,12 +32,11 @@ public class JpaRepository implements CitationAnalysisRepository {
   public boolean existsPaperById(String id) {
     String sql = "select id from paper where id=:id";
     return (
-      entityManager
+      !entityManager
         .createQuery(sql, String.class)
         .setParameter("id", id)
         .getResultList()
-        .size() !=
-      0
+        .isEmpty()
     );
   }
 
@@ -44,7 +45,7 @@ public class JpaRepository implements CitationAnalysisRepository {
     String sql = "select rid from paper_reference where pid=:paperId";
     return entityManager
       .createQuery(sql, String.class)
-      .setParameter("paperId", paperId)
+      .setParameter(pId, paperId)
       .getResultList();
   }
 
@@ -53,7 +54,7 @@ public class JpaRepository implements CitationAnalysisRepository {
     String sql = "select pid from paper_reference where rid=:paperId";
     return entityManager
       .createQuery(sql, String.class)
-      .setParameter("paperId", paperId)
+      .setParameter(pId, paperId)
       .getResultList();
   }
 
@@ -63,7 +64,7 @@ public class JpaRepository implements CitationAnalysisRepository {
       "select pre.rid from paper_reference prf join paper_researcher pre on prf.rid=pre.pid where prf.pid=:paperId";
     return entityManager
       .createQuery(sql, String.class)
-      .setParameter("paperId", paperId)
+      .setParameter(pId, paperId)
       .getResultList();
   }
 
@@ -73,7 +74,7 @@ public class JpaRepository implements CitationAnalysisRepository {
       "select pre.rid from paper_reference prf join paper_researcher pre on prf.pid=pre.pid where prf.rid=:paperId";
     return entityManager
       .createQuery(sql, String.class)
-      .setParameter("paperId", paperId)
+      .setParameter(pId, paperId)
       .getResultList();
   }
 
@@ -82,7 +83,7 @@ public class JpaRepository implements CitationAnalysisRepository {
     String sql = "select pid from paper_researcher where rid=:researcherId";
     return entityManager
       .createQuery(sql, String.class)
-      .setParameter("researcherId", researcherId)
+      .setParameter(rId, researcherId)
       .getResultList();
   }
 
@@ -120,23 +121,21 @@ public class JpaRepository implements CitationAnalysisRepository {
 
   //某学者引用了哪些学者
   public List<String> getResearcherQuotedResearcher(String researcherId) {
-    //        String sql="select ps1.rid from paper_researcher ps1 join paper_reference pf on ps1.pid=pf.rid join paper_researcher ps2 on pf.pid=ps2.rid where ps1.rid=:researcherId";
     String sql =
       "select rid from paper_researcher where pid in (select rid from paper_reference where pid in (select pid from paper_researcher where rid=:researcherId))";
     return entityManager
       .createQuery(sql, String.class)
-      .setParameter("researcherId", researcherId)
+      .setParameter(rId, researcherId)
       .getResultList();
   }
 
   //某学者被哪些学者引用
   public List<String> getResearcherQuotingResearcher(String researcherId) {
-    //        String sql="select ps2.rid from paper_researcher ps1 join paper_reference pf on ps1.pid=pf.rid join paper_researcher ps2 on pf.pid=ps2.rid where ps1.rid=:researcherId";
     String sql =
       "select rid from paper_researcher where pid in (select pid from paper_reference where rid in (select pid from paper_researcher where rid=:researcherId))";
     return entityManager
       .createQuery(sql, String.class)
-      .setParameter("researcherId", researcherId)
+      .setParameter(rId, researcherId)
       .getResultList();
   }
 
@@ -146,7 +145,7 @@ public class JpaRepository implements CitationAnalysisRepository {
   ) {
     List<String> queryRes = entityManager
       .createQuery(sql, String.class)
-      .setParameter("researcherId", researcherId)
+      .setParameter(rId, researcherId)
       .getResultList();
     Map<String, List<String>> res = new HashMap<>();
     for (String data : queryRes) {
