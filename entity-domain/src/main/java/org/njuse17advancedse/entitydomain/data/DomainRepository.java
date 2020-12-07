@@ -16,12 +16,11 @@ public class DomainRepository implements AllRepository {
   public boolean existsById(String domainId) {
     String sql = "select id from domain where id=:id";
     return (
-      entityManager
+      !entityManager
         .createQuery(sql, String.class)
         .setParameter("id", domainId)
         .getResultList()
-        .size() !=
-      0
+        .isEmpty()
     );
   }
 
