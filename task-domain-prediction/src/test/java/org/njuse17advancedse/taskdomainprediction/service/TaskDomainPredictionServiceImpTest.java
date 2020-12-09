@@ -48,4 +48,12 @@ class TaskDomainPredictionServiceImpTest {
       predictDomains
     );
   }
+
+  @Test
+  void containResearcher() {
+    Mockito
+      .when(researcherRepository.containResearcher("test"))
+      .thenReturn(true);
+    assertTrue(taskDomainPredictionService.containResearcher("test"));
+  }
 }
