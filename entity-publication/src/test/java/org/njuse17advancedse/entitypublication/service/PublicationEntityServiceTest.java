@@ -54,8 +54,8 @@ class PublicationEntityServiceTest {
       .when(publicationRepository.findPublication("test"))
       .thenReturn(iPublication);
     assertEquals(
-      publicationEntityService.getPublicationById("test").getName(),
-      "test"
+      "test",
+      publicationEntityService.getPublicationById("test").getName()
     );
   }
 
@@ -94,8 +94,8 @@ class PublicationEntityServiceTest {
       .when(publicationRepository.findPublicationBasic("test"))
       .thenReturn(iPublicationBasic);
     assertEquals(
-      publicationEntityService.getIPublicationBasic("test").getName(),
-      "test3"
+      "test3",
+      publicationEntityService.getIPublicationBasic("test").getName()
     );
   }
 
@@ -111,5 +111,13 @@ class PublicationEntityServiceTest {
       5,
       publicationEntityService.searchByCond("yang", 2010, 2020, 2).getCount()
     );
+  }
+
+  @Test
+  void containPublication() {
+    Mockito
+      .when(publicationRepository.containPublication("test"))
+      .thenReturn(false);
+    assertFalse(publicationEntityService.containPublication("test"));
   }
 }
