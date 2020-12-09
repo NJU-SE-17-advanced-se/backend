@@ -157,28 +157,24 @@ public class JpaResearcherRepository implements ResearcherRepository {
     int count = 0;
     List<String> result = new ArrayList<>();
     if (page >= 1) {
-      try {
-        sql = "select r.id from researcher r where lower(r.name) like :keyword";
-        result =
+      sql = "select r.id from researcher r where lower(r.name) like :keyword";
+      result =
+        entityManager
+          .createQuery(sql, String.class)
+          .setParameter("keyword", "%" + keyword + "%")
+          .setFirstResult((page - 1) * 10)
+          .setMaxResults(10)
+          .getResultList();
+      sql =
+        "select count(r) from researcher r where lower(r.name) like :keyword";
+      count =
+        Integer.parseInt(
           entityManager
-            .createQuery(sql, String.class)
+            .createQuery(sql)
             .setParameter("keyword", "%" + keyword + "%")
-            .setFirstResult((page - 1) * 10)
-            .setMaxResults(10)
-            .getResultList();
-        sql =
-          "select count(r) from researcher r where lower(r.name) like :keyword";
-        count =
-          Integer.parseInt(
-            entityManager
-              .createQuery(sql)
-              .setParameter("keyword", "%" + keyword + "%")
-              .getSingleResult()
-              .toString()
-          );
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+            .getSingleResult()
+            .toString()
+        );
     }
     iSearchResult.setCount(count);
     iSearchResult.setResult(result);
