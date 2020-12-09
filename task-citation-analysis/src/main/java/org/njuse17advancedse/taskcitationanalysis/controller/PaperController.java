@@ -3,6 +3,7 @@ package org.njuse17advancedse.taskcitationanalysis.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.Collections;
 import java.util.List;
 import org.njuse17advancedse.taskcitationanalysis.service.TaskCitationAnalysisService;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,8 @@ import org.zalando.problem.Status;
 public class PaperController {
   private final TaskCitationAnalysisService service;
 
+  private static String notFound = "Not Found";
+
   // 某篇论文引用了哪些论文
   // 某篇论文被哪些论文引用
   @ApiOperation(
@@ -26,15 +29,17 @@ public class PaperController {
     @ApiParam(value = "论文 id") @PathVariable String id,
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
-    if (type.equals("quoted")) {
+    if (quoted(type)) {
       List<String> res = service.getQuotedPapersByPaperId(id);
-      if (checkProblem(res)) return res;
+      checkProblem(res);
+      return res;
     }
-    if (type.equals("quoting")) {
+    if (quoting(type)) {
       List<String> res = service.getQuotingPapersByPaperId(id);
-      if (checkProblem(res)) return res;
+      checkProblem(res);
+      return res;
     }
-    return null;
+    return Collections.emptyList();
   }
 
   // 某篇论文引用了哪些学者
@@ -48,29 +53,37 @@ public class PaperController {
     @ApiParam(value = "论文 id") @PathVariable String id,
     @ApiParam(value = "引用 quoting / 被引 quoted") @RequestParam String type
   ) {
-    if (type.equals("quoted")) {
+    if (quoted(type)) {
       List<String> res = service.getPaperQuotedResearcher(id);
-      if (checkProblem(res)) return res;
+      checkProblem(res);
+      return res;
     }
-    if (type.equals("quoting")) {
+    if (quoting(type)) {
       List<String> res = service.getPaperQuotingResearcher(id);
-      if (checkProblem(res)) return res;
+      checkProblem(res);
+      return res;
     }
-    return null;
+    return Collections.emptyList();
   }
 
   public PaperController(TaskCitationAnalysisService service) {
     this.service = service;
   }
 
-  private boolean checkProblem(List<String> res) {
-    if (res.size() != 3) return true;
-    if (res.get(0).equals("Not Found")) {
+  private void checkProblem(List<String> res) {
+    if (res.size() == 3 && res.get(0).equals(notFound)) {
       throw Problem.valueOf(
         Status.INTERNAL_SERVER_ERROR,
         "Author Data Corrupted"
       );
     }
-    return true;
+  }
+
+  private boolean quoted(String type) {
+    return type.equals("quoted");
+  }
+
+  private boolean quoting(String type) {
+    return type.equals("quoting");
   }
 }

@@ -1,7 +1,6 @@
-package org.njuse17advancedse.entitydomain.service;
+package org.njuse17advancedse.entitydomain.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +10,7 @@ import org.njuse17advancedse.entitydomain.data.AllRepository;
 import org.njuse17advancedse.entitydomain.dto.IDomain;
 import org.njuse17advancedse.entitydomain.dto.IDomainBasic;
 import org.njuse17advancedse.entitydomain.dto.IResult;
+import org.njuse17advancedse.entitydomain.service.DomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -19,9 +19,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
-class DomainServiceTest {
-  @Autowired
+class DomainControllerTest {
+  @MockBean
   DomainService service;
+
+  @Autowired
+  DomainController controller;
 
   @MockBean
   AllRepository repository;
@@ -39,59 +42,75 @@ class DomainServiceTest {
     pb1 = new IDomainBasic();
     pb1.setId("sktfaker");
     pb1.setName("asdasda");
-    Mockito.when(repository.existsById("sktfaker")).thenReturn(true);
-    Mockito.when(repository.existsById("not exist")).thenReturn(false);
   }
 
   @Test
   void testGetResearchers() {
     Mockito
-      .when(repository.getResearchers("sktfaker"))
+      .when(service.getResearchers("sktfaker"))
       .thenReturn(Arrays.asList("r1", "r2", "r3", "r4"));
     assertEquals(
       Arrays.asList("r1", "r2", "r3", "r4"),
-      service.getResearchers("sktfaker")
+      controller.getResearchers("sktfaker")
     );
-    assertEquals(
-      Collections.singletonList("Not Found"),
-      service.getResearchers("not exist")
-    );
+    Mockito
+      .when(service.getResearchers("not exist"))
+      .thenReturn(Collections.singletonList("Not Found"));
+    try {
+      controller.getResearchers("not exist");
+    } catch (Exception ignored) {}
   }
 
   @Test
   void testGetPapers() {
     Mockito
-      .when(repository.getPapers("sktfaker"))
+      .when(service.getPapers("sktfaker"))
       .thenReturn(Arrays.asList("paper1", "paper2", "paper3"));
     assertEquals(
       Arrays.asList("paper1", "paper2", "paper3"),
-      service.getPapers("sktfaker")
+      controller.getPapers("sktfaker")
     );
-    assertEquals(
-      Collections.singletonList("Not Found"),
-      service.getPapers("not exist")
-    );
+    Mockito
+      .when(service.getPapers("not exist"))
+      .thenReturn(Collections.singletonList("Not Found"));
+    try {
+      controller.getResearchers("not exist");
+    } catch (Exception ignored) {}
   }
 
   @Test
   void testGetDomain() {
-    Mockito.when(repository.getDomain("sktfaker")).thenReturn(p1);
-    assertEquals(p1, service.getDomainById("sktfaker"));
-    assertNull(service.getDomainById("not exist").getId());
+    Mockito.when(service.getDomainById("sktfaker")).thenReturn(p1);
+    assertEquals(p1, controller.getDomainById("sktfaker"));
+    Mockito.when(service.getDomainById("not exist")).thenReturn(new IDomain());
+    try {
+      controller.getDomainById("not exist");
+    } catch (Exception ignored) {}
   }
 
   @Test
   void testGetDomainBasic() {
-    Mockito.when(repository.getDomainBasic("sktfaker")).thenReturn(pb1);
-    assertEquals(pb1, service.getDomainBasicInfoById("sktfaker"));
-    assertNull(service.getDomainBasicInfoById("not exist").getId());
+    Mockito.when(service.getDomainBasicInfoById("sktfaker")).thenReturn(pb1);
+    assertEquals(pb1, controller.getDomainBasicInfoById("sktfaker"));
+    Mockito
+      .when(service.getDomainBasicInfoById("not exist"))
+      .thenReturn(new IDomainBasic());
+    try {
+      controller.getDomainBasicInfoById("not exist");
+    } catch (Exception ignored) {}
   }
 
   @Test
   void testGetDomainsByCond() {
     IResult r = new IResult(Arrays.asList("SS", "S", "SSSS"), 5);
-    Mockito.when(repository.getDomainsByCond("software", 1)).thenReturn(r);
-    assertEquals(r, service.getDomainsByCond("software", 1));
-    assertEquals(new IResult(), service.getDomainsByCond("SKTelecom", -12));
+    Mockito.when(service.getDomainsByCond("software", 1)).thenReturn(r);
+    assertEquals(r, controller.getDomainsByCond("software", 1));
+
+    try {
+      assertEquals(
+        new IResult(),
+        controller.getDomainsByCond("SKTelecom", -12)
+      );
+    } catch (Exception ignored) {}
   }
 }

@@ -3,13 +3,11 @@ package org.njuse17advancedse.entitydomain.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.ArrayList;
 import java.util.List;
 import org.njuse17advancedse.entitydomain.dto.IDomain;
 import org.njuse17advancedse.entitydomain.dto.IDomainBasic;
 import org.njuse17advancedse.entitydomain.dto.IResult;
 import org.njuse17advancedse.entitydomain.service.DomainService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
@@ -41,7 +39,7 @@ public class DomainController {
     IDomain domain = service.getDomainById(id);
     if (domain.getId() == null) throw Problem.valueOf(
       Status.NOT_FOUND,
-      String.format("Domain '%s' not found", id)
+      notFound(id)
     );
     return domain;
   }
@@ -54,7 +52,7 @@ public class DomainController {
     IDomainBasic domainBasic = service.getDomainBasicInfoById(id);
     if (domainBasic.getId() == null) throw Problem.valueOf(
       Status.NOT_FOUND,
-      String.format("Domain '%s' not found", id)
+      notFound(id)
     );
     return domainBasic;
   }
@@ -66,10 +64,7 @@ public class DomainController {
   ) {
     List<String> res = service.getPapers(id);
     if (res.size() == 1 && res.get(0).equals("Not Found")) {
-      throw Problem.valueOf(
-        Status.NOT_FOUND,
-        String.format("Domain '%s' not found", id)
-      );
+      throw Problem.valueOf(Status.NOT_FOUND, notFound(id));
     }
     return res;
   }
@@ -81,15 +76,16 @@ public class DomainController {
   ) {
     List<String> res = service.getResearchers(id);
     if (res.size() == 1 && res.get(0).equals("Not Found")) {
-      throw Problem.valueOf(
-        Status.NOT_FOUND,
-        String.format("Domain '%s' not found", id)
-      );
+      throw Problem.valueOf(Status.NOT_FOUND, notFound(id));
     }
     return res;
   }
 
   public DomainController(DomainService service) {
     this.service = service;
+  }
+
+  private String notFound(String id) {
+    return String.format("Domain '%s' not found", id);
   }
 }
