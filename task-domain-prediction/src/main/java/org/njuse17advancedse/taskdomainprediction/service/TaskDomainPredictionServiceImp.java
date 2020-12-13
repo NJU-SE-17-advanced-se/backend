@@ -23,7 +23,16 @@ public class TaskDomainPredictionServiceImp
     /* 第一步，获得作者最近三年的研究领域 */
     List<String> pastDomains = researcherRepository.getPastDomains(rid);
 
-    /* 第二步，计算每个研究领域的影响力 */
+    /* 第二步，获得作者合作学者最近的研究领域 */
+    if (pastDomains.size() < 10) {
+      List<String> partnerDomains = researcherRepository.getPartnerDomains(
+        rid,
+        pastDomains
+      );
+      pastDomains.addAll(partnerDomains);
+    }
+
+    /* 第三步，计算每个研究领域的影响力 */
     HashMap<String, Double> hashMap = new HashMap<>();
     for (String domain : pastDomains) {
       hashMap.put(domain, researcherRepository.getDomainImpact(domain));
