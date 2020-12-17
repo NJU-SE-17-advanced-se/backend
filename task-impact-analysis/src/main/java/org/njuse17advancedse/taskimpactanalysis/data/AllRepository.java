@@ -10,4 +10,6 @@ public interface AllRepository {
   boolean existsResearcherById(String researcherId);
 
   Integer getSinglePaperQuotingTimes(String id);
+
+  double getImpactFactor(String paperId);
 }
