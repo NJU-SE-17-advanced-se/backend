@@ -23,4 +23,12 @@ public interface ResearcherRepository {
    * @return double 影响力数值
    */
   Double getDomainImpact(String domain);
+
+  /**
+   * 获得合作学者最近的研究领域列表
+   * @param rid 学者id
+   * @param pastDomains
+   * @return 领域id列表
+   */
+  List<String> getPartnerDomains(String rid, List<String> pastDomains);
 }

@@ -35,6 +35,14 @@ class TaskPartnershipAnalysisServiceImpTest {
   }
 
   @Test
+  void containResearcher() {
+    Mockito
+      .when(researcherRepository.containThisResearcher("test"))
+      .thenReturn(true);
+    assertTrue(taskPartnershipAnalysisService.containResearcher("test"));
+  }
+
+  @Test
   void getPartners() {
     Mockito
       .when(researcherRepository.getPartnersByRid("test"))

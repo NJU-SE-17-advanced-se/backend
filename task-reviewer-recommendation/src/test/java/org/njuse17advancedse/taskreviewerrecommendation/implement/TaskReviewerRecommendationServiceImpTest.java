@@ -160,4 +160,10 @@ class TaskReviewerRecommendationServiceImpTest {
       result
     );
   }
+
+  @Test
+  void containPublication() {
+    Mockito.when(paperRepository.containPublication("test")).thenReturn(false);
+    assertTrue(taskReviewerRecommendationService.containPublication("test"));
+  }
 }

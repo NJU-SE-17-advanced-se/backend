@@ -85,12 +85,8 @@ public class TaskReviewerRecommendationServiceImp
    */
   private void sortResearchersByImpact(List<String> researcherIds) {
     List<Integer> impacts = new ArrayList<>();
-    try {
-      for (String researcherId : researcherIds) {
-        impacts.add(paperRepository.getImpactByResearcherId(researcherId));
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+    for (String researcherId : researcherIds) {
+      impacts.add(paperRepository.getImpactByResearcherId(researcherId));
     }
     HashMap<String, Integer> map = new HashMap<>();
     for (int i = 0; i < researcherIds.size(); i++) {

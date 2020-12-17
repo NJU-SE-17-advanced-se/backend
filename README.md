@@ -83,6 +83,8 @@ yarn run predev
 
 #### 可选
 
+##### 服务启动
+
 实体服务和任务服务均提供了命令行启动的方式，具体命令如下：
 
 ```shell
@@ -92,6 +94,7 @@ yarn run entity-paper
 yarn run entity-publication
 yarn run entity-researcher
 yarn run task-citation-analysis
+yarn run task-domain-prediction
 yarn run task-impact-analysis
 yarn run task-partnership-analysis
 yarn run task-reviewer-recommendation
@@ -104,3 +107,49 @@ yarn run entity
 yarn run task
 ```
 
+##### 质量分析
+
+执行下述操作需要 shell 环境。如果是 Windows，可以考虑使用 Git Bash。
+
+**Make（推荐）**
+
+如果安装了 GNU Make，可以使用以下命令对全部服务的代码质量进行分析：
+
+```shell
+make
+make all
+```
+
+也可以对单个服务进行分析：
+
+```shell
+make entity-affiliation
+make entity-domain
+make entity-paper
+make entity-publication
+make entity-researcher
+make task-citation-analysis
+make task-domain-prediction
+make task-impact-analysis
+make task-partnership-analysis
+make task-reviewer-recommendation
+```
+
+**Shell Script**
+
+如果没有安装 GNU Make，可以执行`analysis.sh`来进行质量分析（可以将`.`替换成其他执行 shell 的方法）：
+
+```shell
+. analysis.sh entity-affiliation
+. analysis.sh entity-domain
+. analysis.sh entity-paper
+. analysis.sh entity-publication
+. analysis.sh entity-researcher
+. analysis.sh task-citation-analysis
+. analysis.sh task-domain-prediction
+. analysis.sh task-impact-analysis
+. analysis.sh task-partnership-analysis
+. analysis.sh task-reviewer-recommendation
+```
+
+目前只支持每次对单个服务进行分析，不能进行批量分析。

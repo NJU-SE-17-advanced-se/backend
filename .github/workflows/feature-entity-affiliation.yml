@@ -35,6 +35,3 @@ jobs:
 
       - name: Maven Test
         run: mvn -B clean test verify -Dspring.profiles.active=test
-
-      - name: Quality Analysis
-        run: mvn sonar:sonar -Dsonar.projectKey=org.NJU-SE-17-advanced-se:entity-affiliation -Dsonar.host.url=${{ secrets.SONAR_HOST }} -Dsonar.login=${{ secrets.ENTITY_AFFILIATION_SONAR_TOKEN }}

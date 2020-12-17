@@ -1,10 +1,8 @@
 package org.njuse17advancedse.entitypublication.repository;
 
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import org.njuse17advancedse.entitypublication.dto.IPublication;
 import org.njuse17advancedse.entitypublication.dto.IPublicationBasic;
 import org.njuse17advancedse.entitypublication.dto.ISearchResult;
