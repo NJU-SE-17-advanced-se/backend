@@ -50,7 +50,8 @@ class TaskImpactAnalysisServiceTest {
   @Test
   void testGetPaperImpact() {
     Mockito.when(repository.getSinglePaperQuotingTimes("SKT")).thenReturn(12);
-    assertEquals(12d, service.getPaperImpact("SKT"));
+    Mockito.when(repository.getImpactFactor("SKT")).thenReturn(0.125);
+    assertEquals(1.5d, service.getPaperImpact("SKT"));
     assertEquals(-1, service.getPaperImpact("not exist"));
   }
 }
