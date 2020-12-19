@@ -3,6 +3,7 @@ package org.njuse17advancedse.taskimpactanalysis.data;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.njuse17advancedse.taskimpactanalysis.entity.JpaPaper;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -49,5 +50,10 @@ public class JpaRepository implements AllRepository {
       .createQuery(sql, Integer.class)
       .setParameter("id", id)
       .getSingleResult();
+  }
+
+  public double getImpactFactor(String paperId) {
+    JpaPaper p = entityManager.find(JpaPaper.class, paperId);
+    return p.getPublication().getImpact();
   }
 }

@@ -21,11 +21,23 @@ public class JpaPaper implements Serializable {
   @Column(name = "abs")
   private String abs;
 
-  @Column(name = "publication_id")
-  private String publicationId;
+  @ManyToMany
+  @JoinTable(
+    name = "paper_researcher",
+    joinColumns = @JoinColumn(name = "pid"),
+    inverseJoinColumns = @JoinColumn(name = "rid")
+  )
+  private List<JpaResearcher> researchers;
+
+  @ManyToOne(
+    cascade = { CascadeType.MERGE, CascadeType.REFRESH },
+    optional = false
+  )
+  @JoinColumn(name = "publication_id")
+  private JpaPublication publication;
 
   @Column(name = "publication_date")
-  private int publicationDate;
+  private String publicationDate;
 
   @Column(name = "link")
   private String link;
@@ -35,17 +47,17 @@ public class JpaPaper implements Serializable {
 
   @ManyToMany
   @JoinTable(
-    name = "paper_researcher",
-    joinColumns = @JoinColumn(name = "pid"),
-    inverseJoinColumns = @JoinColumn(name = "rid")
-  )
-  private List<JpaResearcher> researchers;
-
-  @ManyToMany
-  @JoinTable(
     name = "paper_domain",
     joinColumns = @JoinColumn(name = "pid"),
     inverseJoinColumns = @JoinColumn(name = "did")
   )
   private List<JpaDomain> domains;
+
+  @ManyToMany
+  @JoinTable(
+    name = "paper_reference",
+    joinColumns = @JoinColumn(name = "pid"),
+    inverseJoinColumns = @JoinColumn(name = "rid")
+  )
+  private List<JpaPaper> references;
 }

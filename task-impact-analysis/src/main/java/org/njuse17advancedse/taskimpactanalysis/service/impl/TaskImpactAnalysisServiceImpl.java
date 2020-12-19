@@ -9,11 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class TaskImpactAnalysisServiceImpl
   implements TaskImpactAnalysisService {
-
-  public TaskImpactAnalysisServiceImpl() {
-    impactFactors.put("", 1d);
-  }
-
   @Autowired
   AllRepository repository;
 
@@ -40,8 +35,6 @@ public class TaskImpactAnalysisServiceImpl
     }
   }
 
-  static HashMap<String, Double> impactFactors = new HashMap<>();
-
   /**
    * 计算论文影响力（被引次数）
    */
@@ -50,12 +43,9 @@ public class TaskImpactAnalysisServiceImpl
     try {
       if (!repository.existsPaperById(id)) return -1;
       int size = repository.getSinglePaperQuotingTimes(id);
-      return Double.parseDouble(
-        String.format(
-          "%.2f",
-          size * impactFactors.getOrDefault("publication//TODO", 1d)
-        )
-      );
+      double impactF = repository.getImpactFactor(id);
+      if (impactF <= 0) impactF = 1d;
+      return Double.parseDouble(String.format("%.2f", size * impactF));
     } catch (Exception e) {
       return -1;
     }
