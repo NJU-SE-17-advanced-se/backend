@@ -80,7 +80,7 @@ public class JpaResearcherRepository implements ResearcherRepository {
         .setParameter("rid", id)
         .getSingleResult();
     sql =
-      "select ra.affiliation.id from researcher_affiliation ra where ra.researcher.id = :rid";
+      "select distinct ra.affiliation.id from researcher_affiliation ra where ra.researcher.id = :rid";
     List<String> affiliations = entityManager
       .createQuery(sql, String.class)
       .setParameter("rid", id)
@@ -106,7 +106,7 @@ public class JpaResearcherRepository implements ResearcherRepository {
     String sql;
     List<String> papers;
     sql =
-      "select pr.paper.id from paper_researcher pr where pr.researcher.id = :rid and pr.paper.publicationDate between :start and :end";
+      "select distinct pr.paper.id from paper_researcher pr where pr.researcher.id = :rid and pr.paper.publicationDate between :start and :end";
     papers =
       entityManager
         .createQuery(sql, String.class)
@@ -122,7 +122,7 @@ public class JpaResearcherRepository implements ResearcherRepository {
     String sql;
     List<String> domains;
     sql =
-      "select pd.did from paper_domain pd join paper_researcher pr on pr.pid = pd.pid where pr.rid = :rid and pd.paper.publicationDate between :start and :end";
+      "select distinct pd.did from paper_domain pd join paper_researcher pr on pr.pid = pd.pid where pr.rid = :rid and pd.paper.publicationDate between :start and :end";
     domains =
       entityManager
         .createQuery(sql, String.class)
@@ -138,7 +138,7 @@ public class JpaResearcherRepository implements ResearcherRepository {
     String sql;
     List<String> affiliations;
     sql =
-      "select ra.affiliation.id from researcher_affiliation ra where ra.researcher.id = :rid and ra.year between :a and :b";
+      "select distinct ra.affiliation.id from researcher_affiliation ra where ra.researcher.id = :rid and ra.year between :a and :b";
     affiliations =
       entityManager
         .createQuery(sql, String.class)
