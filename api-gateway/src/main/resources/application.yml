@@ -6,10 +6,10 @@ spring:
   profiles:
     active: dev
 
-# 2.5s 超时
+# 基本取消超时
 ribbon:
-  ReadTimeout: 2500
-  SocketTimeout: 2500
+  ReadTimeout: 60000
+  SocketTimeout: 60000
   MaxAutoRetries: 1
   MaxAutoRetriesNextServer: 1
   retryableStatusCodes: 404,502
