@@ -8,8 +8,8 @@ spring:
 
 # 2.5s 超时
 ribbon:
-  ReadTimeout: 2000
-  SocketTimeout: 2000
+  ReadTimeout: 2500
+  SocketTimeout: 2500
   MaxAutoRetries: 1
   MaxAutoRetriesNextServer: 1
   retryableStatusCodes: 404,502
