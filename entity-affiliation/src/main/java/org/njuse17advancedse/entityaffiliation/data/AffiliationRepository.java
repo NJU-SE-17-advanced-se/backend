@@ -61,7 +61,8 @@ public class AffiliationRepository implements AllRepository {
   }
 
   public List<String> getAffiliationResearchersById(String id) {
-    String sql = "select rid from researcher_affiliation where aid=:id";
+    String sql =
+      "select distinct rid from researcher_affiliation where aid=:id";
     return entityManager
       .createQuery(sql, String.class)
       .setParameter("id", id)
@@ -70,7 +71,7 @@ public class AffiliationRepository implements AllRepository {
 
   public List<String> getAffiliationPapersById(String id) {
     String sql =
-      "select pr.pid from paper_researcher pr join researcher_affiliation ra on pr.rid=ra.rid where ra.aid=:id";
+      "select distinct pr.pid from paper_researcher pr join researcher_affiliation ra on pr.rid=ra.rid where ra.aid=:id";
     return entityManager
       .createQuery(sql, String.class)
       .setParameter("id", id)
@@ -79,7 +80,7 @@ public class AffiliationRepository implements AllRepository {
 
   public List<String> getAffiliationDomainsById(String id) {
     String sql =
-      "select pd.did from paper_domain pd join paper_researcher pr on pr.pid=pd.pid join researcher_affiliation ra on ra.rid=pr.rid where ra.aid=:id";
+      "select distinct pd.did from paper_domain pd join paper_researcher pr on pr.pid=pd.pid join researcher_affiliation ra on ra.rid=pr.rid where ra.aid=:id";
     return entityManager
       .createQuery(sql, String.class)
       .setParameter("id", id)
