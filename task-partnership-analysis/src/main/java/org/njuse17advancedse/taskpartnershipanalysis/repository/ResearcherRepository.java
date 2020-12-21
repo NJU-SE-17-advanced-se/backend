@@ -3,6 +3,7 @@ package org.njuse17advancedse.taskpartnershipanalysis.repository;
 import java.util.HashMap;
 import java.util.List;
 import org.njuse17advancedse.taskpartnershipanalysis.entity.JpaPaper;
+import org.springframework.cache.annotation.Cacheable;
 
 public interface ResearcherRepository {
   /**
@@ -10,6 +11,7 @@ public interface ResearcherRepository {
    * @param rid 作者id
    * @return 学者id列表
    */
+  @Cacheable("getPartnersByRid")
   List<String> getPartnersByRid(String rid);
 
   /**
@@ -19,6 +21,7 @@ public interface ResearcherRepository {
    * @param end 结束时间
    * @return 论文id列表
    */
+  @Cacheable("getPapersByRid")
   List<String> getPapersByRid(String rid, int start, int end);
 
   /**
@@ -26,6 +29,7 @@ public interface ResearcherRepository {
    * @param papers 论文id列表
    * @return 引文id列表
    */
+  @Cacheable("getReferencesByPapers")
   List<String> getReferencesByPapers(List<String> papers);
 
   /**
@@ -33,6 +37,7 @@ public interface ResearcherRepository {
    * @param rid 学者id
    * @return true or false
    */
+  @Cacheable("containThisResearcher")
   boolean containThisResearcher(String rid);
 
   /**
@@ -41,6 +46,7 @@ public interface ResearcherRepository {
    * @param papers 论文列表
    * @return 合作map，学者：合作次数
    */
+  @Cacheable("getCoAuthorMap")
   HashMap<String, Integer> getCoAuthorMap(
     String researcherId,
     List<String> papers
@@ -52,6 +58,7 @@ public interface ResearcherRepository {
    * @param references 引文列表
    * @return 共引map，学者：共引次数
    */
+  @Cacheable("getCitationMap")
   HashMap<String, Integer> getCitationMap(
     String researcherId,
     List<String> references
@@ -64,6 +71,7 @@ public interface ResearcherRepository {
    * @param partners 合作者
    * @return 学者id列表
    */
+  @Cacheable("getResearchersOfSimilarDomain")
   List<String> getResearchersOfSimilarDomain(
     String rid,
     List<String> domains,
@@ -75,6 +83,7 @@ public interface ResearcherRepository {
    * @param rid 学者列表
    * @return 领域id列表
    */
+  @Cacheable("getDomainsByResearcherId")
   List<String> getDomainsByResearcherId(String rid);
 
   /**
@@ -82,6 +91,7 @@ public interface ResearcherRepository {
    * @param researchId 学者id
    * @return 合作者id列表
    */
+  @Cacheable("getNearPartnersByRid")
   List<String> getNearPartnersByRid(String researchId);
 
   /**
@@ -89,6 +99,7 @@ public interface ResearcherRepository {
    * @param researchId 学者id
    * @return 论文列表
    */
+  @Cacheable("getPaperDateById")
   List<JpaPaper> getPaperDateById(String researchId);
 
   /**
@@ -96,5 +107,6 @@ public interface ResearcherRepository {
    * @param researcherId 学者id
    * @return 影响力数值HIndex
    */
+  @Cacheable("getImpactByResearcherId")
   Integer getImpactByResearcherId(String researcherId);
 }

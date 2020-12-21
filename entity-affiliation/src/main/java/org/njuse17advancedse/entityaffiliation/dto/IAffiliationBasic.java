@@ -1,5 +1,6 @@
 package org.njuse17advancedse.entityaffiliation.dto;
 
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class IAffiliationBasic {
+public class IAffiliationBasic implements Serializable {
   private String id;
 
   private String name;
