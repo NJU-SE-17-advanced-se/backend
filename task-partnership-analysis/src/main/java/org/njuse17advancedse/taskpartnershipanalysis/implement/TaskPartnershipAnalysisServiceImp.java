@@ -102,6 +102,11 @@ public class TaskPartnershipAnalysisServiceImp
         weights.add(doubles);
       }
       iResearcherNet.setPartners(partners);
+      List<Integer> impacts = new ArrayList<>();
+      for (String rid : partners) {
+        impacts.add(researcherRepository.getImpactByResearcherId(rid));
+      }
+      iResearcherNet.setImpacts(impacts);
       iResearcherNet.setWeight(weights);
     }
     return iResearcherNet;
@@ -258,6 +263,9 @@ public class TaskPartnershipAnalysisServiceImp
     );
     List<String> intersection = new ArrayList<>(domains);
     intersection.retainAll(partnerDomains);
+    if ((domains.size() + partnerDomains.size()) == 0) {
+      return 0.0;
+    }
     score =
       (double) intersection.size() / (domains.size() + partnerDomains.size());
     return score;

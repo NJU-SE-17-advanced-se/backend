@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class IResearcherNet implements Serializable {
   private List<String> partners; //合作作者id列表
-
+  private List<Integer> impacts; //学者影响力列表
   private List<Double[]> weight; //边的权值
 }
