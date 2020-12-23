@@ -48,7 +48,7 @@ public class DomainRepository implements AllRepository {
   }
 
   public List<String> getPapers(String domainId) {
-    String sql = "select pid from paper_domain where did=:domainId";
+    String sql = "select distinct pid from paper_domain where did=:domainId";
     return entityManager
       .createQuery(sql, String.class)
       .setParameter("domainId", domainId)
@@ -57,7 +57,7 @@ public class DomainRepository implements AllRepository {
 
   public List<String> getResearchers(String domainId) {
     String sql =
-      "select pr.rid from paper_researcher pr join paper_domain pd on pr.pid=pd.pid where pd.did=:domainId";
+      "select distinct pr.rid from paper_researcher pr join paper_domain pd on pr.pid=pd.pid where pd.did=:domainId";
     return entityManager
       .createQuery(sql, String.class)
       .setParameter("domainId", domainId)

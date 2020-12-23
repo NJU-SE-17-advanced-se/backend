@@ -1,6 +1,7 @@
 package org.njuse17advancedse.taskreviewerrecommendation.repository;
 
 import java.util.List;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.lang.Nullable;
 
 public interface PaperRepository {
@@ -10,6 +11,7 @@ public interface PaperRepository {
    * @param partners 合作者列表
    * @return 作者id列表
    */
+  @Cacheable("getResearcherIdsFromReferences")
   List<String> getResearcherIdsFromReferences(
     List<String> references,
     List<String> partners
@@ -22,6 +24,7 @@ public interface PaperRepository {
    * @param partners 合作者列表
    * @return 作者id列表
    */
+  @Cacheable("getResearchersFromPublication")
   List<String> getResearchersFromPublication(
     String publication,
     int date,
@@ -35,6 +38,7 @@ public interface PaperRepository {
    * @param partners 合作者列表
    * @return 作者id列表
    */
+  @Cacheable("getResearcherFromSimilarDomain")
   List<String> getResearcherFromSimilarDomain(
     List<String> domains,
     int date,
@@ -46,6 +50,7 @@ public interface PaperRepository {
    * @param researcherIds 作者id列表
    * @return 合作者id列表
    */
+  @Cacheable("getPastPartners")
   List<String> getPastPartners(List<String> researcherIds);
 
   /**
@@ -53,6 +58,7 @@ public interface PaperRepository {
    * @param researcherIds 作者列表
    * @return 作者id列表
    */
+  @Cacheable("getPartnersByAffiliation")
   List<String> getPartnersByAffiliation(List<String> researcherIds);
 
   /**
@@ -60,6 +66,7 @@ public interface PaperRepository {
    * @param id 出版社id
    * @return true or false
    */
+  @Cacheable("containPublication")
   boolean containPublication(String id);
 
   /**
@@ -67,5 +74,6 @@ public interface PaperRepository {
    * @param researcherId 作者id
    * @return HIndex
    */
+  @Cacheable("getImpactByResearcherId")
   Integer getImpactByResearcherId(String researcherId);
 }

@@ -1,6 +1,7 @@
 package org.njuse17advancedse.taskdomainprediction.repository;
 
 import java.util.List;
+import org.springframework.cache.annotation.Cacheable;
 
 public interface ResearcherRepository {
   /**
@@ -8,6 +9,7 @@ public interface ResearcherRepository {
    * @param rid 学者id
    * @return true or false
    */
+  @Cacheable("containResearcher")
   boolean containResearcher(String rid);
 
   /**
@@ -15,6 +17,7 @@ public interface ResearcherRepository {
    * @param rid 学者id
    * @return 领域id列表
    */
+  @Cacheable("getPastDomains")
   List<String> getPastDomains(String rid);
 
   /**
@@ -22,6 +25,7 @@ public interface ResearcherRepository {
    * @param domain 研究领域id
    * @return double 影响力数值
    */
+  @Cacheable("getDomainImpact")
   Double getDomainImpact(String domain);
 
   /**
@@ -30,5 +34,6 @@ public interface ResearcherRepository {
    * @param pastDomains
    * @return 领域id列表
    */
+  @Cacheable("getPartnerDomains")
   List<String> getPartnerDomains(String rid, List<String> pastDomains);
 }
