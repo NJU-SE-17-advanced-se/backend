@@ -26,7 +26,7 @@ public class JpaResearcherRepository implements ResearcherRepository {
         .setParameter("rid", id)
         .getSingleResult();
     sql =
-      "select ra.affiliation.id from researcher_affiliation ra where ra.researcher.id = :rid";
+      "select distinct ra.affiliation.id from researcher_affiliation ra where ra.researcher.id = :rid";
     List<String> affiliations = entityManager
       .createQuery(sql, String.class)
       .setParameter("rid", id)

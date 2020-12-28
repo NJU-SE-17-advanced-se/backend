@@ -4,10 +4,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
 import org.njuse17advancedse.entityresearcher.dto.ISearchResult;
 import org.njuse17advancedse.entityresearcher.service.ResearcherEntityService;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
@@ -15,6 +18,7 @@ import org.zalando.problem.Status;
 @Api(tags = { "学者" })
 @RequestMapping("/researchers")
 @RestController
+@EnableAsync
 public class ResearcherController {
   private final ResearcherEntityService researcherEntityService;
 
@@ -44,7 +48,16 @@ public class ResearcherController {
         String.format("Researcher '%s' not found", id)
       );
     }
-    return researcherEntityService.getResearcherById(id);
+    IResearcher researcher;
+    CompletableFuture<IResearcher> completableFuture = researcherEntityService.getResearcherById(
+      id
+    );
+    try {
+      researcher = completableFuture.get();
+    } catch (InterruptedException | ExecutionException e) {
+      throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "内部出错");
+    }
+    return researcher;
   }
 
   @ApiOperation("根据学者 id 获取学者简略信息")
@@ -58,7 +71,16 @@ public class ResearcherController {
         String.format("Researcher '%s' not found", id)
       );
     }
-    return researcherEntityService.getResearcherBasicById(id);
+    IResearcherBasic iResearcherBasic;
+    CompletableFuture<IResearcherBasic> completableFuture = researcherEntityService.getResearcherBasicById(
+      id
+    );
+    try {
+      iResearcherBasic = completableFuture.get();
+    } catch (InterruptedException | ExecutionException e) {
+      throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "内部出错");
+    }
+    return iResearcherBasic;
   }
 
   @ApiOperation("获取某作者的论文 id")
