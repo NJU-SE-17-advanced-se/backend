@@ -2,6 +2,7 @@ package org.njuse17advancedse.entityresearcher.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.concurrent.ExecutionException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class ResearcherEntityServiceTest {
   }
 
   @Test
-  void getResearcherById() {
+  void getResearcherById() throws ExecutionException, InterruptedException {
     IResearcher iResearcher = new IResearcher();
     JpaPaper jpaPaper = new JpaPaper();
     jpaPaper.setId("test");
@@ -46,7 +47,7 @@ class ResearcherEntityServiceTest {
       .when(researcherRepository.getResearcherById("test"))
       .thenReturn(iResearcher);
     assertEquals(
-      researcherEntityService.getResearcherById("test").getName(),
+      researcherEntityService.getResearcherById("test").get().getName(),
       "ycj"
     );
   }
@@ -119,7 +120,8 @@ class ResearcherEntityServiceTest {
   }
 
   @Test
-  void getResearcherBasicById() {
+  void getResearcherBasicById()
+    throws ExecutionException, InterruptedException {
     IResearcherBasic iResearcherBasic = new IResearcherBasic();
     JpaPaper jpaPaper = new JpaPaper();
     jpaPaper.setId("test");
@@ -134,7 +136,7 @@ class ResearcherEntityServiceTest {
       .when(researcherRepository.getResearcherBasic("test"))
       .thenReturn(iResearcherBasic);
     assertEquals(
-      researcherEntityService.getResearcherBasicById("test").getName(),
+      researcherEntityService.getResearcherBasicById("test").get().getName(),
       "ycj"
     );
   }

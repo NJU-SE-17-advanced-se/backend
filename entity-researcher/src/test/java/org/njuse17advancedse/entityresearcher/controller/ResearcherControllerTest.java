@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -36,12 +38,15 @@ class ResearcherControllerTest {
     iResearcher.setPapers(Lists.newArrayList("test"));
     iResearcher.setName("ycj");
     iResearcher.setId("IEEE_37085391626");
+    CompletableFuture<IResearcher> completableFuture = CompletableFuture.completedFuture(
+      iResearcher
+    );
     Mockito
       .when(researcherEntityService.containResearcher("a"))
       .thenReturn(true);
     Mockito
       .when(researcherEntityService.getResearcherById("a"))
-      .thenReturn(iResearcher);
+      .thenReturn(completableFuture);
     assertEquals(
       iResearcher.getName(),
       researcherController.getResearcherById("a").getName()
@@ -55,12 +60,15 @@ class ResearcherControllerTest {
     iResearcherBasic.setPapers(Lists.newArrayList("test"));
     iResearcherBasic.setName("ycj");
     iResearcherBasic.setId("IEEE_37085391626");
+    CompletableFuture<IResearcherBasic> completableFuture = CompletableFuture.completedFuture(
+      iResearcherBasic
+    );
     Mockito
       .when(researcherEntityService.containResearcher("a"))
       .thenReturn(true);
     Mockito
       .when(researcherEntityService.getResearcherBasicById("a"))
-      .thenReturn(iResearcherBasic);
+      .thenReturn(completableFuture);
     assertEquals(
       iResearcherBasic,
       researcherController.getResearcherBasicInfoById("a")
