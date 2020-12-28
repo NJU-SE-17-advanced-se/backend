@@ -12,13 +12,13 @@
 
 组员：殷承鉴，学号：171250661
 
-## 项目地址 (WIP)
+## 项目地址
 
 https://wensun.top/
 
-## 接口说明 (WIP)
+## 接口说明
 
-https://wensun.top/api/swagger-ui/index.html
+http://101.132.35.81:8080/swagger-ui/index.html
 
 ## 构建状态
 
