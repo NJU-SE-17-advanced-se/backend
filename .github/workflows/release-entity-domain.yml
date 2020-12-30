@@ -85,9 +85,9 @@ jobs:
         # 这其实稍微有点冗余，但是好在整个脚本的体量并不大
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.YZG_HW_SSH_HOST }}
-          username: ${{ secrets.YZG_HW_SSH_USER }}
-          password: ${{ secrets.YZG_HW_SSH_PASS }}
+          host: ${{ secrets.NEW_SSH_HOST }}
+          username: ${{ secrets.NEW_SSH_USER }}
+          password: ${{ secrets.NEW_SSH_PASS }}
           script: |
             echo '${{ secrets.DOCKERHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
 
