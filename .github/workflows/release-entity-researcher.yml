@@ -89,9 +89,9 @@ jobs:
           username: ${{ secrets.NEW_SSH_USER }}
           password: ${{ secrets.NEW_SSH_PASS }}
           script: |
-            echo '${{ secrets.DOCKERHUB_PASS }}' | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
+            echo '${{ secrets.DOCKERHUB_PASS }}' | sudo docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
 
-            docker pull ${{ secrets.ENTITY_RESEARCHER_REPO }}:latest
+            sudo docker pull ${{ secrets.ENTITY_RESEARCHER_REPO }}:latest
 
             service_id=$(sudo docker container ls -aqf name="entity-researcher")
             if [ "$service_id" ]; then
@@ -100,7 +100,7 @@ jobs:
               echo 'no service'
             fi
 
-            docker run -d \
+            sudo docker run -d \
               --restart=always \
               --name entity-researcher \
               -p 6324:6324 \
