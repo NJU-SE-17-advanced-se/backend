@@ -72,17 +72,7 @@ public class ResearcherController {
         String.format("Researcher '%s' not found", id)
       );
     }
-    IResearcherBasic iResearcherBasic;
-    CompletableFuture<IResearcherBasic> completableFuture = researcherEntityService.getResearcherBasicById(
-      id
-    );
-    try {
-      iResearcherBasic = completableFuture.get();
-    } catch (InterruptedException | ExecutionException e) {
-      Thread.currentThread().interrupt();
-      throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "内部出错");
-    }
-    return iResearcherBasic;
+    return researcherEntityService.getResearcherBasicById(id);
   }
 
   @ApiOperation("获取某作者的论文 id")

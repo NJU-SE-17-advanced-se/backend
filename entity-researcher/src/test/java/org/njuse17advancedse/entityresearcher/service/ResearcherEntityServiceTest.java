@@ -120,8 +120,7 @@ class ResearcherEntityServiceTest {
   }
 
   @Test
-  void getResearcherBasicById()
-    throws ExecutionException, InterruptedException {
+  void getResearcherBasicById() {
     IResearcherBasic iResearcherBasic = new IResearcherBasic();
     JpaPaper jpaPaper = new JpaPaper();
     jpaPaper.setId("test");
@@ -136,7 +135,7 @@ class ResearcherEntityServiceTest {
       .when(researcherRepository.getResearcherBasic("test"))
       .thenReturn(iResearcherBasic);
     assertEquals(
-      researcherEntityService.getResearcherBasicById("test").get().getName(),
+      researcherEntityService.getResearcherBasicById("test").getName(),
       "ycj"
     );
   }
