@@ -55,6 +55,7 @@ public class ResearcherController {
     try {
       researcher = completableFuture.get();
     } catch (InterruptedException | ExecutionException e) {
+      Thread.currentThread().interrupt();
       throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "内部出错");
     }
     return researcher;
@@ -78,6 +79,7 @@ public class ResearcherController {
     try {
       iResearcherBasic = completableFuture.get();
     } catch (InterruptedException | ExecutionException e) {
+      Thread.currentThread().interrupt();
       throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "内部出错");
     }
     return iResearcherBasic;
