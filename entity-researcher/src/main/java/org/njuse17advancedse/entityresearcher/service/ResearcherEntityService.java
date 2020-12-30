@@ -67,11 +67,8 @@ public class ResearcherEntityService {
    * @param id 作者id
    * @return 作者简要实体
    */
-  @Async
-  public CompletableFuture<IResearcherBasic> getResearcherBasicById(String id) {
-    return CompletableFuture.completedFuture(
-      researcherRepository.getResearcherBasic(id)
-    );
+  public IResearcherBasic getResearcherBasicById(String id) {
+    return researcherRepository.getResearcherBasic(id);
   }
 
   /**
