@@ -38,15 +38,12 @@ class ResearcherControllerTest {
     iResearcher.setPapers(Lists.newArrayList("test"));
     iResearcher.setName("ycj");
     iResearcher.setId("IEEE_37085391626");
-    CompletableFuture<IResearcher> completableFuture = CompletableFuture.completedFuture(
-      iResearcher
-    );
     Mockito
       .when(researcherEntityService.containResearcher("a"))
       .thenReturn(true);
     Mockito
       .when(researcherEntityService.getResearcherById("a"))
-      .thenReturn(completableFuture);
+      .thenReturn(iResearcher);
     assertEquals(
       iResearcher.getName(),
       researcherController.getResearcherById("a").getName()

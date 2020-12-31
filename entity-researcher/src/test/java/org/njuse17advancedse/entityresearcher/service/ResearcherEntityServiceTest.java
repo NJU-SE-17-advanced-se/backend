@@ -33,7 +33,7 @@ class ResearcherEntityServiceTest {
   }
 
   @Test
-  void getResearcherById() throws ExecutionException, InterruptedException {
+  void getResearcherById() {
     IResearcher iResearcher = new IResearcher();
     JpaPaper jpaPaper = new JpaPaper();
     jpaPaper.setId("test");
@@ -47,7 +47,7 @@ class ResearcherEntityServiceTest {
       .when(researcherRepository.getResearcherById("test"))
       .thenReturn(iResearcher);
     assertEquals(
-      researcherEntityService.getResearcherById("test").get().getName(),
+      researcherEntityService.getResearcherById("test").getName(),
       "ycj"
     );
   }

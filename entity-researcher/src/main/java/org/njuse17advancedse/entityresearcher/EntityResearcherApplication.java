@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableCaching
 @EnableEurekaClient
 @SpringBootApplication
-@EnableAsync
 public class EntityResearcherApplication {
 
   public static void main(String[] args) {
