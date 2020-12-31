@@ -38,15 +38,12 @@ class ResearcherControllerTest {
     iResearcher.setPapers(Lists.newArrayList("test"));
     iResearcher.setName("ycj");
     iResearcher.setId("IEEE_37085391626");
-    CompletableFuture<IResearcher> completableFuture = CompletableFuture.completedFuture(
-      iResearcher
-    );
     Mockito
       .when(researcherEntityService.containResearcher("a"))
       .thenReturn(true);
     Mockito
       .when(researcherEntityService.getResearcherById("a"))
-      .thenReturn(completableFuture);
+      .thenReturn(iResearcher);
     assertEquals(
       iResearcher.getName(),
       researcherController.getResearcherById("a").getName()
@@ -60,15 +57,12 @@ class ResearcherControllerTest {
     iResearcherBasic.setPapers(Lists.newArrayList("test"));
     iResearcherBasic.setName("ycj");
     iResearcherBasic.setId("IEEE_37085391626");
-    CompletableFuture<IResearcherBasic> completableFuture = CompletableFuture.completedFuture(
-      iResearcherBasic
-    );
     Mockito
       .when(researcherEntityService.containResearcher("a"))
       .thenReturn(true);
     Mockito
       .when(researcherEntityService.getResearcherBasicById("a"))
-      .thenReturn(completableFuture);
+      .thenReturn(iResearcherBasic);
     assertEquals(
       iResearcherBasic,
       researcherController.getResearcherBasicInfoById("a")

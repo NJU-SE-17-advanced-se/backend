@@ -33,7 +33,7 @@ class ResearcherEntityServiceTest {
   }
 
   @Test
-  void getResearcherById() throws ExecutionException, InterruptedException {
+  void getResearcherById() {
     IResearcher iResearcher = new IResearcher();
     JpaPaper jpaPaper = new JpaPaper();
     jpaPaper.setId("test");
@@ -47,7 +47,7 @@ class ResearcherEntityServiceTest {
       .when(researcherRepository.getResearcherById("test"))
       .thenReturn(iResearcher);
     assertEquals(
-      researcherEntityService.getResearcherById("test").get().getName(),
+      researcherEntityService.getResearcherById("test").getName(),
       "ycj"
     );
   }
@@ -120,8 +120,7 @@ class ResearcherEntityServiceTest {
   }
 
   @Test
-  void getResearcherBasicById()
-    throws ExecutionException, InterruptedException {
+  void getResearcherBasicById() {
     IResearcherBasic iResearcherBasic = new IResearcherBasic();
     JpaPaper jpaPaper = new JpaPaper();
     jpaPaper.setId("test");
@@ -136,7 +135,7 @@ class ResearcherEntityServiceTest {
       .when(researcherRepository.getResearcherBasic("test"))
       .thenReturn(iResearcherBasic);
     assertEquals(
-      researcherEntityService.getResearcherBasicById("test").get().getName(),
+      researcherEntityService.getResearcherBasicById("test").getName(),
       "ycj"
     );
   }

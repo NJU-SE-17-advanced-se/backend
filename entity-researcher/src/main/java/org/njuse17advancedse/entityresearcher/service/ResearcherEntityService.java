@@ -1,12 +1,10 @@
 package org.njuse17advancedse.entityresearcher.service;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import org.njuse17advancedse.entityresearcher.dto.IResearcher;
 import org.njuse17advancedse.entityresearcher.dto.IResearcherBasic;
 import org.njuse17advancedse.entityresearcher.dto.ISearchResult;
 import org.njuse17advancedse.entityresearcher.repository.ResearcherRepository;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,11 +20,8 @@ public class ResearcherEntityService {
    * @param id 作者id
    * @return 作者实体
    */
-  @Async
-  public CompletableFuture<IResearcher> getResearcherById(String id) {
-    return CompletableFuture.completedFuture(
-      researcherRepository.getResearcherById(id)
-    );
+  public IResearcher getResearcherById(String id) {
+    return researcherRepository.getResearcherById(id);
   }
 
   /**
@@ -67,11 +62,8 @@ public class ResearcherEntityService {
    * @param id 作者id
    * @return 作者简要实体
    */
-  @Async
-  public CompletableFuture<IResearcherBasic> getResearcherBasicById(String id) {
-    return CompletableFuture.completedFuture(
-      researcherRepository.getResearcherBasic(id)
-    );
+  public IResearcherBasic getResearcherBasicById(String id) {
+    return researcherRepository.getResearcherBasic(id);
   }
 
   /**
